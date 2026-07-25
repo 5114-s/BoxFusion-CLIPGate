@@ -352,6 +352,8 @@ def run(cfg, model, dataset, clip_model, preprocess, tokenized_text, text_featur
                 'appearance_gate', {}
             ).get('enabled', False):
                 print(box_manager.appearance_gate_summary())
+            if Box_Fuser.reliable_view_cfg["enabled"]:
+                print(Box_Fuser.reliable_view_summary())
             
             # save global boxes for evaluation
             if cfg['data']['output_dir'] is not None and cfg["eval"]:

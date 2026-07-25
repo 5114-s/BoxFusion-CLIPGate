@@ -5,6 +5,14 @@ import cv2
 
 import os
 
+from boxfusion.reliable_views import (
+    resolve_reliable_view_config,
+    select_top_k_reliable_views,
+    stable_unique,
+    valid_reliable_view_mask,
+    weighted_box_initialization,
+)
+
 try:
   import pycuda.driver as cuda
   import pycuda.autoprimaryctx
@@ -61,6 +69,21 @@ class BoxFusion(object):
         self.center_scaling_coefficient = cfg["box_fusion"]["random_opt"]["center_scaling_coefficient"]
         self.shape_init_size = cfg["box_fusion"]["random_opt"]["shape_init_size"]
         self.shape_scaling_coefficient = cfg["box_fusion"]["random_opt"]["shape_scaling_coefficient"]
+        self.reliable_view_cfg = resolve_reliable_view_config(
+            cfg["box_fusion"]
+        )
+        self.reliable_view_stats = {
+            "fusion_updates": 0,
+            "views_available": 0,
+            "views_selected": 0,
+            "raw_weights": [],
+            "selected_weights": [],
+            "confidence": [],
+            "area_quality": [],
+            "projection_iou": [],
+            "geometry_consistency": [],
+            "invalid_views": 0,
+        }
 
 
 
@@ -285,6 +308,7 @@ class BoxFusion(object):
             float img_w = other_params[1];
             float node_size = other_params[2];
             int num_boxes = (int) other_params[3];
+            bool use_view_weights = other_params[4] > 0.5f;
             
             if (node>=node_size){
                 return;
@@ -345,6 +369,9 @@ class BoxFusion(object):
             }
                                          
             float score_box = scores[i];
+            float view_weight = use_view_weights
+                ? max(score_box, 0.000001f)
+                : 1.0f;
                            
             float uv[8][2] = {0};
                         
@@ -401,8 +428,19 @@ class BoxFusion(object):
                 iou = iou; //* max(score_box,1.0);
             }
             
-            atomicAdd_system(search_value+node,abs(1-iou));
-            atomicAdd_system(search_count+node,1);
+            if (use_view_weights){
+                atomicAdd_system(
+                    search_value+node,
+                    view_weight*abs(1-iou)
+                );
+                atomicAdd_system(search_count+node,view_weight);
+            }
+            else{
+                // Keep the released objective byte-for-byte at the arithmetic
+                // operation level when reliable-view fusion is disabled.
+                atomicAdd_system(search_value+node,abs(1-iou));
+                atomicAdd_system(search_count+node,1);
+            }
                         
             return;
 
@@ -422,7 +460,8 @@ class BoxFusion(object):
                     camera_poses,
                     search_size,
                     num_of_boxes,
-                    verbose=False):
+                    verbose=False,
+                    use_view_weights=False):
 
         search_value=np.zeros((self.PST.shape[0])).astype(np.float32)
         search_count=np.zeros((self.PST.shape[0])).astype(np.float32)
@@ -448,7 +487,8 @@ class BoxFusion(object):
                                         self.H,
                                         self.W,
                                         self.pst_size,
-                                        num_of_boxes
+                                        num_of_boxes,
+                                        float(use_view_weights)
                                         ], np.float32)),
            
                         block=(32,1,1),  
@@ -463,6 +503,60 @@ class BoxFusion(object):
 
 
         return fitness
+
+    def record_reliable_view_selection(self, selection):
+        self.reliable_view_stats["fusion_updates"] += 1
+        self.reliable_view_stats["views_available"] += int(
+            selection["weights"].shape[0]
+        )
+        self.reliable_view_stats["views_selected"] += int(
+            selection["selected_indices"].shape[0]
+        )
+        self.reliable_view_stats["raw_weights"].extend(
+            selection["weights"].tolist()
+        )
+        self.reliable_view_stats["selected_weights"].extend(
+            selection["selected_weights"].tolist()
+        )
+        for key in (
+            "confidence",
+            "area_quality",
+            "projection_iou",
+            "geometry_consistency",
+        ):
+            self.reliable_view_stats[key].extend(
+                selection[key].tolist()
+            )
+
+    def reliable_view_summary(self):
+        stats = self.reliable_view_stats
+
+        def quantiles(values):
+            values = np.asarray(values, dtype=np.float32)
+            if values.size == 0:
+                return "nan/nan/nan"
+            q10, q50, q90 = np.quantile(values, [0.1, 0.5, 0.9])
+            return f"{q10:.4f}/{q50:.4f}/{q90:.4f}"
+
+        return (
+            "Reliable-view fusion summary | "
+            f"updates={stats['fusion_updates']}, "
+            f"available={stats['views_available']}, "
+            f"selected={stats['views_selected']}, "
+            "weight_q10/q50/q90="
+            f"{quantiles(stats['raw_weights'])}, "
+            "selected_q10/q50/q90="
+            f"{quantiles(stats['selected_weights'])}, "
+            "confidence_q10/q50/q90="
+            f"{quantiles(stats['confidence'])}, "
+            "area_q10/q50/q90="
+            f"{quantiles(stats['area_quality'])}, "
+            "projection_iou_q10/q50/q90="
+            f"{quantiles(stats['projection_iou'])}, "
+            "geometry_q10/q50/q90="
+            f"{quantiles(stats['geometry_consistency'])}, "
+            f"invalid={stats['invalid_views']}"
+        )
 
     def update_intrinsics(self,size,K):
         self.H=size[1]
@@ -622,6 +716,19 @@ class BoxFusion(object):
 
         return mean_xyzlwh, mean_rot
 
+    def init_opt_params_reliable(
+        self,
+        box_3d,
+        per_boxes_3d_R,
+        view_weights,
+    ):
+        mean_xyzlwh, mean_rot, _ = weighted_box_initialization(
+            box_3d,
+            per_boxes_3d_R,
+            view_weights,
+        )
+        return mean_xyzlwh, mean_rot
+
     
     def boxfusion(self, all_pred_box, per_frame_box, box_manager, beta=0.9, verbose=False):
         N_box = len(all_pred_box)
@@ -635,15 +742,96 @@ class BoxFusion(object):
         for i in range(N_box):
 
             
-            if len(box_manager.fusion_list[i])<3 or box_manager.check_if_fusion(box_manager.fusion_list[i]): 
+            minimum_views = 3
+            if self.reliable_view_cfg["enabled"]:
+                minimum_views = max(
+                    minimum_views,
+                    self.reliable_view_cfg["min_views"],
+                )
+            if (
+                len(box_manager.fusion_list[i]) < minimum_views
+                or box_manager.check_if_fusion(
+                    box_manager.fusion_list[i]
+                )
+            ):
                 continue
 
             '''
             prepare the data used for fusion
             '''
-            fusion_idx = box_manager.fusion_list[i]
+            source_fusion_idx = list(box_manager.fusion_list[i])
+            fusion_idx = np.asarray(source_fusion_idx, dtype=np.int64)
+
+            if self.reliable_view_cfg["enabled"]:
+                fusion_idx = stable_unique(fusion_idx)
+                source_boxes = per_boxes_3d[fusion_idx]
+                source_rotations = per_boxes_3d_R[fusion_idx]
+                source_scores = per_boxes_3d_scores[fusion_idx]
+                source_detector_boxes = per_boxes_2d[fusion_idx]
+                source_corners = per_boxes_2d_cor[fusion_idx]
+                source_poses = per_cam_pose[fusion_idx]
+                valid_views = valid_reliable_view_mask(
+                    source_boxes,
+                    source_rotations,
+                    source_scores,
+                    source_detector_boxes,
+                    source_corners,
+                    source_poses,
+                )
+                invalid_count = int(
+                    valid_views.shape[0] - np.count_nonzero(valid_views)
+                )
+                self.reliable_view_stats["invalid_views"] += invalid_count
+                if np.count_nonzero(valid_views) < minimum_views:
+                    print(
+                        f"reliable-view fusion {i} skipped: "
+                        f"valid={int(np.count_nonzero(valid_views))}, "
+                        f"required={minimum_views}, "
+                        f"source={source_fusion_idx}"
+                    )
+                    continue
+                fusion_idx = fusion_idx[valid_views]
+                source_boxes = source_boxes[valid_views]
+                source_scores = source_scores[valid_views]
+                source_detector_boxes = source_detector_boxes[valid_views]
+                source_corners = source_corners[valid_views]
+                selection = select_top_k_reliable_views(
+                    source_boxes,
+                    source_scores,
+                    source_detector_boxes,
+                    source_corners,
+                    image_height=self.H,
+                    image_width=self.W,
+                    cfg=self.reliable_view_cfg,
+                )
+                selected_local = selection["selected_indices"]
+                fusion_idx = fusion_idx[selected_local]
+                view_weights = selection["selected_weights"].astype(
+                    np.float32
+                )
+                # Keep the weighted CUDA denominator on the same numerical
+                # scale as the legacy observation count.
+                view_weights = view_weights / max(
+                    float(view_weights.mean()), 1e-6
+                )
+                self.record_reliable_view_selection(selection)
+                print(
+                    f"reliable-view fusion {i}: "
+                    f"source={source_fusion_idx}, "
+                    f"selected={fusion_idx.tolist()}, "
+                    "weights="
+                    f"{np.round(view_weights, 4).tolist()}"
+                )
+            else:
+                view_weights = per_boxes_3d_scores[fusion_idx]
+
             num_of_boxes = len(fusion_idx)
-            print(f"fusing {i} box, fusion list is ",fusion_idx, 'len:', num_of_boxes)
+            print(
+                f"fusing {i} box, fusion list is ",
+                fusion_idx.tolist(),
+                "len:",
+                num_of_boxes,
+            )
 
             cam_poses = per_cam_pose[fusion_idx] #[N,4,4]
            
@@ -651,10 +839,23 @@ class BoxFusion(object):
 
             corners_2d = per_boxes_2d_cor[fusion_idx] 
 
-           
-            mean_xyzlwh, mean_rot = self.init_opt_params(box_3d, per_boxes_3d_R[fusion_idx], per_boxes_3d_scores[fusion_idx],verbose=False)
-
-            scores_box = per_boxes_3d_scores[fusion_idx] 
+            if self.reliable_view_cfg["enabled"]:
+                mean_xyzlwh, mean_rot = (
+                    self.init_opt_params_reliable(
+                        box_3d,
+                        per_boxes_3d_R[fusion_idx],
+                        view_weights,
+                    )
+                )
+                scores_box = view_weights
+            else:
+                mean_xyzlwh, mean_rot = self.init_opt_params(
+                    box_3d,
+                    per_boxes_3d_R[fusion_idx],
+                    per_boxes_3d_scores[fusion_idx],
+                    verbose=False,
+                )
+                scores_box = per_boxes_3d_scores[fusion_idx]
             
             global_xyzlwh = mean_xyzlwh #initialize the parameters to be optimized
             
@@ -674,7 +875,8 @@ class BoxFusion(object):
                                                 cam_poses,
                                                 self.search_size,
                                                 num_of_boxes,
-                                                verbose=verbose)
+                                                verbose=verbose,
+                                                use_view_weights=self.reliable_view_cfg["enabled"])
 
                 success,min_iou,mean_transform = self.cal_transform(search_value, 
                 self.search_size)
@@ -723,6 +925,10 @@ class BoxFusion(object):
                 global_lwh[global_lwh < 0.01] = 0.01
                 global_xyzlwh[3:] = global_lwh
                 all_pred_box.pred_boxes_3d.tensor[i] = torch.from_numpy(global_xyzlwh).to(all_pred_box.pred_boxes_3d.tensor[i].device)
+                if self.reliable_view_cfg["enabled"]:
+                    all_pred_box.pred_boxes_3d.R[i] = torch.from_numpy(
+                        mean_rot
+                    ).to(all_pred_box.pred_boxes_3d.R[i].device)
                 # update fusion flag
                 box_manager.update_fusion_flag(i)
-                box_manager.add_fusion_ind(fusion_idx)
+                box_manager.add_fusion_ind(source_fusion_idx)

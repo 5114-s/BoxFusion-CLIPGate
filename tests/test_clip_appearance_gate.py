@@ -1,12 +1,17 @@
 import importlib.util
 import os
+from pathlib import Path
 
 import numpy as np
 
 
 SOURCE = os.environ.get(
     "BOXFUSION_INSTANCES",
-    "/data/ZhaoX/BoxFusion/boxfusion/instances.py",
+    str(
+        Path(__file__).resolve().parents[1]
+        / "boxfusion"
+        / "instances.py"
+    ),
 )
 spec = importlib.util.spec_from_file_location("boxfusion_instances", SOURCE)
 instances = importlib.util.module_from_spec(spec)
