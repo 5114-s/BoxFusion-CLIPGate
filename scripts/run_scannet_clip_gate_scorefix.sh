@@ -12,12 +12,15 @@ ENV_ROOT=/home/admin1/miniconda3/envs/boxfusion2
 PYTHON="$ENV_ROOT/bin/python"
 ENV_LD_LIBRARY_PATH="$ENV_ROOT/lib:$ENV_ROOT/opt/rviz_ogre_vendor/lib:/usr/local/cuda-12.1/lib64"
 META="$ROOT/evaluation/data_util/meta_data/scannetv2_val.txt"
-CONFIG="$ROOT/config/scannet_clip_gate_scorefix.yaml"
-PRED_ROOT="$ROOT/results/scannet_clip_gate_scorefix"
-LOG_ROOT="$ROOT/logs/scannet_clip_gate_scorefix"
+EXPERIMENT_NAME="${BOXFUSION_EXPERIMENT_NAME:-scannet_clip_gate_scorefix}"
+CONFIG="${BOXFUSION_CONFIG:-$ROOT/config/${EXPERIMENT_NAME}.yaml}"
+PRED_ROOT="$ROOT/results/$EXPERIMENT_NAME"
+LOG_ROOT="$ROOT/logs/$EXPERIMENT_NAME"
 SCENE_LOG_ROOT="$LOG_ROOT/scenes"
 GT_ROOT="$ROOT/evaluation/data_util/scannet_train_detection_data"
 BASELINE_LOG="$ROOT/upstream_clean/scorefix_logs/full_driver.log"
+EVAL_ROOT="$ROOT/evaluation/$EXPERIMENT_NAME"
+REFERENCE_TEXT="${BOXFUSION_REFERENCE_TEXT:-Baseline reference: AP15/AP25/AP50 = 32.53/27.11/9.46}"
 
 mkdir -p "$PRED_ROOT" "$SCENE_LOG_ROOT" "$LOG_ROOT/mplconfig"
 exec 9>"$LOG_ROOT/run.lock"
@@ -78,9 +81,10 @@ LD_LIBRARY_PATH="$ENV_LD_LIBRARY_PATH" \
 
 total=$(awk 'END {print NR}' "$META")
 worker_count="${#GPUS[@]}"
-echo "[$(date '+%F %T')] Starting score-preserving CLIP-gate inference"
+echo "[$(date '+%F %T')] Starting score-preserving CLIP-gate inference: $EXPERIMENT_NAME"
 echo "[$(date '+%F %T')] GPUs: $GPU_SPEC; workers: $worker_count; scenes: $total"
-echo "[$(date '+%F %T')] Baseline reference: AP15/AP25/AP50 = 32.53/27.11/9.46"
+echo "[$(date '+%F %T')] $REFERENCE_TEXT"
+echo "[$(date '+%F %T')] Config: $CONFIG"
 echo "[$(date '+%F %T')] Baseline log: $BASELINE_LOG"
 echo "[$(date '+%F %T')] Input frames: $ROOT/upstream_clean/scannet_readme_frames"
 echo "[$(date '+%F %T')] Prediction root: $PRED_ROOT"
@@ -112,6 +116,7 @@ run_worker() {
             cd "$CODE"
             CUDA_VISIBLE_DEVICES="$gpu" \
             PYTHONDONTWRITEBYTECODE=1 \
+            PYTHONUNBUFFERED=1 \
             MPLCONFIGDIR="$LOG_ROOT/mplconfig" \
             LD_LIBRARY_PATH="$ENV_LD_LIBRARY_PATH" \
             "$PYTHON" demo.py scannet \
@@ -179,7 +184,7 @@ echo "[$(date '+%F %T')] Completed all $total scenes; starting score-preserving 
     "$PYTHON" eval_scannet.py \
         --dataset scannet \
         --data_path /extra/ZhaoX/scannet_data/scans \
-        --dump_dir "$ROOT/evaluation/scannet_clip_gate_scorefix" \
+        --dump_dir "$EVAL_ROOT" \
         --num_point 40000 \
         --cluster_sampling seed_fps \
         --use_3d_nms \

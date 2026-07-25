@@ -142,3 +142,36 @@ quantiles.
 
 Do not start Stage 2 until all Stage-1 scenes have finished and Stage-1 AP has
 been recorded. Otherwise the ablation lineage cannot be audited cleanly.
+
+## score_thresh=0.4 paired ablation
+
+Lowering the proposal threshold changes the proposal set, so the completed
+Stage-1 0.5 result is not a valid direct control for a Stage-2 0.4 run. Use
+the paired configurations:
+
+```text
+Stage-1 0.4: config/scannet_clip_gate_score04.yaml
+Stage-2 0.4: config/scannet_clip_gate_topk_fusion_score04.yaml
+```
+
+Run the threshold control first:
+
+```bash
+bash scripts/run_scannet_clip_gate_score04.sh 0,1
+```
+
+Then run Top-K weighted fusion:
+
+```bash
+bash scripts/run_scannet_clip_gate_topk_fusion_score04.sh 0,1
+```
+
+Their outputs are isolated under:
+
+```text
+results/scannet_clip_gate_score04
+results/scannet_clip_gate_topk_fusion_score04
+```
+
+The Stage-2 gain at threshold 0.4 is the difference between these two runs.
+The existing Stage-1 0.5 result remains a separate threshold ablation.
