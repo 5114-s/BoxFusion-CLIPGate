@@ -1,0 +1,55 @@
+{
+  "schema": "boxfusion.ca1m_tr3d_terminal_gate_pending_revision_invalid.v5.final",
+  "complete": true,
+  "create_only": true,
+  "invalid": true,
+  "operational_authority": false,
+  "namespace": "ca1m_tr3d_terminal_gate_v5_final",
+  "superseded_by_namespace": "ca1m_tr3d_terminal_gate_v5_final_r2",
+  "never_scientifically_preregistered": true,
+  "never_ready_authorized": true,
+  "runtime_namespace_created": false,
+  "ground_truth_access": false,
+  "gpu_started": false,
+  "former_future_input": {
+    "path": "/extra/ZhaoX/ca1m_tr3d_e961_terminal_inputs_xfit_r2_v5_r4/manifests/M_EXACT80_R4_RECEIPT.json",
+    "schema": "boxfusion.ca1m_tr3d_e961_terminal_inputs_exact80_receipt.v5.r4",
+    "ever_committed": false
+  },
+  "invalid_upstream": {
+    "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/manifests/ca1m_tr3d_e961_terminal_inputs_v5_r4/PREREGISTRATION_INVALID.json",
+    "sha256": "63e6b15279e61c6e2327d65853261d58c31bcb939a04e4e78a7120bcf805057b",
+    "schema": "boxfusion.ca1m_tr3d_e961_terminal_inputs_preregistration_invalid.v5.r4"
+  },
+  "former_implementation": {
+    "core": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/boxfusion/ca1m_tr3d_terminal_gate_v5_final.py",
+      "sha256": "b79c94c2a9f73b6d21e8cfcbdbcbc0ed695d5e2c50ddfe9bdf03b190d738b153"
+    },
+    "pending_config": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/config/ca1m_tr3d_terminal_gate_v5_final_pending.json",
+      "sha256": "cc349466b6c117a623d33f6c7b9146b324c3aae97e86a75ee3bb754d9d402349"
+    },
+    "preflight": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/tools/preflight_ca1m_tr3d_terminal_gate_v5_final.py",
+      "sha256": "60aa04b4e302347d2dc2d96d002c3d3139795376fd5a6cfa6324fff2d8c9134c"
+    },
+    "sealer": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/tools/seal_ca1m_tr3d_terminal_gate_v5_final.py",
+      "sha256": "c3b0b7bada9985eca873633b2db57c5cbdc1ea455d01994ac424d3cc418170b4"
+    },
+    "runner_before_tombstone": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/tools/run_ca1m_tr3d_terminal_gate_v5_final.py",
+      "sha256": "5e41f404e5e6c8a7f1277f34f0e4be0566d2399633eb1ba3851a4cf7d04471f8"
+    },
+    "tests": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/tests/test_ca1m_tr3d_terminal_gate_v5_final.py",
+      "sha256": "e02b20d61318ba6b8e1a11c199b223ba807c34381426e32c4289f0acb2987020"
+    }
+  },
+  "reasons": [
+    "sole_upstream_r4_terminal_inputs_revision_is_statically_invalidated",
+    "r4_exact80_wrapper_was_never_committed",
+    "pending_revision_never_sealed_scientific_preregistration_or_runtime_authority"
+  ]
+}

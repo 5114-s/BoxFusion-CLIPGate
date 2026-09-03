@@ -1,0 +1,44 @@
+schema: boxfusion.ca1m_native_b6_final_base_offline_config.v2
+dataset: CA1M
+
+# Offline query of the already sealed final-base boxes.  No CuTR, Boxer,
+# CLIP, BoxFusion, or learned B6 checkpoint is run in this stage.
+data:
+  gap: 20
+  start: 0
+  depth_scale: 1000.0
+  image_height: 384
+  image_width: 512
+
+source_anchor:
+  split: train100
+  geometry_authority: sealed_final_base_prediction
+  required_modules:
+    selective_boxer_g0: true
+    clip_appearance_gate: true
+    reliable_view_top_k: 3
+  cross_run_replay_required: false
+  cross_run_exact_identity_required: false
+
+# This is the established CA native-B6 evidence policy.  Its Top-K=5 is
+# intentionally independent of final BoxFusion's reliable-view Top-K=3.
+observer:
+  top_k_views: 5
+  pixel_stride: 4
+  depth_margin_m: 0.05
+  min_depth_m: 0.10
+  max_depth_m: 8.0
+  near_clip_m: 0.001
+  max_cached_keyframes: 256
+  stable_id_policy: sealed_prediction_row_index
+
+safety:
+  train_only: true
+  prediction_mutation_authorized: false
+  ground_truth_access: false
+  validation_ground_truth_access: false
+  validation_prediction_access: false
+  evaluator_invoked: false
+  rgb_pixels_accessed: false
+  old_native_b6_diagnostics_reused: false
+  old_native_b6_checkpoint_reused: false

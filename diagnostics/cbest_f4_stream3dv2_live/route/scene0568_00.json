@@ -1,0 +1,154 @@
+{
+  "annotation_access": false,
+  "bounded": {
+    "fastsam_candidates_per_keyframe": 16,
+    "sam3_queue_capacity": 1,
+    "semantic_views": 8,
+    "state_max_tracks": 1024,
+    "state_max_views_per_track": 5
+  },
+  "chosen_hypotheses": {
+    "HB": 166,
+    "PMR_HB": 48,
+    "PMR_YAW": 65
+  },
+  "complete": true,
+  "counts": {
+    "births": 6,
+    "candidates": 279,
+    "deadline_misses": 1,
+    "f0_candidates": 574,
+    "f4_invalid": 0,
+    "f4_valid": 574,
+    "fastsam_masks": 3134,
+    "keyframes": 66,
+    "native": 19,
+    "output": 25,
+    "overlays": 0,
+    "sam3_proposals": 32,
+    "sam3_results_accepted": 14,
+    "sam3_submitted": 14,
+    "semantic_views": 8
+  },
+  "deadline_ms": 833.333333,
+  "evaluator_access": false,
+  "future_access_count": 0,
+  "gt_access": false,
+  "late_result_count": 0,
+  "native_score_lower_bound": 0.125,
+  "native_scores_preserved": true,
+  "past_only": true,
+  "peak_cuda_allocated_bytes": 5855323648,
+  "peak_cuda_reserved_bytes": 6312427520,
+  "proposal_cache_access": false,
+  "query_before_commit": true,
+  "sam3": {
+    "closed": true,
+    "completed": 14,
+    "delivered": 14,
+    "drop_count": 0,
+    "dropped_disabled": 0,
+    "dropped_late": 0,
+    "dropped_pending": 0,
+    "enabled": true,
+    "end_to_end_runtime_ms_total": 15338.039565598592,
+    "gpu_runtime_ms_total": 14735.748840332031,
+    "healthy": true,
+    "last_end_to_end_runtime_ms": 901.0791040491313,
+    "last_error": null,
+    "last_gpu_runtime_ms": 899.3623046875,
+    "last_worker_runtime_ms": 900.1676980406046,
+    "late_count": 0,
+    "max_queue_depth": 1,
+    "queue_depth": 0,
+    "started": true,
+    "submitted": 14,
+    "worker_error_count": 0,
+    "worker_pid": null,
+    "worker_runtime_ms_total": 14745.084817288443
+  },
+  "scene_id": "scene0568_00",
+  "schema": "boxfusion.stream3dv2_live.v1",
+  "state": {
+    "committed_frame_count": 66,
+    "committed_view_count": 574,
+    "future_access_count": 0,
+    "last_committed_frame_ordinal": 65,
+    "live_track_count": 0,
+    "live_view_count": 0,
+    "peak_live_track_count": 77,
+    "peak_live_view_count": 150,
+    "query_before_commit": true,
+    "retired_track_count": 248,
+    "terminal_finalized_track_count": 31
+  },
+  "teacher_cache_access": false,
+  "terminal_cache_access": false,
+  "terminal_output_decision": true,
+  "timing_ms": {
+    "f0_residual_lift": {
+      "count": 66,
+      "max": 362.2587698046118,
+      "mean": 113.84194673772788,
+      "p50": 100.33667692914605,
+      "p95": 209.2717426130548
+    },
+    "f2_refine": {
+      "count": 66,
+      "max": 31.87705110758543,
+      "mean": 14.14988970271114,
+      "p50": 14.833187451586127,
+      "p95": 22.70201366627589
+    },
+    "f3_and_memory": {
+      "count": 66,
+      "max": 196.47611607797444,
+      "mean": 36.6442414233461,
+      "p50": 30.84405546542257,
+      "p95": 72.18385336454958
+    },
+    "f4_boxer": {
+      "count": 66,
+      "max": 82.4804580770433,
+      "mean": 43.03778726325342,
+      "p50": 41.428362019360065,
+      "p95": 52.02033062232658
+    },
+    "fastsam": {
+      "count": 66,
+      "max": 406.0832199174911,
+      "mean": 72.01034149197353,
+      "p50": 58.71427443344146,
+      "p95": 132.75549042737111
+    },
+    "keyframe_total": {
+      "count": 66,
+      "max": 8110.362455016002,
+      "mean": 393.14827994993806,
+      "p50": 271.35420602280647,
+      "p95": 451.01281808456406
+    },
+    "sam3_poll": {
+      "count": 1692,
+      "max": 0.5015928763896227,
+      "mean": 0.005243510947987684,
+      "p50": 0.0019855797290802,
+      "p95": 0.01883854856714606
+    },
+    "sam3_submit": {
+      "count": 66,
+      "max": 7478.585164062679,
+      "mean": 113.43211054124616,
+      "p50": 0.0010544899851083755,
+      "p95": 0.6654019234701991
+    },
+    "sam3_terminal_drain": {
+      "count": 1,
+      "max": 411.1262110527605,
+      "mean": 411.1262110527605,
+      "p50": 411.1262110527605,
+      "p95": 411.1262110527605
+    }
+  },
+  "training_free": true
+}

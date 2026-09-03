@@ -1,0 +1,154 @@
+{
+  "annotation_access": false,
+  "bounded": {
+    "fastsam_candidates_per_keyframe": 16,
+    "sam3_queue_capacity": 1,
+    "semantic_views": 8,
+    "state_max_tracks": 1024,
+    "state_max_views_per_track": 5
+  },
+  "chosen_hypotheses": {
+    "HB": 83,
+    "PMR_HB": 9,
+    "PMR_YAW": 92
+  },
+  "complete": true,
+  "counts": {
+    "births": 6,
+    "candidates": 184,
+    "deadline_misses": 1,
+    "f0_candidates": 261,
+    "f4_invalid": 0,
+    "f4_valid": 261,
+    "fastsam_masks": 2243,
+    "keyframes": 50,
+    "native": 30,
+    "output": 36,
+    "overlays": 0,
+    "sam3_proposals": 103,
+    "sam3_results_accepted": 10,
+    "sam3_submitted": 10,
+    "semantic_views": 8
+  },
+  "deadline_ms": 833.333333,
+  "evaluator_access": false,
+  "future_access_count": 0,
+  "gt_access": false,
+  "late_result_count": 0,
+  "native_score_lower_bound": 0.125,
+  "native_scores_preserved": true,
+  "past_only": true,
+  "peak_cuda_allocated_bytes": 5855320576,
+  "peak_cuda_reserved_bytes": 6306136064,
+  "proposal_cache_access": false,
+  "query_before_commit": true,
+  "sam3": {
+    "closed": true,
+    "completed": 10,
+    "delivered": 10,
+    "drop_count": 0,
+    "dropped_disabled": 0,
+    "dropped_late": 0,
+    "dropped_pending": 0,
+    "enabled": true,
+    "end_to_end_runtime_ms_total": 11324.02457203716,
+    "gpu_runtime_ms_total": 10668.063659667969,
+    "healthy": true,
+    "last_end_to_end_runtime_ms": 1208.5254879202694,
+    "last_error": null,
+    "last_gpu_runtime_ms": 1092.7861328125,
+    "last_worker_runtime_ms": 1094.8948441073298,
+    "late_count": 0,
+    "max_queue_depth": 1,
+    "queue_depth": 0,
+    "started": true,
+    "submitted": 10,
+    "worker_error_count": 0,
+    "worker_pid": null,
+    "worker_runtime_ms_total": 10688.514021923766
+  },
+  "scene_id": "scene0081_02",
+  "schema": "boxfusion.stream3dv2_live.v1",
+  "state": {
+    "committed_frame_count": 50,
+    "committed_view_count": 261,
+    "future_access_count": 0,
+    "last_committed_frame_ordinal": 49,
+    "live_track_count": 0,
+    "live_view_count": 0,
+    "peak_live_track_count": 61,
+    "peak_live_view_count": 84,
+    "query_before_commit": true,
+    "retired_track_count": 152,
+    "terminal_finalized_track_count": 32
+  },
+  "teacher_cache_access": false,
+  "terminal_cache_access": false,
+  "terminal_output_decision": true,
+  "timing_ms": {
+    "f0_residual_lift": {
+      "count": 50,
+      "max": 155.14810802415013,
+      "mean": 66.01270785089582,
+      "p50": 63.78184910863638,
+      "p95": 121.81806720327583
+    },
+    "f2_refine": {
+      "count": 50,
+      "max": 16.934301936998963,
+      "mean": 6.835245219990611,
+      "p50": 6.350425421260297,
+      "p95": 14.150805445387958
+    },
+    "f3_and_memory": {
+      "count": 50,
+      "max": 57.487971847876906,
+      "mean": 15.924947219900787,
+      "p50": 13.147975550964475,
+      "p95": 39.54882260877639
+    },
+    "f4_boxer": {
+      "count": 50,
+      "max": 47.37107781693339,
+      "mean": 38.5792441945523,
+      "p50": 41.06016946025193,
+      "p95": 44.59120905958116
+    },
+    "fastsam": {
+      "count": 50,
+      "max": 663.7179960962385,
+      "mean": 83.60699388664216,
+      "p50": 57.48135910835117,
+      "p95": 173.79488309379667
+    },
+    "keyframe_total": {
+      "count": 50,
+      "max": 7780.028590932488,
+      "mean": 358.1618657428771,
+      "p50": 192.64420843683183,
+      "p95": 350.49639695789665
+    },
+    "sam3_poll": {
+      "count": 1277,
+      "max": 0.33299694769084454,
+      "mean": 0.006874115625651628,
+      "p50": 0.0019578728824853897,
+      "p95": 0.0189212616533041
+    },
+    "sam3_submit": {
+      "count": 50,
+      "max": 7294.581599067897,
+      "mean": 146.01568329147995,
+      "p50": 0.000971602275967598,
+      "p95": 0.8524211356416342
+    },
+    "sam3_terminal_drain": {
+      "count": 1,
+      "max": 0.00403611920773983,
+      "mean": 0.00403611920773983,
+      "p50": 0.00403611920773983,
+      "p95": 0.00403611920773983
+    }
+  },
+  "training_free": true
+}

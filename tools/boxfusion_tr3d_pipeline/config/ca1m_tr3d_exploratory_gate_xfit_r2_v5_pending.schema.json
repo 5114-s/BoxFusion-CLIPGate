@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "boxfusion.ca1m_tr3d_exploratory_gate_pending_config.v5",
+  "title": "CA-1M asymmetric-xfit R2 exploratory gate v5 pending contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "schema_document",
+    "namespace",
+    "state",
+    "exploratory_only",
+    "authorizations",
+    "access",
+    "design_basis",
+    "protocol",
+    "candidate_source",
+    "learning",
+    "selection",
+    "diagnostics",
+    "prerequisites",
+    "outputs",
+    "forbidden_reuse"
+  ],
+  "properties": {
+    "schema": {
+      "const": "boxfusion.ca1m_tr3d_exploratory_gate_pending_config.v5"
+    },
+    "schema_document": {
+      "$ref": "#/$defs/artifact"
+    },
+    "namespace": {
+      "const": "ca1m_tr3d_exploratory_gate_xfit_r2_v5"
+    },
+    "state": {
+      "const": "pending_asymmetric_xfit_r2_oof_candidates"
+    },
+    "exploratory_only": {
+      "const": true
+    },
+    "authorizations": {
+      "type": "object"
+    },
+    "access": {
+      "type": "object"
+    },
+    "design_basis": {
+      "type": "object"
+    },
+    "protocol": {
+      "type": "object"
+    },
+    "candidate_source": {
+      "type": "object"
+    },
+    "learning": {
+      "type": "object"
+    },
+    "selection": {
+      "type": "object"
+    },
+    "diagnostics": {
+      "type": "object"
+    },
+    "prerequisites": {
+      "type": "object"
+    },
+    "outputs": {
+      "type": "object"
+    },
+    "forbidden_reuse": {
+      "type": "object"
+    }
+  },
+  "$defs": {
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    }
+  }
+}

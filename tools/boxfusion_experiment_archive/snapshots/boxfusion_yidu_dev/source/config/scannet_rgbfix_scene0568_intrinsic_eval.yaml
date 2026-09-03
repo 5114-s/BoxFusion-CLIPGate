@@ -1,0 +1,51 @@
+dataset: scannet
+
+data:
+  datadir: ./data/scannet_val_rgbfix/scene0011_01/frames
+  start: 0
+  output_dir: ./results/scannet_rgbfix_kfix
+  gap: 25
+
+cam:
+  H: 480
+  W: 640
+  fx: 577.590698
+  fy: 578.729797
+  cx: 318.905426
+  cy: 242.683609
+  png_depth_scale: 1000.
+
+detection:
+  score_thresh: 0.5
+  uv_bound: True
+  uv_bound_value: 0.9
+  floor_mask: True
+  floor_ratio: 15
+  scale_box: 1.5
+
+association:
+  small_threshold: 0.1
+  rotation_gap: 30
+  translation_gap: 0.8
+
+box_fusion:
+  use: True
+  iters: 20
+  pst_path: ./data/pst_1024_0.tiff
+  pst_size: 1024
+  random_opt:
+    center_init_size: 0.1
+    center_scaling_coefficient: 0.1
+    shape_init_size: 0.5
+    shape_scaling_coefficient: 0.5
+  check_valid: False
+  nms_threshold: 0.1
+  small_size: 0.35
+
+vis:
+  rerun: False
+  show_class: False
+  show_label: False
+  trajectory: True
+
+eval: True

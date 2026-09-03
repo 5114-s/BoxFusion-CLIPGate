@@ -1,0 +1,219 @@
+{
+  "annotation_access": false,
+  "bounded": {
+    "f4_tracks_per_keyframe": 8,
+    "fastsam_candidates_per_keyframe": 8,
+    "sam3_queue_capacity": 1,
+    "semantic_views": 8,
+    "state_max_tracks": 1024,
+    "state_max_views_per_track": 5
+  },
+  "chosen_hypotheses": {
+    "HB": 38,
+    "PMR_HB": 11,
+    "PMR_YAW": 21
+  },
+  "complete": true,
+  "counts": {
+    "abstain_depth_trigger_cooldown": 6,
+    "abstain_depth_trigger_insufficient_persistence": 6,
+    "births": 6,
+    "box_shortlisted": 176,
+    "candidates": 70,
+    "deadline_misses": 0,
+    "depth_trigger_runs": 15,
+    "f0_candidates": 101,
+    "f2_candidates": 101,
+    "f4_batches": 15,
+    "f4_invalid": 0,
+    "f4_track_dropped": 0,
+    "f4_track_shortlist": 101,
+    "f4_valid": 101,
+    "fastsam_masks": 580,
+    "keyframes": 27,
+    "masks_prelift": 112,
+    "native": 12,
+    "output": 18,
+    "overlays": 0,
+    "sam3_submit_drops": 1,
+    "semantic_views": 0,
+    "terminal_clip_batches": 1,
+    "terminal_clip_calls": 1,
+    "terminal_clip_proposals": 31
+  },
+  "deadline_ms": 833.333333,
+  "depth_trigger": {
+    "burst_remaining": 0,
+    "confirmed_voxels": 938,
+    "enabled": true,
+    "last_run_ordinal": 26,
+    "memory_version": 27,
+    "queries": 27,
+    "reason_bootstrap": 1,
+    "reason_bounded_burst": 12,
+    "reason_cooldown": 6,
+    "reason_insufficient_persistence": 6,
+    "reason_persistent_novel_depth": 2,
+    "runs": 15,
+    "skips": 12,
+    "tentative_voxels": 69
+  },
+  "evaluator_access": false,
+  "future_access_count": 0,
+  "gt_access": false,
+  "late_result_count": 0,
+  "lightweight": {
+    "conditional_f2": true,
+    "depth_trigger_enabled": true,
+    "enabled": true,
+    "f4_top_m_tracks": 8,
+    "fastsam_box_shortlist": 12,
+    "fastsam_top_k": 8,
+    "terminal_clip_batch_size": 32,
+    "terminal_clip_enabled": true
+  },
+  "native_score_lower_bound": 0.125,
+  "native_scores_preserved": true,
+  "past_only": true,
+  "peak_cuda_allocated_bytes": 6040021504,
+  "peak_cuda_reserved_bytes": 6629097472,
+  "proposal_cache_access": false,
+  "query_before_commit": true,
+  "sam3": {
+    "closed": true,
+    "completed": 0,
+    "delivered": 0,
+    "drop_count": 1,
+    "dropped_disabled": 1,
+    "dropped_late": 0,
+    "dropped_pending": 0,
+    "enabled": false,
+    "end_to_end_runtime_ms_total": 0.0,
+    "gpu_runtime_ms_total": 0.0,
+    "healthy": true,
+    "last_end_to_end_runtime_ms": null,
+    "last_error": null,
+    "last_gpu_runtime_ms": null,
+    "last_worker_runtime_ms": null,
+    "late_count": 0,
+    "max_queue_depth": 0,
+    "queue_depth": 0,
+    "started": false,
+    "submitted": 0,
+    "worker_error_count": 0,
+    "worker_pid": null,
+    "worker_runtime_ms_total": 0.0
+  },
+  "scene_id": "scene0535_00",
+  "schema": "boxfusion.stream3dv2_live.v1",
+  "state": {
+    "committed_frame_count": 27,
+    "committed_view_count": 101,
+    "future_access_count": 0,
+    "last_committed_frame_ordinal": 26,
+    "live_track_count": 0,
+    "live_view_count": 0,
+    "peak_live_track_count": 38,
+    "peak_live_view_count": 49,
+    "query_before_commit": true,
+    "retired_track_count": 41,
+    "terminal_finalized_track_count": 29
+  },
+  "teacher_cache_access": false,
+  "terminal_cache_access": false,
+  "terminal_output_decision": true,
+  "timing_ms": {
+    "depth_trigger": {
+      "count": 27,
+      "max": 2.3335351143032312,
+      "mean": 1.4143472589138482,
+      "p50": 1.542215934023261,
+      "p95": 2.2828214801847935
+    },
+    "f0_residual_lift": {
+      "count": 15,
+      "max": 83.4206291474402,
+      "mean": 42.606737185269594,
+      "p50": 41.998696979135275,
+      "p95": 78.3676754683256
+    },
+    "f2_refine": {
+      "count": 15,
+      "max": 17.918692901730537,
+      "mean": 10.866749053820968,
+      "p50": 11.314018862321973,
+      "p95": 15.539394342340525
+    },
+    "f3_and_memory": {
+      "count": 27,
+      "max": 28.48048391751945,
+      "mean": 4.882246773276064,
+      "p50": 0.39468822069466114,
+      "p95": 20.376315270550545
+    },
+    "f3_association": {
+      "count": 15,
+      "max": 13.365824008360505,
+      "mean": 1.9664857691774766,
+      "p50": 0.3581610508263111,
+      "p95": 9.22157275490462
+    },
+    "f4_boxer": {
+      "count": 15,
+      "max": 44.118960155174136,
+      "mean": 22.64985404908657,
+      "p50": 18.51639896631241,
+      "p95": 42.854370130226016
+    },
+    "fastsam": {
+      "count": 15,
+      "max": 343.43708702363074,
+      "mean": 73.780970973894,
+      "p50": 53.318156860768795,
+      "p95": 147.92279535904498
+    },
+    "keyframe_total": {
+      "count": 27,
+      "max": 424.814993981272,
+      "mean": 96.23620478884766,
+      "p50": 120.68503606133163,
+      "p95": 205.73391239158806
+    },
+    "mask_preselection": {
+      "count": 15,
+      "max": 3.838123055174947,
+      "mean": 3.291331293682257,
+      "p50": 3.239056095480919,
+      "p95": 3.5956270294263954
+    },
+    "sam3_poll": {
+      "count": 686,
+      "max": 0.007686903700232506,
+      "mean": 0.002894081845988164,
+      "p50": 0.0021739397197961807,
+      "p95": 0.005523499567061663
+    },
+    "sam3_submit": {
+      "count": 15,
+      "max": 0.0059390440583229065,
+      "mean": 0.0014965422451496124,
+      "p50": 0.0011068768799304962,
+      "p95": 0.002980767749249931
+    },
+    "sam3_terminal_drain": {
+      "count": 1,
+      "max": 0.0030139926820993423,
+      "mean": 0.0030139926820993423,
+      "p50": 0.0030139926820993423,
+      "p95": 0.0030139926820993423
+    },
+    "terminal_clip": {
+      "count": 1,
+      "max": 697.5677718874067,
+      "mean": 697.5677718874067,
+      "p50": 697.5677718874067,
+      "p95": 697.5677718874067
+    }
+  },
+  "training_free": true
+}

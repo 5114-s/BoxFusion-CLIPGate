@@ -1,0 +1,97 @@
+{
+  "schema": "boxfusion.ca1m_tr3d_benefit_split.v1",
+  "complete": true,
+  "train_only": true,
+  "official_validation_access": false,
+  "previous_fold4_probe_role": "method_development_only_failed_v1_gate",
+  "frozen_native_b6_condition": {
+    "checkpoint_sha256": "d19b3471c84144634c4f50cc339d772a25ada33f873875235087636e8188ca77",
+    "manifest_sha256": "b941c1008dd6a8703010e731c3b0d3675b981c146ceb4cf8a065698c96c560ea"
+  },
+  "frozen_terminal_condition": {
+    "checkpoint_sha256": "a484fd79093aa3004f4d2984e7ad8763c5d5cbec7edd04172d775643a8436448",
+    "config_sha256": "e74b29335f32baa6595bcc84a9b3e4fdd14b92a7044abd408a44de95fc360dc4",
+    "code_manifest_sha256": "e1e6569ad8bbbb22c3d8b5505e67329ab35be0cbfc2aa73a9b845b0d3a0768de",
+    "terminal_observer_audit_sha256": "274b49e402c8957d8073b95555c3cafa423991c4d7e3dd69f4106dc2cb744065",
+    "candidate_evidence_audit_sha256": "c842e5378506685bfef1663f4beb87928b5208f160eb11ae3cd880f34c2c970e"
+  },
+  "source_dataset_sha256": "6dbcb8f996dee76d77261b7bf9a42ee9bbb2562c60384c920b7e1fff12a4ff04",
+  "source_dataset_manifest_sha256": "2a47d0ac606f7d892efc982a300262afe6a51e6030f2bcd151ddc2ece73c06d4",
+  "source_scene_list_sha256": "35321e9942dc5d512db2952b9ca6228b1291127e0c13fd92aa458f2d7eb7f9fd",
+  "official_validation_scene_list_sha256": "bd5f3fc66168114048a1b12addc45949c8f54f9c016b921bacfb6fe9e3e7dc2f",
+  "roles": {
+    "weights_train": {
+      "folds": [2, 3, 4],
+      "scene_count": 60,
+      "scene_list": "weights_train_scenes.txt",
+      "scene_list_sha256": "7f0a22c660f7f9bd44137f5049c694393e038f5ab97ec55053443bfc00967478"
+    },
+    "threshold_dev": {
+      "folds": [0],
+      "scene_count": 20,
+      "scene_list": "threshold_dev_scenes.txt",
+      "scene_list_sha256": "9c886ca85ba599881797b25a49d2fc72dd136d255a245a09fe1cf17cbce735a7"
+    },
+    "locked_internal_check": {
+      "folds": [1],
+      "scene_count": 20,
+      "scene_list": "locked_internal_check_scenes.txt",
+      "scene_list_sha256": "d6238bae873c98737858ac3a84c0706091fa9a91113321ac9736a8d64de6d6b6"
+    }
+  },
+  "targets": {
+    "benefit_positive": "same_best_gt && candidate_iou_on_anchor_gt >= anchor_iou_on_anchor_gt + 0.05",
+    "target_switch_is_hard_negative": true,
+    "quality_positive": "candidate_max_iou > 0.25",
+    "official_iou": "world_enclosing_aabb_box3d_iou_v2_strict_threshold"
+  },
+  "model": {
+    "kind": "dual_class_balanced_logistic",
+    "heads": ["quality25", "benefit05"],
+    "iterations": 2000,
+    "learning_rate": 0.05,
+    "learning_rate_decay_steps": 200.0,
+    "l2": 0.002,
+    "normalization": "weights_train_only_mean_std",
+    "threshold_grid": {
+      "start": 0.05,
+      "stop": 0.95,
+      "step": 0.05,
+      "include": [0.99]
+    },
+    "threshold_selection": {
+      "eligible": "must_pass_all_threshold_dev_gate_conditions",
+      "maximize_lexicographically": [
+        "delta_ap50",
+        "delta_ap25",
+        "delta_ap15",
+        "positive_gain_fraction",
+        "negative_replacement_count",
+        "quality_threshold",
+        "benefit_threshold"
+      ]
+    },
+    "max_replacements_per_scene": 16,
+    "selection": "quality25_and_benefit05_then_per_anchor_benefit_quality_candidate_score_row_v1"
+  },
+  "threshold_dev_gate": {
+    "min_delta_ap15": 0.0,
+    "min_delta_ap25": 0.0,
+    "min_delta_ap50": 0.0025,
+    "min_replacements": 10,
+    "min_scenes": 5,
+    "min_positive_gain_fraction": 0.60,
+    "max_severe_harm_fraction": 0.10,
+    "max_target_switch_fraction": 0.10
+  },
+  "locked_internal_gate": {
+    "min_delta_ap15": 0.0,
+    "min_delta_ap25": 0.0,
+    "min_delta_ap50": 0.005,
+    "min_replacements": 10,
+    "min_scenes": 5,
+    "min_positive_gain_fraction": 0.60,
+    "max_severe_harm_fraction": 0.10,
+    "max_target_switch_fraction": 0.10
+  }
+}

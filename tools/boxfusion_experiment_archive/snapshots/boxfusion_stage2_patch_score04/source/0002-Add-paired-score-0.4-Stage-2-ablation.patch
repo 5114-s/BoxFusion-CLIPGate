@@ -1,0 +1,357 @@
+From 2310f5747d76a52776cd3ba07ee5be66a7aa7c5b Mon Sep 17 00:00:00 2001
+From: 5114-s <zhao5114xuan.email@example.com>
+Date: Sat, 25 Jul 2026 19:02:28 +0800
+Subject: [PATCH 2/2] Add paired score-0.4 Stage 2 ablation
+
+---
+ TOPK_RELIABLE_VIEW_FUSION.md                  | 33 ++++++++
+ config/scannet_clip_gate_score04.yaml         | 69 ++++++++++++++++
+ ...scannet_clip_gate_topk_fusion_score04.yaml | 82 +++++++++++++++++++
+ scripts/run_scannet_clip_gate_score04.sh      |  9 ++
+ scripts/run_scannet_clip_gate_scorefix.sh     | 17 ++--
+ ...n_scannet_clip_gate_topk_fusion_score04.sh | 10 +++
+ ..._scannet_clip_gate_topk_fusion_scorefix.sh | 19 +++--
+ 7 files changed, 226 insertions(+), 13 deletions(-)
+ create mode 100644 config/scannet_clip_gate_score04.yaml
+ create mode 100644 config/scannet_clip_gate_topk_fusion_score04.yaml
+ create mode 100755 scripts/run_scannet_clip_gate_score04.sh
+ create mode 100755 scripts/run_scannet_clip_gate_topk_fusion_score04.sh
+
+diff --git a/TOPK_RELIABLE_VIEW_FUSION.md b/TOPK_RELIABLE_VIEW_FUSION.md
+index 418a646..cdfabc9 100644
+--- a/TOPK_RELIABLE_VIEW_FUSION.md
++++ b/TOPK_RELIABLE_VIEW_FUSION.md
+@@ -142,3 +142,36 @@ quantiles.
+ 
+ Do not start Stage 2 until all Stage-1 scenes have finished and Stage-1 AP has
+ been recorded. Otherwise the ablation lineage cannot be audited cleanly.
++
++## score_thresh=0.4 paired ablation
++
++Lowering the proposal threshold changes the proposal set, so the completed
++Stage-1 0.5 result is not a valid direct control for a Stage-2 0.4 run. Use
++the paired configurations:
++
++```text
++Stage-1 0.4: config/scannet_clip_gate_score04.yaml
++Stage-2 0.4: config/scannet_clip_gate_topk_fusion_score04.yaml
++```
++
++Run the threshold control first:
++
++```bash
++bash scripts/run_scannet_clip_gate_score04.sh 0,1
++```
++
++Then run Top-K weighted fusion:
++
++```bash
++bash scripts/run_scannet_clip_gate_topk_fusion_score04.sh 0,1
++```
++
++Their outputs are isolated under:
++
++```text
++results/scannet_clip_gate_score04
++results/scannet_clip_gate_topk_fusion_score04
++```
++
++The Stage-2 gain at threshold 0.4 is the difference between these two runs.
++The existing Stage-1 0.5 result remains a separate threshold ablation.
+diff --git a/config/scannet_clip_gate_score04.yaml b/config/scannet_clip_gate_score04.yaml
+new file mode 100644
+index 0000000..c6629f7
+--- /dev/null
++++ b/config/scannet_clip_gate_score04.yaml
+@@ -0,0 +1,69 @@
++dataset: scannet
++
++# Stage-1 threshold-control experiment. This keeps the CLIP appearance gate
++# unchanged and only lowers the Cubify proposal threshold from 0.5 to 0.4.
++data:
++  datadir: /data/ZhaoX/BoxFusion/upstream_clean/scannet_readme_frames/scene0169_00/frames
++  start: 0
++  output_dir: /data/ZhaoX/BoxFusion/results/scannet_clip_gate_score04
++  gap: 25
++
++cam:
++  H: 480
++  W: 640
++  fx: 574.540771
++  fy: 577.583740
++  cx: 322.522827
++  cy: 238.558853
++  png_depth_scale: 1000.
++
++detection:
++  score_thresh: 0.4
++  uv_bound: True
++  uv_bound_value: 0.9
++  floor_mask: True
++  floor_ratio: 15
++  scale_box: 1.5
++
++association:
++  small_threshold: 0.1
++  rotation_gap: 30
++  translation_gap: 0.8
++  appearance_gate:
++    enabled: True
++    geometry_min_iou: 0.08
++    hard_geometry_iou: 0.45
++    low_similarity: 0.45
++    high_similarity: 0.75
++    max_iou_penalty: 0.10
++    max_iou_bonus: 0.0
++    confidence_floor: 0.35
++    confidence_full: 0.75
++    spatial:
++      low_similarity: 0.65
++      high_similarity: 0.85
++    correspondence:
++      low_similarity: 0.55
++      high_similarity: 0.75
++
++box_fusion:
++  use: True
++  iters: 20
++  pst_path: ./data/pst_1024_0.tiff
++  pst_size: 1024
++  random_opt:
++    center_init_size: 0.1
++    center_scaling_coefficient: 0.1
++    shape_init_size: 0.5
++    shape_scaling_coefficient: 0.5
++  check_valid: False
++  nms_threshold: 0.1
++  small_size: 0.35
++
++vis:
++  rerun: False
++  show_class: False
++  show_label: False
++  trajectory: True
++
++eval: True
+diff --git a/config/scannet_clip_gate_topk_fusion_score04.yaml b/config/scannet_clip_gate_topk_fusion_score04.yaml
+new file mode 100644
+index 0000000..2fc1ac7
+--- /dev/null
++++ b/config/scannet_clip_gate_topk_fusion_score04.yaml
+@@ -0,0 +1,82 @@
++dataset: scannet
++
++# Stage-2 experiment paired with scannet_clip_gate_score04.yaml. The only
++# difference from that threshold-control is reliable-view weighted fusion.
++data:
++  datadir: /data/ZhaoX/BoxFusion/upstream_clean/scannet_readme_frames/scene0169_00/frames
++  start: 0
++  output_dir: /data/ZhaoX/BoxFusion/results/scannet_clip_gate_topk_fusion_score04
++  gap: 25
++
++cam:
++  H: 480
++  W: 640
++  fx: 574.540771
++  fy: 577.583740
++  cx: 322.522827
++  cy: 238.558853
++  png_depth_scale: 1000.
++
++detection:
++  score_thresh: 0.4
++  uv_bound: True
++  uv_bound_value: 0.9
++  floor_mask: True
++  floor_ratio: 15
++  scale_box: 1.5
++
++association:
++  small_threshold: 0.1
++  rotation_gap: 30
++  translation_gap: 0.8
++  appearance_gate:
++    enabled: True
++    geometry_min_iou: 0.08
++    hard_geometry_iou: 0.45
++    low_similarity: 0.45
++    high_similarity: 0.75
++    max_iou_penalty: 0.10
++    max_iou_bonus: 0.0
++    confidence_floor: 0.35
++    confidence_full: 0.75
++    spatial:
++      low_similarity: 0.65
++      high_similarity: 0.85
++    correspondence:
++      low_similarity: 0.55
++      high_similarity: 0.75
++
++box_fusion:
++  use: True
++  iters: 20
++  pst_path: ./data/pst_1024_0.tiff
++  pst_size: 1024
++  random_opt:
++    center_init_size: 0.1
++    center_scaling_coefficient: 0.1
++    shape_init_size: 0.5
++    shape_scaling_coefficient: 0.5
++  check_valid: False
++  nms_threshold: 0.1
++  small_size: 0.35
++  reliable_views:
++    enabled: True
++    top_k: 3
++    min_views: 3
++    confidence_power: 1.0
++    area_power: 0.25
++    area_reference_ratio: 0.02
++    projection_iou_power: 0.50
++    geometry_consistency_power: 0.50
++    center_sigma: 0.75
++    size_sigma: 0.50
++    minimum_box_diagonal: 0.10
++    minimum_weight: 0.05
++
++vis:
++  rerun: False
++  show_class: False
++  show_label: False
++  trajectory: True
++
++eval: True
+diff --git a/scripts/run_scannet_clip_gate_score04.sh b/scripts/run_scannet_clip_gate_score04.sh
+new file mode 100755
+index 0000000..5ef3d20
+--- /dev/null
++++ b/scripts/run_scannet_clip_gate_score04.sh
+@@ -0,0 +1,9 @@
++#!/usr/bin/env bash
++set -euo pipefail
++
++ROOT=/data/ZhaoX/BoxFusion
++export BOXFUSION_EXPERIMENT_NAME=scannet_clip_gate_score04
++export BOXFUSION_CONFIG="$ROOT/config/scannet_clip_gate_score04.yaml"
++export BOXFUSION_REFERENCE_TEXT="Threshold control: Stage-1 CLIP gate with score_thresh=0.4"
++
++exec bash "$ROOT/scripts/run_scannet_clip_gate_scorefix.sh" "${1:-0}"
+diff --git a/scripts/run_scannet_clip_gate_scorefix.sh b/scripts/run_scannet_clip_gate_scorefix.sh
+index 221b454..cf4d040 100755
+--- a/scripts/run_scannet_clip_gate_scorefix.sh
++++ b/scripts/run_scannet_clip_gate_scorefix.sh
+@@ -12,12 +12,15 @@ ENV_ROOT=/home/admin1/miniconda3/envs/boxfusion2
+ PYTHON="$ENV_ROOT/bin/python"
+ ENV_LD_LIBRARY_PATH="$ENV_ROOT/lib:$ENV_ROOT/opt/rviz_ogre_vendor/lib:/usr/local/cuda-12.1/lib64"
+ META="$ROOT/evaluation/data_util/meta_data/scannetv2_val.txt"
+-CONFIG="$ROOT/config/scannet_clip_gate_scorefix.yaml"
+-PRED_ROOT="$ROOT/results/scannet_clip_gate_scorefix"
+-LOG_ROOT="$ROOT/logs/scannet_clip_gate_scorefix"
++EXPERIMENT_NAME="${BOXFUSION_EXPERIMENT_NAME:-scannet_clip_gate_scorefix}"
++CONFIG="${BOXFUSION_CONFIG:-$ROOT/config/${EXPERIMENT_NAME}.yaml}"
++PRED_ROOT="$ROOT/results/$EXPERIMENT_NAME"
++LOG_ROOT="$ROOT/logs/$EXPERIMENT_NAME"
+ SCENE_LOG_ROOT="$LOG_ROOT/scenes"
+ GT_ROOT="$ROOT/evaluation/data_util/scannet_train_detection_data"
+ BASELINE_LOG="$ROOT/upstream_clean/scorefix_logs/full_driver.log"
++EVAL_ROOT="$ROOT/evaluation/$EXPERIMENT_NAME"
++REFERENCE_TEXT="${BOXFUSION_REFERENCE_TEXT:-Baseline reference: AP15/AP25/AP50 = 32.53/27.11/9.46}"
+ 
+ mkdir -p "$PRED_ROOT" "$SCENE_LOG_ROOT" "$LOG_ROOT/mplconfig"
+ exec 9>"$LOG_ROOT/run.lock"
+@@ -78,9 +81,10 @@ LD_LIBRARY_PATH="$ENV_LD_LIBRARY_PATH" \
+ 
+ total=$(awk 'END {print NR}' "$META")
+ worker_count="${#GPUS[@]}"
+-echo "[$(date '+%F %T')] Starting score-preserving CLIP-gate inference"
++echo "[$(date '+%F %T')] Starting score-preserving CLIP-gate inference: $EXPERIMENT_NAME"
+ echo "[$(date '+%F %T')] GPUs: $GPU_SPEC; workers: $worker_count; scenes: $total"
+-echo "[$(date '+%F %T')] Baseline reference: AP15/AP25/AP50 = 32.53/27.11/9.46"
++echo "[$(date '+%F %T')] $REFERENCE_TEXT"
++echo "[$(date '+%F %T')] Config: $CONFIG"
+ echo "[$(date '+%F %T')] Baseline log: $BASELINE_LOG"
+ echo "[$(date '+%F %T')] Input frames: $ROOT/upstream_clean/scannet_readme_frames"
+ echo "[$(date '+%F %T')] Prediction root: $PRED_ROOT"
+@@ -112,6 +116,7 @@ run_worker() {
+             cd "$CODE"
+             CUDA_VISIBLE_DEVICES="$gpu" \
+             PYTHONDONTWRITEBYTECODE=1 \
++            PYTHONUNBUFFERED=1 \
+             MPLCONFIGDIR="$LOG_ROOT/mplconfig" \
+             LD_LIBRARY_PATH="$ENV_LD_LIBRARY_PATH" \
+             "$PYTHON" demo.py scannet \
+@@ -179,7 +184,7 @@ echo "[$(date '+%F %T')] Completed all $total scenes; starting score-preserving
+     "$PYTHON" eval_scannet.py \
+         --dataset scannet \
+         --data_path /extra/ZhaoX/scannet_data/scans \
+-        --dump_dir "$ROOT/evaluation/scannet_clip_gate_scorefix" \
++        --dump_dir "$EVAL_ROOT" \
+         --num_point 40000 \
+         --cluster_sampling seed_fps \
+         --use_3d_nms \
+diff --git a/scripts/run_scannet_clip_gate_topk_fusion_score04.sh b/scripts/run_scannet_clip_gate_topk_fusion_score04.sh
+new file mode 100755
+index 0000000..8fbb0bd
+--- /dev/null
++++ b/scripts/run_scannet_clip_gate_topk_fusion_score04.sh
+@@ -0,0 +1,10 @@
++#!/usr/bin/env bash
++set -euo pipefail
++
++ROOT=/data/ZhaoX/BoxFusion
++export BOXFUSION_EXPERIMENT_NAME=scannet_clip_gate_topk_fusion_score04
++export BOXFUSION_CONFIG="$ROOT/config/scannet_clip_gate_topk_fusion_score04.yaml"
++export BOXFUSION_STAGE1_EXPERIMENT=scannet_clip_gate_score04
++export BOXFUSION_REFERENCE_TEXT="Paired Stage-1 control: CLIP gate with score_thresh=0.4"
++
++exec bash "$ROOT/scripts/run_scannet_clip_gate_topk_fusion_scorefix.sh" "${1:-0}"
+diff --git a/scripts/run_scannet_clip_gate_topk_fusion_scorefix.sh b/scripts/run_scannet_clip_gate_topk_fusion_scorefix.sh
+index 4ceaa86..f464389 100755
+--- a/scripts/run_scannet_clip_gate_topk_fusion_scorefix.sh
++++ b/scripts/run_scannet_clip_gate_topk_fusion_scorefix.sh
+@@ -14,12 +14,16 @@ ENV_ROOT=/home/admin1/miniconda3/envs/boxfusion2
+ PYTHON="$ENV_ROOT/bin/python"
+ ENV_LD_LIBRARY_PATH="$ENV_ROOT/lib:$ENV_ROOT/opt/rviz_ogre_vendor/lib:/usr/local/cuda-12.1/lib64"
+ META="$ROOT/evaluation/data_util/meta_data/scannetv2_val.txt"
+-CONFIG="$ROOT/config/scannet_clip_gate_topk_fusion_scorefix.yaml"
+-PRED_ROOT="$ROOT/results/scannet_clip_gate_topk_fusion_scorefix"
+-LOG_ROOT="$ROOT/logs/scannet_clip_gate_topk_fusion_scorefix"
++EXPERIMENT_NAME="${BOXFUSION_EXPERIMENT_NAME:-scannet_clip_gate_topk_fusion_scorefix}"
++CONFIG="${BOXFUSION_CONFIG:-$ROOT/config/${EXPERIMENT_NAME}.yaml}"
++PRED_ROOT="$ROOT/results/$EXPERIMENT_NAME"
++LOG_ROOT="$ROOT/logs/$EXPERIMENT_NAME"
+ SCENE_LOG_ROOT="$LOG_ROOT/scenes"
+ GT_ROOT="$ROOT/evaluation/data_util/scannet_train_detection_data"
+-STAGE1_LOG="$ROOT/logs/scannet_clip_gate_scorefix/driver.log"
++STAGE1_EXPERIMENT="${BOXFUSION_STAGE1_EXPERIMENT:-scannet_clip_gate_scorefix}"
++STAGE1_LOG="$ROOT/logs/$STAGE1_EXPERIMENT/driver.log"
++EVAL_ROOT="$ROOT/evaluation/$EXPERIMENT_NAME"
++REFERENCE_TEXT="${BOXFUSION_REFERENCE_TEXT:-Baseline reference: AP15/AP25/AP50 = 32.53/27.11/9.46}"
+ 
+ mkdir -p "$PRED_ROOT" "$SCENE_LOG_ROOT" "$LOG_ROOT/mplconfig"
+ exec 9>"$LOG_ROOT/run.lock"
+@@ -92,9 +96,10 @@ LD_LIBRARY_PATH="$ENV_LD_LIBRARY_PATH" \
+ 
+ total=$(awk 'END {print NR}' "$META")
+ worker_count="${#GPUS[@]}"
+-echo "[$(date '+%F %T')] Starting CLIP-gate + Top-K reliable-view fusion inference"
++echo "[$(date '+%F %T')] Starting CLIP-gate + Top-K reliable-view fusion inference: $EXPERIMENT_NAME"
+ echo "[$(date '+%F %T')] GPUs: $GPU_SPEC; workers: $worker_count; scenes: $total"
+-echo "[$(date '+%F %T')] Baseline reference: AP15/AP25/AP50 = 32.53/27.11/9.46"
++echo "[$(date '+%F %T')] $REFERENCE_TEXT"
++echo "[$(date '+%F %T')] Config: $CONFIG"
+ echo "[$(date '+%F %T')] Stage-1 log: $STAGE1_LOG"
+ echo "[$(date '+%F %T')] Input frames: $ROOT/upstream_clean/scannet_readme_frames"
+ echo "[$(date '+%F %T')] Prediction root: $PRED_ROOT"
+@@ -196,7 +201,7 @@ echo "[$(date '+%F %T')] Completed all $total scenes; starting score-preserving
+     "$PYTHON" eval_scannet.py \
+         --dataset scannet \
+         --data_path /extra/ZhaoX/scannet_data/scans \
+-        --dump_dir "$ROOT/evaluation/scannet_clip_gate_topk_fusion_scorefix" \
++        --dump_dir "$EVAL_ROOT" \
+         --num_point 40000 \
+         --cluster_sampling seed_fps \
+         --use_3d_nms \
+-- 
+2.25.1
+

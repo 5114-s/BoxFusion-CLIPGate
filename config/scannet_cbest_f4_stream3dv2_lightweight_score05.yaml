@@ -1,0 +1,130 @@
+dataset: scannet
+
+experiment:
+  seed: 0
+
+# Fresh lightweight route: the native prefix is unchanged; residual discovery
+# is event-triggered and bounded, while terminal output keeps V2 Top-6 births.
+data:
+  datadir: /data/ZhaoX/BoxFusion/upstream_clean/scannet_readme_frames/scene0169_00/frames
+  start: 0
+  output_dir: /data/ZhaoX/BoxFusion/results/scannet_cbest_f4_stream3dv2_lightweight_score05
+  gap: 25
+
+cam:
+  H: 480
+  W: 640
+  fx: 574.540771
+  fy: 577.583740
+  cx: 322.522827
+  cy: 238.558853
+  png_depth_scale: 1000.
+
+detection:
+  score_thresh: 0.5
+  uv_bound: true
+  uv_bound_value: 0.9
+  floor_mask: true
+  floor_ratio: 15
+  scale_box: 1.5
+
+lifting:
+  backend: boxer
+  boxer:
+    mode: active
+    apply_stage: post_filter
+    official_root: /data/ZhaoX/OVM3D-Dett/boxfusion_boxer_dev/third_party/boxer
+    checkpoint: /data/ZhaoX/OVM3D-Dett/boxfusion_boxer_dev/third_party/boxer/ckpts/boxernet_hw960in2x6d768-c88128f8.ckpt
+    expected_commit: 1f86542dc342a4b1d474c87c97c5d1d6566d9148
+    checkpoint_sha256: d5a30b348a8f5b0e5990ff3aa0e8f473ce77d860da22586322e7f47abc83ca6f
+    dinov3_sha256: 4057cbaaad8c16657adb09d6815f28d4164eeba30532fde23f0d17313124caea
+    precision: bfloat16
+    use_sdp: true
+    sdp_samples: 10000
+    seed: 0
+    cache_image_features: true
+    diagnostics_dir: /data/ZhaoX/BoxFusion/diagnostics/cbest_f4_stream3dv2_lightweight/boxer
+
+association:
+  small_threshold: 0.1
+  rotation_gap: 30
+  translation_gap: 0.8
+  appearance_gate:
+    enabled: false
+
+box_fusion:
+  use: true
+  iters: 20
+  pst_path: /data/ZhaoX/BoxFusion/data/pst_1024_0.tiff
+  pst_size: 1024
+  random_opt:
+    center_init_size: 0.1
+    center_scaling_coefficient: 0.1
+    shape_init_size: 0.5
+    shape_scaling_coefficient: 0.5
+  check_valid: false
+  nms_threshold: 0.1
+  small_size: 0.35
+  reliable_views:
+    enabled: true
+    top_k: 3
+    min_views: 3
+    confidence_power: 1.0
+    area_power: 0.25
+    area_reference_ratio: 0.02
+    projection_iou_power: 0.50
+    geometry_consistency_power: 0.50
+    center_sigma: 0.75
+    size_sigma: 0.50
+    minimum_box_diagonal: 0.10
+    minimum_weight: 0.05
+
+online_stream3dv2:
+  enabled: true
+  fastsam_checkpoint: /data/ZhaoX/RoboFusion/RoboFusion-master/focalconvsamfusion/OpenPCDet/checkpoints/FastSAM.pt
+  native_score_lower_bound: 0.125
+  keyframe_deadline_ms: 833.333333
+  max_semantic_views: 8
+  diagnostics_root: /data/ZhaoX/BoxFusion/diagnostics/cbest_f4_stream3dv2_lightweight/route
+  lightweight:
+    enabled: true
+    depth_trigger:
+      enabled: true
+      sample_stride: 8
+      voxel_size_m: 0.15
+      min_depth_m: 0.10
+      max_depth_m: 6.0
+      native_expand_px: 4.0
+      confirmations: 2
+      tentative_ttl_keyframes: 2
+      min_persistent_voxels: 48
+      min_persistent_fraction: 0.08
+      cooldown_keyframes: 4
+      burst_keyframes: 4
+      max_confirmed_voxels: 50000
+      max_tentative_voxels: 20000
+    fastsam_top_k:
+      box_shortlist: 12
+      mask_cap: 8
+    conditional_f2: true
+    f4_top_m_tracks: 8
+    terminal_clip:
+      enabled: true
+      batch_size: 32
+  sam3:
+    # Optional sparse semantic teacher is disabled in the low-cost run.
+    enabled: false
+    proposal_interval_keyframes: 10
+    max_pending: 1
+    drain_timeout_seconds: 0.833333
+
+online_stream3dv3:
+  enabled: false
+
+vis:
+  rerun: false
+  show_class: false
+  show_label: false
+  trajectory: true
+
+eval: true

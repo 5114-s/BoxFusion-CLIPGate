@@ -1,0 +1,76 @@
+{
+  "limitations": [
+    "one affine logit cannot exactly represent the nonlinear union of 18 affine sigmoid logits",
+    "the converted classifier is an initialization and requires training",
+    "no accuracy or runtime improvement is implied"
+  ],
+  "math": {
+    "expansion_point": "input_feature_x_equals_zero",
+    "gradient_weight_max": 0.07144742646975469,
+    "gradient_weight_min": 0.0560450832940439,
+    "gradient_weight_sum": 1.1003800404602258,
+    "probability_rounding_error_after_source_dtype_cast": 7.571712701270883e-10,
+    "source_class_count": 18,
+    "source_independent_union_probability_at_expansion": 0.18645203824801918,
+    "target_class_count": 1,
+    "target_sigmoid_probability_at_expansion": 0.18645203900519045
+  },
+  "method": "independent_bernoulli_union_logit_first_order_at_zero_feature",
+  "modified_state_dict_keys": [
+    "head.conv_cls.kernel",
+    "head.conv_cls.bias"
+  ],
+  "output": {
+    "bytes": 176146514,
+    "filename": "tr3d_1xb16_scannet-3d-foreground-init.pth",
+    "sha256": "09f2f650540716556719d2858d9a484dcbf682e2e94576887855b9b637b6492e"
+  },
+  "role": "initialization_only_not_trained",
+  "schema": "boxfusion.tr3d_foreground_checkpoint_init.v1",
+  "source": {
+    "bytes": 176170797,
+    "filename": "tr3d_1xb16_scannet-3d-18class.pth",
+    "sha256": "c3e9435c3a22b49e0e57b0a619003dd0f18bef484b97173537752fb6fa30298f"
+  },
+  "source_classifier": {
+    "head.conv_cls.bias": {
+      "dtype": "torch.float32",
+      "sha256": "1510a0643a93847ef715343d3e05eef2a64a2e5fdef7875e0d201140ee329ecb",
+      "shape": [
+        1,
+        18
+      ]
+    },
+    "head.conv_cls.kernel": {
+      "dtype": "torch.float32",
+      "sha256": "dc9d0b0122372be575acc4fcc163a0c4a4ca6e37ea4163e0118ae79761bb011f",
+      "shape": [
+        128,
+        18
+      ]
+    }
+  },
+  "target_classifier": {
+    "head.conv_cls.bias": {
+      "dtype": "torch.float32",
+      "sha256": "b7ee5b06437a2c6862f6d77acf036ce609b14b86d15920e9a1ed0e35b9488a47",
+      "shape": [
+        1,
+        1
+      ]
+    },
+    "head.conv_cls.kernel": {
+      "dtype": "torch.float32",
+      "sha256": "9611938e03528c28eb4854f037070410aa90c87c05132d026d6545b3c8b44cb5",
+      "shape": [
+        128,
+        1
+      ]
+    }
+  },
+  "top_level_payload_preservation": "meta and optimizer are retained; use this artifact with load_from, never resume, because optimizer classifier slots still describe the source 18-class parameter",
+  "untouched_state_dict_exact": true,
+  "untouched_state_dict_sha256_after": "cef1925447024ae265f9921700bff131ad8cd1cb874fb63bedd01c61bd82a407",
+  "untouched_state_dict_sha256_before": "cef1925447024ae265f9921700bff131ad8cd1cb874fb63bedd01c61bd82a407",
+  "untouched_state_dict_tensor_count": 260
+}

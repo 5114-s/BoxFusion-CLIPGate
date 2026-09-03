@@ -1,0 +1,86 @@
+dataset: scannet
+
+# PUF-geometry-shadow arm.  It reuses SMOV-clean fragments and the causal
+# begin-frame-past Gclean memory.  The probability sidecar is output-inert,
+# keeps lambda_null=0.4 internally, and has no birth or semantic update.
+data:
+  datadir: /data/ZhaoX/BoxFusion/upstream_clean/scannet_readme_frames/scene0169_00/frames
+  start: 0
+  output_dir: /data/ZhaoX/BoxFusion/results/scannet_puf_gclean_shadow_replay_score05
+  gap: 25
+
+lifting:
+  backend: cutr
+  proposal_cache:
+    mode: replay
+    root: /data/ZhaoX/BoxFusion/cache/cutr_postfilter_v3
+    namespace: scannet-graw-e2-score05-preflight3-v3-r1
+    baseline_prediction_root: /data/ZhaoX/BoxFusion/results/scannet_graw_e2_record_score05
+    require_index: True
+
+cam:
+  H: 480
+  W: 640
+  fx: 574.540771
+  fy: 577.583740
+  cx: 322.522827
+  cy: 238.558853
+  png_depth_scale: 1000.
+
+detection:
+  score_thresh: 0.5
+  uv_bound: True
+  uv_bound_value: 0.9
+  floor_mask: True
+  floor_ratio: 15
+  scale_box: 1.5
+
+association:
+  small_threshold: 0.1
+  rotation_gap: 30
+  translation_gap: 0.8
+  appearance_gate:
+    enabled: False
+  group3d_lite:
+    mode: shadow
+    shadow_variant: puf
+    diagnostics_root: /data/ZhaoX/BoxFusion/logs/scannet_puf_gclean_shadow_replay_score05/diagnostics
+    max_active_rows: 1024
+    max_new_proposals: 4096
+    max_trace_frames: 4096
+    max_trace_proposals: 131072
+
+box_fusion:
+  use: True
+  iters: 20
+  pst_path: ./data/pst_1024_0.tiff
+  pst_size: 1024
+  random_opt:
+    center_init_size: 0.1
+    center_scaling_coefficient: 0.1
+    shape_init_size: 0.5
+    shape_scaling_coefficient: 0.5
+  check_valid: False
+  nms_threshold: 0.1
+  small_size: 0.35
+  reliable_views:
+    enabled: True
+    top_k: 3
+    min_views: 3
+    confidence_power: 1.0
+    area_power: 0.25
+    area_reference_ratio: 0.02
+    projection_iou_power: 0.50
+    geometry_consistency_power: 0.50
+    center_sigma: 0.75
+    size_sigma: 0.50
+    minimum_box_diagonal: 0.10
+    minimum_weight: 0.05
+
+vis:
+  rerun: False
+  show_class: False
+  show_label: False
+  trajectory: True
+
+eval: True

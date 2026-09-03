@@ -1,0 +1,4358 @@
+{
+  "complete": true,
+  "counts": {
+    "gt_count": 1433,
+    "invalid_geometry_track_count": 1325,
+    "scene_count": 100,
+    "valid_identity_constrained_track_count": 4223
+  },
+  "decision": {
+    "ap50_required_additional_union_matches": 144,
+    "ap50_target_delta_points_strictly_greater_than": 10.0,
+    "authorize_accuracy_claim": false,
+    "authorize_gt_free_active_experiment": false,
+    "next_step": "stop_birth_route_candidate_capacity_below_target",
+    "passes_ap50_shadow_oracle_gate": false
+  },
+  "deployable": false,
+  "oracle_only": true,
+  "per_threshold": {
+    "0.15": {
+      "additional_union_matching_over_native": 202,
+      "baseline_official_constant_score": {
+        "ap": 0.3101302590307382,
+        "ap_points": 31.01302590307382,
+        "false_positive": 919,
+        "greedy_tp": 869,
+        "precision": 0.4860178970917226,
+        "recall": 0.6064200972739566,
+        "unmatched_gt_count": 564
+      },
+      "candidate_maximum_matching_count": 588,
+      "gt_selected_candidate_suffix": {
+        "delta_ap_points": 9.981729440664498,
+        "deployable": false,
+        "formal_score": 1.0,
+        "native_prefix_unchanged": true,
+        "official_evaluation": {
+          "ap": 0.4099475534373832,
+          "ap_points": 40.99475534373832,
+          "false_positive": 930,
+          "greedy_tp": 1056,
+          "precision": 0.5317220543806647,
+          "recall": 0.7369155612443017,
+          "unmatched_gt_count": 377
+        },
+        "oracle_only": true,
+        "passes_plus10_ap": false,
+        "per_scene_selection": {
+          "scene0011_01": [],
+          "scene0019_00": [
+            {
+              "candidate_index": 2,
+              "hypothesis": "HBEST",
+              "target_gt_index": 1,
+              "target_iou": 0.42107511379983087,
+              "track_id": 21
+            },
+            {
+              "candidate_index": 5,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 4,
+              "target_iou": 0.4146453924489204,
+              "track_id": 41
+            },
+            {
+              "candidate_index": 6,
+              "hypothesis": "HBEST",
+              "target_gt_index": 10,
+              "target_iou": 0.4552103403135846,
+              "track_id": 52
+            }
+          ],
+          "scene0025_00": [
+            {
+              "candidate_index": 18,
+              "hypothesis": "HBEST",
+              "target_gt_index": 9,
+              "target_iou": 0.38469482038071945,
+              "track_id": 95
+            },
+            {
+              "candidate_index": 42,
+              "hypothesis": "HBEST",
+              "target_gt_index": 8,
+              "target_iou": 0.24275500179702061,
+              "track_id": 239
+            }
+          ],
+          "scene0030_01": [
+            {
+              "candidate_index": 31,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 10,
+              "target_iou": 0.26954826336228155,
+              "track_id": 82
+            },
+            {
+              "candidate_index": 32,
+              "hypothesis": "HBEST",
+              "target_gt_index": 9,
+              "target_iou": 0.15146480360764297,
+              "track_id": 83
+            },
+            {
+              "candidate_index": 48,
+              "hypothesis": "HBEST",
+              "target_gt_index": 8,
+              "target_iou": 0.21795958552089104,
+              "track_id": 196
+            },
+            {
+              "candidate_index": 51,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 30,
+              "target_iou": 0.2977286794539889,
+              "track_id": 209
+            },
+            {
+              "candidate_index": 61,
+              "hypothesis": "HBEST",
+              "target_gt_index": 2,
+              "target_iou": 0.6529889059942807,
+              "track_id": 270
+            },
+            {
+              "candidate_index": 64,
+              "hypothesis": "HBEST",
+              "target_gt_index": 14,
+              "target_iou": 0.18875383252633002,
+              "track_id": 297
+            }
+          ],
+          "scene0046_00": [
+            {
+              "candidate_index": 6,
+              "hypothesis": "HBEST",
+              "target_gt_index": 0,
+              "target_iou": 0.5190805259682215,
+              "track_id": 68
+            },
+            {
+              "candidate_index": 32,
+              "hypothesis": "HBEST",
+              "target_gt_index": 9,
+              "target_iou": 0.24969477180379118,
+              "track_id": 173
+            },
+            {
+              "candidate_index": 35,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 8,
+              "target_iou": 0.5643241456303555,
+              "track_id": 192
+            }
+          ],
+          "scene0050_01": [
+            {
+              "candidate_index": 16,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 12,
+              "target_iou": 0.32855782091081986,
+              "track_id": 142
+            },
+            {
+              "candidate_index": 28,
+              "hypothesis": "HBEST",
+              "target_gt_index": 5,
+              "target_iou": 0.25439929318597837,
+              "track_id": 335
+            }
+          ],
+          "scene0064_00": [
+            {
+              "candidate_index": 11,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 7,
+              "target_iou": 0.4554054138362376,
+              "track_id": 218
+            }
+          ],
+          "scene0077_00": [],
+          "scene0081_02": [
+            {
+              "candidate_index": 8,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 30,
+              "target_iou": 0.19714601234400841,
+              "track_id": 92
+            }
+          ],
+          "scene0084_00": [
+            {
+              "candidate_index": 11,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 1,
+              "target_iou": 0.22208886725889493,
+              "track_id": 51
+            },
+            {
+              "candidate_index": 17,
+              "hypothesis": "HBEST",
+              "target_gt_index": 8,
+              "target_iou": 0.40724926127514904,
+              "track_id": 77
+            },
+            {
+              "candidate_index": 18,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 2,
+              "target_iou": 0.5552876883694912,
+              "track_id": 85
+            },
+            {
+              "candidate_index": 29,
+              "hypothesis": "HBEST",
+              "target_gt_index": 4,
+              "target_iou": 0.5278264704558882,
+              "track_id": 138
+            },
+            {
+              "candidate_index": 42,
+              "hypothesis": "HBEST",
+              "target_gt_index": 10,
+              "target_iou": 0.4827286758681787,
+              "track_id": 199
+            }
+          ],
+          "scene0086_02": [
+            {
+              "candidate_index": 1,
+              "hypothesis": "HBEST",
+              "target_gt_index": 3,
+              "target_iou": 0.22247885591528635,
+              "track_id": 2
+            },
+            {
+              "candidate_index": 2,
+              "hypothesis": "HBEST",
+              "target_gt_index": 9,
+              "target_iou": 0.17458502012907898,
+              "track_id": 3
+            },
+            {
+              "candidate_index": 4,
+              "hypothesis": "HBEST",
+              "target_gt_index": 8,
+              "target_iou": 0.23311212619980007,
+              "track_id": 7
+            },
+            {
+              "candidate_index": 24,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 1,
+              "target_iou": 0.5200677674126419,
+              "track_id": 66
+            }
+          ],
+          "scene0088_00": [],
+          "scene0088_03": [],
+          "scene0131_02": [
+            {
+              "candidate_index": 23,
+              "hypothesis": "HBEST",
+              "target_gt_index": 12,
+              "target_iou": 0.6163252559525525,
+              "track_id": 123
+            }
+          ],
+          "scene0144_01": [
+            {
+              "candidate_index": 7,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 5,
+              "target_iou": 0.41766150018263815,
+              "track_id": 28
+            }
+          ],
+          "scene0146_02": [],
+          "scene0153_00": [
+            {
+              "candidate_index": 3,
+              "hypothesis": "HBEST",
+              "target_gt_index": 6,
+              "target_iou": 0.6642052288010368,
+              "track_id": 18
+            },
+            {
+              "candidate_index": 7,
+              "hypothesis": "HBEST",
+              "target_gt_index": 2,
+              "target_iou": 0.1564059017911416,
+              "track_id": 29
+            },
+            {
+              "candidate_index": 8,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 3,
+              "target_iou": 0.3464756624291944,
+              "track_id": 39
+            }
+          ],
+          "scene0164_02": [
+            {
+              "candidate_index": 13,
+              "hypothesis": "HBEST",
+              "target_gt_index": 6,
+              "target_iou": 0.2927254322231105,
+              "track_id": 90
+            },
+            {
+              "candidate_index": 15,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 4,
+              "target_iou": 0.2960417627788373,
+              "track_id": 96
+            }
+          ],
+          "scene0169_00": [
+            {
+              "candidate_index": 21,
+              "hypothesis": "HBEST",
+              "target_gt_index": 9,
+              "target_iou": 0.4062793444984693,
+              "track_id": 109
+            },
+            {
+              "candidate_index": 33,
+              "hypothesis": "HBEST",
+              "target_gt_index": 8,
+              "target_iou": 0.4445527419051891,
+              "track_id": 154
+            },
+            {
+              "candidate_index": 45,
+              "hypothesis": "HBEST",
+              "target_gt_index": 24,
+              "target_iou": 0.2320154547692082,
+              "track_id": 222
+            }
+          ],
+          "scene0187_01": [
+            {
+              "candidate_index": 13,
+              "hypothesis": "HBEST",
+              "target_gt_index": 4,
+              "target_iou": 0.7169258419601567,
+              "track_id": 82
+            },
+            {
+              "candidate_index": 22,
+              "hypothesis": "HBEST",
+              "target_gt_index": 10,
+              "target_iou": 0.2695575681996085,
+              "track_id": 111
+            }
+          ],
+          "scene0193_01": [],
+          "scene0203_00": [],
+          "scene0207_02": [
+            {
+              "candidate_index": 12,
+              "hypothesis": "HBEST",
+              "target_gt_index": 18,
+              "target_iou": 0.18511370243698172,
+              "track_id": 101
+            },
+            {
+              "candidate_index": 32,
+              "hypothesis": "HBEST",
+              "target_gt_index": 24,
+              "target_iou": 0.47660677783442457,
+              "track_id": 194
+            },
+            {
+              "candidate_index": 45,
+              "hypothesis": "HBEST",
+              "target_gt_index": 4,
+              "target_iou": 0.154119130616673,
+              "track_id": 274
+            },
+            {
+              "candidate_index": 48,
+              "hypothesis": "HBEST",
+              "target_gt_index": 8,
+              "target_iou": 0.7222678581002401,
+              "track_id": 288
+            },
+            {
+              "candidate_index": 53,
+              "hypothesis": "HBEST",
+              "target_gt_index": 2,
+              "target_iou": 0.26042008174197073,
+              "track_id": 335
+            }
+          ],
+          "scene0221_00": [
+            {
+              "candidate_index": 1,
+              "hypothesis": "HBEST",
+              "target_gt_index": 12,
+              "target_iou": 0.20978326988601567,
+              "track_id": 30
+            },
+            {
+              "candidate_index": 12,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 17,
+              "target_iou": 0.43216561840844325,
+              "track_id": 81
+            },
+            {
+              "candidate_index": 14,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 9,
+              "target_iou": 0.21362335651689615,
+              "track_id": 85
+            }
+          ],
+          "scene0222_01": [
+            {
+              "candidate_index": 28,
+              "hypothesis": "HBEST",
+              "target_gt_index": 13,
+              "target_iou": 0.1844826036583316,
+              "track_id": 156
+            },
+            {
+              "candidate_index": 38,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 5,
+              "target_iou": 0.5219391818267646,
+              "track_id": 217
+            },
+            {
+              "candidate_index": 71,
+              "hypothesis": "HBEST",
+              "target_gt_index": 8,
+              "target_iou": 0.3644681826610806,
+              "track_id": 407
+            },
+            {
+              "candidate_index": 100,
+              "hypothesis": "HBEST",
+              "target_gt_index": 15,
+              "target_iou": 0.24597697314676387,
+              "track_id": 592
+            }
+          ],
+          "scene0231_02": [
+            {
+              "candidate_index": 10,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 19,
+              "target_iou": 0.16710519717206623,
+              "track_id": 300
+            },
+            {
+              "candidate_index": 21,
+              "hypothesis": "HBEST",
+              "target_gt_index": 29,
+              "target_iou": 0.21332922776780333,
+              "track_id": 377
+            },
+            {
+              "candidate_index": 52,
+              "hypothesis": "HBEST",
+              "target_gt_index": 10,
+              "target_iou": 0.31369370057093343,
+              "track_id": 720
+            }
+          ],
+          "scene0246_00": [
+            {
+              "candidate_index": 38,
+              "hypothesis": "HBEST",
+              "target_gt_index": 9,
+              "target_iou": 0.5384329591585924,
+              "track_id": 308
+            },
+            {
+              "candidate_index": 59,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 11,
+              "target_iou": 0.1516830006798719,
+              "track_id": 432
+            }
+          ],
+          "scene0249_00": [
+            {
+              "candidate_index": 13,
+              "hypothesis": "HBEST",
+              "target_gt_index": 23,
+              "target_iou": 0.29257721995414293,
+              "track_id": 91
+            },
+            {
+              "candidate_index": 16,
+              "hypothesis": "HBEST",
+              "target_gt_index": 9,
+              "target_iou": 0.3318596284492024,
+              "track_id": 97
+            }
+          ],
+          "scene0256_00": [],
+          "scene0277_00": [
+            {
+              "candidate_index": 13,
+              "hypothesis": "HBEST",
+              "target_gt_index": 1,
+              "target_iou": 0.6508311307281998,
+              "track_id": 59
+            }
+          ],
+          "scene0278_01": [],
+          "scene0300_00": [
+            {
+              "candidate_index": 11,
+              "hypothesis": "HBEST",
+              "target_gt_index": 10,
+              "target_iou": 0.5442123757389594,
+              "track_id": 68
+            },
+            {
+              "candidate_index": 21,
+              "hypothesis": "HBEST",
+              "target_gt_index": 2,
+              "target_iou": 0.28372963495922693,
+              "track_id": 111
+            },
+            {
+              "candidate_index": 27,
+              "hypothesis": "HBEST",
+              "target_gt_index": 6,
+              "target_iou": 0.18500218040064997,
+              "track_id": 135
+            },
+            {
+              "candidate_index": 29,
+              "hypothesis": "HBEST",
+              "target_gt_index": 4,
+              "target_iou": 0.6949109035970054,
+              "track_id": 141
+            },
+            {
+              "candidate_index": 32,
+              "hypothesis": "HBEST",
+              "target_gt_index": 7,
+              "target_iou": 0.47565561895803044,
+              "track_id": 148
+            },
+            {
+              "candidate_index": 33,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 8,
+              "target_iou": 0.3953683899848636,
+              "track_id": 151
+            }
+          ],
+          "scene0304_00": [],
+          "scene0307_01": [
+            {
+              "candidate_index": 3,
+              "hypothesis": "HBEST",
+              "target_gt_index": 3,
+              "target_iou": 0.5797608586430718,
+              "track_id": 9
+            },
+            {
+              "candidate_index": 46,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 1,
+              "target_iou": 0.3566453374590117,
+              "track_id": 362
+            },
+            {
+              "candidate_index": 50,
+              "hypothesis": "HBEST",
+              "target_gt_index": 10,
+              "target_iou": 0.17103329402561743,
+              "track_id": 373
+            },
+            {
+              "candidate_index": 100,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 11,
+              "target_iou": 0.38534578828241084,
+              "track_id": 725
+            }
+          ],
+          "scene0329_00": [
+            {
+              "candidate_index": 9,
+              "hypothesis": "HBEST",
+              "target_gt_index": 26,
+              "target_iou": 0.33338813731166583,
+              "track_id": 67
+            },
+            {
+              "candidate_index": 11,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 15,
+              "target_iou": 0.6548734274679586,
+              "track_id": 126
+            },
+            {
+              "candidate_index": 13,
+              "hypothesis": "HBEST",
+              "target_gt_index": 18,
+              "target_iou": 0.6211650412684566,
+              "track_id": 138
+            },
+            {
+              "candidate_index": 23,
+              "hypothesis": "HBEST",
+              "target_gt_index": 28,
+              "target_iou": 0.1573689884385506,
+              "track_id": 211
+            },
+            {
+              "candidate_index": 25,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 25,
+              "target_iou": 0.4545051925258588,
+              "track_id": 287
+            }
+          ],
+          "scene0334_00": [],
+          "scene0338_02": [],
+          "scene0351_00": [
+            {
+              "candidate_index": 5,
+              "hypothesis": "HBEST",
+              "target_gt_index": 5,
+              "target_iou": 0.27697768112468696,
+              "track_id": 14
+            }
+          ],
+          "scene0353_02": [
+            {
+              "candidate_index": 30,
+              "hypothesis": "HBEST",
+              "target_gt_index": 8,
+              "target_iou": 0.18297327161205057,
+              "track_id": 453
+            }
+          ],
+          "scene0355_01": [],
+          "scene0356_01": [
+            {
+              "candidate_index": 5,
+              "hypothesis": "HBEST",
+              "target_gt_index": 0,
+              "target_iou": 0.5410874445045621,
+              "track_id": 8
+            },
+            {
+              "candidate_index": 6,
+              "hypothesis": "HBEST",
+              "target_gt_index": 6,
+              "target_iou": 0.15262505204418755,
+              "track_id": 15
+            }
+          ],
+          "scene0377_02": [
+            {
+              "candidate_index": 7,
+              "hypothesis": "HBEST",
+              "target_gt_index": 1,
+              "target_iou": 0.7245269150777321,
+              "track_id": 58
+            }
+          ],
+          "scene0378_02": [
+            {
+              "candidate_index": 48,
+              "hypothesis": "HBEST",
+              "target_gt_index": 10,
+              "target_iou": 0.5196949388365399,
+              "track_id": 226
+            }
+          ],
+          "scene0389_00": [],
+          "scene0406_01": [
+            {
+              "candidate_index": 15,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 7,
+              "target_iou": 0.321311229399899,
+              "track_id": 75
+            }
+          ],
+          "scene0412_00": [
+            {
+              "candidate_index": 0,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 15,
+              "target_iou": 0.3187356334481556,
+              "track_id": 36
+            }
+          ],
+          "scene0423_01": [],
+          "scene0426_00": [
+            {
+              "candidate_index": 1,
+              "hypothesis": "HBEST",
+              "target_gt_index": 9,
+              "target_iou": 0.15413396034937993,
+              "track_id": 5
+            },
+            {
+              "candidate_index": 11,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 4,
+              "target_iou": 0.365042431265631,
+              "track_id": 109
+            }
+          ],
+          "scene0426_03": [
+            {
+              "candidate_index": 3,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 9,
+              "target_iou": 0.5143731737021001,
+              "track_id": 78
+            }
+          ],
+          "scene0427_00": [
+            {
+              "candidate_index": 8,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 1,
+              "target_iou": 0.39177500165077717,
+              "track_id": 29
+            },
+            {
+              "candidate_index": 18,
+              "hypothesis": "HBEST",
+              "target_gt_index": 7,
+              "target_iou": 0.16982391711537162,
+              "track_id": 65
+            }
+          ],
+          "scene0432_01": [],
+          "scene0435_00": [
+            {
+              "candidate_index": 6,
+              "hypothesis": "HBEST",
+              "target_gt_index": 1,
+              "target_iou": 0.1536075995158954,
+              "track_id": 10
+            },
+            {
+              "candidate_index": 15,
+              "hypothesis": "HBEST",
+              "target_gt_index": 6,
+              "target_iou": 0.5531920213857787,
+              "track_id": 74
+            },
+            {
+              "candidate_index": 24,
+              "hypothesis": "HBEST",
+              "target_gt_index": 16,
+              "target_iou": 0.6272000553538637,
+              "track_id": 93
+            },
+            {
+              "candidate_index": 60,
+              "hypothesis": "HBEST",
+              "target_gt_index": 3,
+              "target_iou": 0.1813324329412028,
+              "track_id": 267
+            },
+            {
+              "candidate_index": 63,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 8,
+              "target_iou": 0.2817262526151532,
+              "track_id": 271
+            },
+            {
+              "candidate_index": 71,
+              "hypothesis": "HBEST",
+              "target_gt_index": 4,
+              "target_iou": 0.5298394617136103,
+              "track_id": 287
+            },
+            {
+              "candidate_index": 72,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 10,
+              "target_iou": 0.517702317632445,
+              "track_id": 291
+            },
+            {
+              "candidate_index": 87,
+              "hypothesis": "HBEST",
+              "target_gt_index": 12,
+              "target_iou": 0.24702007993939828,
+              "track_id": 351
+            },
+            {
+              "candidate_index": 107,
+              "hypothesis": "HBEST",
+              "target_gt_index": 11,
+              "target_iou": 0.23663433147404567,
+              "track_id": 411
+            }
+          ],
+          "scene0435_03": [
+            {
+              "candidate_index": 1,
+              "hypothesis": "HBEST",
+              "target_gt_index": 0,
+              "target_iou": 0.18827329293966316,
+              "track_id": 3
+            },
+            {
+              "candidate_index": 14,
+              "hypothesis": "HBEST",
+              "target_gt_index": 9,
+              "target_iou": 0.23417702384130534,
+              "track_id": 48
+            },
+            {
+              "candidate_index": 15,
+              "hypothesis": "HBEST",
+              "target_gt_index": 10,
+              "target_iou": 0.6810496302130525,
+              "track_id": 53
+            },
+            {
+              "candidate_index": 21,
+              "hypothesis": "HBEST",
+              "target_gt_index": 8,
+              "target_iou": 0.4525097944562362,
+              "track_id": 85
+            }
+          ],
+          "scene0458_00": [
+            {
+              "candidate_index": 2,
+              "hypothesis": "HBEST",
+              "target_gt_index": 7,
+              "target_iou": 0.27849613436162246,
+              "track_id": 13
+            },
+            {
+              "candidate_index": 21,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 1,
+              "target_iou": 0.26747829992704336,
+              "track_id": 184
+            },
+            {
+              "candidate_index": 24,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 6,
+              "target_iou": 0.2502940703475834,
+              "track_id": 187
+            }
+          ],
+          "scene0474_01": [
+            {
+              "candidate_index": 0,
+              "hypothesis": "HBEST",
+              "target_gt_index": 6,
+              "target_iou": 0.3428460949719463,
+              "track_id": 4
+            },
+            {
+              "candidate_index": 22,
+              "hypothesis": "HBEST",
+              "target_gt_index": 1,
+              "target_iou": 0.22906152828114038,
+              "track_id": 120
+            },
+            {
+              "candidate_index": 56,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 8,
+              "target_iou": 0.6066391269448705,
+              "track_id": 256
+            },
+            {
+              "candidate_index": 58,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 7,
+              "target_iou": 0.47139716501206574,
+              "track_id": 266
+            }
+          ],
+          "scene0474_04": [
+            {
+              "candidate_index": 3,
+              "hypothesis": "HBEST",
+              "target_gt_index": 10,
+              "target_iou": 0.5452218489643144,
+              "track_id": 105
+            }
+          ],
+          "scene0490_00": [],
+          "scene0496_00": [
+            {
+              "candidate_index": 22,
+              "hypothesis": "HBEST",
+              "target_gt_index": 19,
+              "target_iou": 0.2933333460424702,
+              "track_id": 74
+            },
+            {
+              "candidate_index": 27,
+              "hypothesis": "HBEST",
+              "target_gt_index": 20,
+              "target_iou": 0.6212219157625931,
+              "track_id": 99
+            },
+            {
+              "candidate_index": 37,
+              "hypothesis": "HBEST",
+              "target_gt_index": 16,
+              "target_iou": 0.35951341813508886,
+              "track_id": 154
+            }
+          ],
+          "scene0500_00": [
+            {
+              "candidate_index": 18,
+              "hypothesis": "HBEST",
+              "target_gt_index": 35,
+              "target_iou": 0.3389553355392128,
+              "track_id": 62
+            },
+            {
+              "candidate_index": 27,
+              "hypothesis": "HBEST",
+              "target_gt_index": 45,
+              "target_iou": 0.22065292710500314,
+              "track_id": 110
+            },
+            {
+              "candidate_index": 38,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 28,
+              "target_iou": 0.19860228590690351,
+              "track_id": 135
+            },
+            {
+              "candidate_index": 57,
+              "hypothesis": "HBEST",
+              "target_gt_index": 26,
+              "target_iou": 0.23846975909071494,
+              "track_id": 201
+            },
+            {
+              "candidate_index": 74,
+              "hypothesis": "HBEST",
+              "target_gt_index": 18,
+              "target_iou": 0.2268065010201837,
+              "track_id": 293
+            },
+            {
+              "candidate_index": 85,
+              "hypothesis": "HBEST",
+              "target_gt_index": 23,
+              "target_iou": 0.15276359956763805,
+              "track_id": 337
+            },
+            {
+              "candidate_index": 98,
+              "hypothesis": "HBEST",
+              "target_gt_index": 27,
+              "target_iou": 0.36629106505408887,
+              "track_id": 385
+            }
+          ],
+          "scene0518_00": [
+            {
+              "candidate_index": 18,
+              "hypothesis": "HBEST",
+              "target_gt_index": 1,
+              "target_iou": 0.1754174389493664,
+              "track_id": 127
+            }
+          ],
+          "scene0535_00": [
+            {
+              "candidate_index": 2,
+              "hypothesis": "HBEST",
+              "target_gt_index": 6,
+              "target_iou": 0.5596611248830617,
+              "track_id": 8
+            }
+          ],
+          "scene0552_01": [
+            {
+              "candidate_index": 3,
+              "hypothesis": "HBEST",
+              "target_gt_index": 7,
+              "target_iou": 0.41134591250360864,
+              "track_id": 23
+            },
+            {
+              "candidate_index": 4,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 3,
+              "target_iou": 0.29554729328621654,
+              "track_id": 24
+            },
+            {
+              "candidate_index": 8,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 4,
+              "target_iou": 0.442039135144798,
+              "track_id": 40
+            }
+          ],
+          "scene0553_01": [
+            {
+              "candidate_index": 15,
+              "hypothesis": "HBEST",
+              "target_gt_index": 1,
+              "target_iou": 0.4995170816467844,
+              "track_id": 59
+            }
+          ],
+          "scene0559_02": [
+            {
+              "candidate_index": 2,
+              "hypothesis": "HBEST",
+              "target_gt_index": 4,
+              "target_iou": 0.175027178460724,
+              "track_id": 22
+            }
+          ],
+          "scene0568_00": [
+            {
+              "candidate_index": 30,
+              "hypothesis": "HBEST",
+              "target_gt_index": 11,
+              "target_iou": 0.321110406197905,
+              "track_id": 172
+            },
+            {
+              "candidate_index": 31,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 10,
+              "target_iou": 0.4569628189543046,
+              "track_id": 173
+            }
+          ],
+          "scene0574_00": [
+            {
+              "candidate_index": 3,
+              "hypothesis": "HBEST",
+              "target_gt_index": 6,
+              "target_iou": 0.4017900007814337,
+              "track_id": 18
+            },
+            {
+              "candidate_index": 11,
+              "hypothesis": "HBEST",
+              "target_gt_index": 1,
+              "target_iou": 0.6400779049436642,
+              "track_id": 56
+            },
+            {
+              "candidate_index": 14,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 2,
+              "target_iou": 0.24986856619018677,
+              "track_id": 60
+            },
+            {
+              "candidate_index": 15,
+              "hypothesis": "HBEST",
+              "target_gt_index": 7,
+              "target_iou": 0.20269379504711668,
+              "track_id": 70
+            }
+          ],
+          "scene0575_00": [],
+          "scene0578_00": [
+            {
+              "candidate_index": 1,
+              "hypothesis": "HBEST",
+              "target_gt_index": 10,
+              "target_iou": 0.37469320071328854,
+              "track_id": 1
+            },
+            {
+              "candidate_index": 6,
+              "hypothesis": "HBEST",
+              "target_gt_index": 6,
+              "target_iou": 0.2307821727023546,
+              "track_id": 27
+            },
+            {
+              "candidate_index": 23,
+              "hypothesis": "HBEST",
+              "target_gt_index": 4,
+              "target_iou": 0.17991275765102066,
+              "track_id": 72
+            }
+          ],
+          "scene0580_00": [
+            {
+              "candidate_index": 15,
+              "hypothesis": "HBEST",
+              "target_gt_index": 8,
+              "target_iou": 0.18687949317581115,
+              "track_id": 76
+            },
+            {
+              "candidate_index": 43,
+              "hypothesis": "HBEST",
+              "target_gt_index": 2,
+              "target_iou": 0.15026975268878287,
+              "track_id": 230
+            },
+            {
+              "candidate_index": 50,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 0,
+              "target_iou": 0.19159287009162193,
+              "track_id": 264
+            }
+          ],
+          "scene0583_00": [
+            {
+              "candidate_index": 10,
+              "hypothesis": "HBEST",
+              "target_gt_index": 10,
+              "target_iou": 0.4928600830004467,
+              "track_id": 19
+            },
+            {
+              "candidate_index": 16,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 7,
+              "target_iou": 0.26136544785170873,
+              "track_id": 70
+            },
+            {
+              "candidate_index": 31,
+              "hypothesis": "HBEST",
+              "target_gt_index": 9,
+              "target_iou": 0.2671812997194549,
+              "track_id": 137
+            }
+          ],
+          "scene0591_01": [],
+          "scene0598_01": [
+            {
+              "candidate_index": 14,
+              "hypothesis": "HBEST",
+              "target_gt_index": 0,
+              "target_iou": 0.5313500062918274,
+              "track_id": 141
+            },
+            {
+              "candidate_index": 18,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 9,
+              "target_iou": 0.32800766985382973,
+              "track_id": 153
+            }
+          ],
+          "scene0599_01": [
+            {
+              "candidate_index": 3,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 11,
+              "target_iou": 0.19040800906804922,
+              "track_id": 11
+            },
+            {
+              "candidate_index": 6,
+              "hypothesis": "HBEST",
+              "target_gt_index": 14,
+              "target_iou": 0.3890133618597689,
+              "track_id": 16
+            },
+            {
+              "candidate_index": 9,
+              "hypothesis": "HBEST",
+              "target_gt_index": 10,
+              "target_iou": 0.2237145462926368,
+              "track_id": 25
+            },
+            {
+              "candidate_index": 42,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 12,
+              "target_iou": 0.503341144651367,
+              "track_id": 134
+            }
+          ],
+          "scene0606_01": [
+            {
+              "candidate_index": 77,
+              "hypothesis": "HBEST",
+              "target_gt_index": 6,
+              "target_iou": 0.17934204351834246,
+              "track_id": 289
+            }
+          ],
+          "scene0607_01": [],
+          "scene0608_02": [
+            {
+              "candidate_index": 13,
+              "hypothesis": "HBEST",
+              "target_gt_index": 14,
+              "target_iou": 0.6093718530118337,
+              "track_id": 72
+            },
+            {
+              "candidate_index": 17,
+              "hypothesis": "HBEST",
+              "target_gt_index": 6,
+              "target_iou": 0.4777471226207466,
+              "track_id": 79
+            },
+            {
+              "candidate_index": 49,
+              "hypothesis": "HBEST",
+              "target_gt_index": 16,
+              "target_iou": 0.5367634340397678,
+              "track_id": 217
+            }
+          ],
+          "scene0609_01": [],
+          "scene0616_01": [
+            {
+              "candidate_index": 16,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 0,
+              "target_iou": 0.48935411083858876,
+              "track_id": 185
+            },
+            {
+              "candidate_index": 37,
+              "hypothesis": "HBEST",
+              "target_gt_index": 3,
+              "target_iou": 0.649083195474099,
+              "track_id": 371
+            }
+          ],
+          "scene0618_00": [],
+          "scene0629_00": [
+            {
+              "candidate_index": 6,
+              "hypothesis": "HBEST",
+              "target_gt_index": 1,
+              "target_iou": 0.5073894240280068,
+              "track_id": 20
+            },
+            {
+              "candidate_index": 67,
+              "hypothesis": "HBEST",
+              "target_gt_index": 9,
+              "target_iou": 0.437372988269933,
+              "track_id": 211
+            },
+            {
+              "candidate_index": 85,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 0,
+              "target_iou": 0.5620974080191393,
+              "track_id": 278
+            }
+          ],
+          "scene0644_00": [
+            {
+              "candidate_index": 31,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 20,
+              "target_iou": 0.430755127095,
+              "track_id": 235
+            }
+          ],
+          "scene0645_02": [
+            {
+              "candidate_index": 13,
+              "hypothesis": "HBEST",
+              "target_gt_index": 23,
+              "target_iou": 0.3669600506286863,
+              "track_id": 33
+            },
+            {
+              "candidate_index": 50,
+              "hypothesis": "HBEST",
+              "target_gt_index": 5,
+              "target_iou": 0.496342489635713,
+              "track_id": 234
+            }
+          ],
+          "scene0651_02": [
+            {
+              "candidate_index": 4,
+              "hypothesis": "HBEST",
+              "target_gt_index": 11,
+              "target_iou": 0.16605159704888234,
+              "track_id": 37
+            },
+            {
+              "candidate_index": 16,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 14,
+              "target_iou": 0.2448571373396604,
+              "track_id": 97
+            },
+            {
+              "candidate_index": 19,
+              "hypothesis": "HBEST",
+              "target_gt_index": 13,
+              "target_iou": 0.3393465256723105,
+              "track_id": 103
+            }
+          ],
+          "scene0655_01": [
+            {
+              "candidate_index": 8,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 8,
+              "target_iou": 0.16325024628207055,
+              "track_id": 48
+            },
+            {
+              "candidate_index": 20,
+              "hypothesis": "HBEST",
+              "target_gt_index": 13,
+              "target_iou": 0.2440448529651339,
+              "track_id": 79
+            },
+            {
+              "candidate_index": 21,
+              "hypothesis": "HBEST",
+              "target_gt_index": 3,
+              "target_iou": 0.39298535555196806,
+              "track_id": 80
+            },
+            {
+              "candidate_index": 24,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 14,
+              "target_iou": 0.26307867496184545,
+              "track_id": 107
+            },
+            {
+              "candidate_index": 26,
+              "hypothesis": "HBEST",
+              "target_gt_index": 17,
+              "target_iou": 0.3137787340337992,
+              "track_id": 114
+            }
+          ],
+          "scene0663_00": [
+            {
+              "candidate_index": 28,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 0,
+              "target_iou": 0.6094702767794096,
+              "track_id": 169
+            }
+          ],
+          "scene0664_00": [
+            {
+              "candidate_index": 14,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 3,
+              "target_iou": 0.19936579581188765,
+              "track_id": 60
+            }
+          ],
+          "scene0665_00": [
+            {
+              "candidate_index": 0,
+              "hypothesis": "HBEST",
+              "target_gt_index": 28,
+              "target_iou": 0.5875458028618756,
+              "track_id": 1
+            },
+            {
+              "candidate_index": 2,
+              "hypothesis": "HBEST",
+              "target_gt_index": 15,
+              "target_iou": 0.7125937525592155,
+              "track_id": 3
+            },
+            {
+              "candidate_index": 6,
+              "hypothesis": "HBEST",
+              "target_gt_index": 7,
+              "target_iou": 0.33499224523032783,
+              "track_id": 9
+            },
+            {
+              "candidate_index": 29,
+              "hypothesis": "HBEST",
+              "target_gt_index": 20,
+              "target_iou": 0.3247397871380821,
+              "track_id": 115
+            }
+          ],
+          "scene0678_01": [
+            {
+              "candidate_index": 1,
+              "hypothesis": "HBEST",
+              "target_gt_index": 6,
+              "target_iou": 0.32171447064515524,
+              "track_id": 4
+            },
+            {
+              "candidate_index": 50,
+              "hypothesis": "HBEST",
+              "target_gt_index": 0,
+              "target_iou": 0.1671077072586572,
+              "track_id": 309
+            },
+            {
+              "candidate_index": 51,
+              "hypothesis": "HBEST",
+              "target_gt_index": 3,
+              "target_iou": 0.251389996780223,
+              "track_id": 311
+            },
+            {
+              "candidate_index": 53,
+              "hypothesis": "HBEST",
+              "target_gt_index": 4,
+              "target_iou": 0.21396870893610648,
+              "track_id": 326
+            },
+            {
+              "candidate_index": 55,
+              "hypothesis": "HBEST",
+              "target_gt_index": 5,
+              "target_iou": 0.41621512997217547,
+              "track_id": 334
+            }
+          ],
+          "scene0684_01": [],
+          "scene0686_01": [
+            {
+              "candidate_index": 7,
+              "hypothesis": "HBEST",
+              "target_gt_index": 0,
+              "target_iou": 0.1536425299922836,
+              "track_id": 12
+            },
+            {
+              "candidate_index": 9,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 1,
+              "target_iou": 0.2562242860399495,
+              "track_id": 14
+            },
+            {
+              "candidate_index": 31,
+              "hypothesis": "HBEST",
+              "target_gt_index": 4,
+              "target_iou": 0.20467319878550347,
+              "track_id": 71
+            }
+          ],
+          "scene0689_00": [
+            {
+              "candidate_index": 3,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 1,
+              "target_iou": 0.2315198905689979,
+              "track_id": 27
+            }
+          ],
+          "scene0693_00": [
+            {
+              "candidate_index": 11,
+              "hypothesis": "HBEST",
+              "target_gt_index": 7,
+              "target_iou": 0.24905428468597585,
+              "track_id": 47
+            },
+            {
+              "candidate_index": 23,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 8,
+              "target_iou": 0.2815992301371751,
+              "track_id": 90
+            }
+          ],
+          "scene0695_01": [],
+          "scene0696_00": [
+            {
+              "candidate_index": 18,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 6,
+              "target_iou": 0.20621646334207683,
+              "track_id": 99
+            },
+            {
+              "candidate_index": 20,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 0,
+              "target_iou": 0.479158418675346,
+              "track_id": 118
+            },
+            {
+              "candidate_index": 23,
+              "hypothesis": "HBEST",
+              "target_gt_index": 9,
+              "target_iou": 0.4227182565894462,
+              "track_id": 123
+            },
+            {
+              "candidate_index": 24,
+              "hypothesis": "HBEST",
+              "target_gt_index": 12,
+              "target_iou": 0.572135288423258,
+              "track_id": 128
+            },
+            {
+              "candidate_index": 56,
+              "hypothesis": "HBEST",
+              "target_gt_index": 15,
+              "target_iou": 0.6956793274975696,
+              "track_id": 233
+            },
+            {
+              "candidate_index": 60,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 3,
+              "target_iou": 0.24081981282625373,
+              "track_id": 241
+            }
+          ],
+          "scene0697_02": [
+            {
+              "candidate_index": 85,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 2,
+              "target_iou": 0.3399841199075928,
+              "track_id": 350
+            }
+          ],
+          "scene0699_00": [
+            {
+              "candidate_index": 43,
+              "hypothesis": "HBEST",
+              "target_gt_index": 6,
+              "target_iou": 0.6340544319564212,
+              "track_id": 171
+            },
+            {
+              "candidate_index": 52,
+              "hypothesis": "HBEST",
+              "target_gt_index": 3,
+              "target_iou": 0.6446210814116701,
+              "track_id": 198
+            },
+            {
+              "candidate_index": 53,
+              "hypothesis": "HBEST",
+              "target_gt_index": 8,
+              "target_iou": 0.5900611288202339,
+              "track_id": 201
+            },
+            {
+              "candidate_index": 68,
+              "hypothesis": "HBEST",
+              "target_gt_index": 9,
+              "target_iou": 0.33038156112681105,
+              "track_id": 263
+            }
+          ],
+          "scene0700_00": [
+            {
+              "candidate_index": 2,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 6,
+              "target_iou": 0.15434678212180092,
+              "track_id": 48
+            }
+          ],
+          "scene0701_00": [],
+          "scene0702_01": [
+            {
+              "candidate_index": 0,
+              "hypothesis": "HBEST",
+              "target_gt_index": 6,
+              "target_iou": 0.18634022673460765,
+              "track_id": 1
+            }
+          ],
+          "scene0704_00": [
+            {
+              "candidate_index": 19,
+              "hypothesis": "HBEST",
+              "target_gt_index": 4,
+              "target_iou": 0.2069996467528162,
+              "track_id": 57
+            },
+            {
+              "candidate_index": 30,
+              "hypothesis": "HBEST",
+              "target_gt_index": 0,
+              "target_iou": 0.23255594514542383,
+              "track_id": 150
+            }
+          ]
+        },
+        "selected_candidate_count": 198
+      },
+      "hypothesis_choice": "GT-assisted NROBUST-versus-HBEST; oracle only",
+      "identity_constraint": "one F3 track contributes at most one dual-geometry edge",
+      "iou_threshold": 0.15,
+      "native_maximum_matching_count": 873,
+      "passes_144_match_capacity_gate": true,
+      "required_additional_union_matches": 144,
+      "union_maximum_matching_count": 1075
+    },
+    "0.25": {
+      "additional_union_matching_over_native": 163,
+      "baseline_official_constant_score": {
+        "ap": 0.2679112842975372,
+        "ap_points": 26.79112842975372,
+        "false_positive": 979,
+        "greedy_tp": 809,
+        "precision": 0.4524608501118568,
+        "recall": 0.5645498949305304,
+        "unmatched_gt_count": 624
+      },
+      "candidate_maximum_matching_count": 458,
+      "gt_selected_candidate_suffix": {
+        "delta_ap_points": 7.885436193814378,
+        "deployable": false,
+        "formal_score": 1.0,
+        "native_prefix_unchanged": true,
+        "official_evaluation": {
+          "ap": 0.34676564623568096,
+          "ap_points": 34.6765646235681,
+          "false_positive": 986,
+          "greedy_tp": 964,
+          "precision": 0.49435897435897436,
+          "recall": 0.6727145843177148,
+          "unmatched_gt_count": 469
+        },
+        "oracle_only": true,
+        "passes_plus10_ap": false,
+        "per_scene_selection": {
+          "scene0011_01": [],
+          "scene0019_00": [
+            {
+              "candidate_index": 2,
+              "hypothesis": "HBEST",
+              "target_gt_index": 1,
+              "target_iou": 0.42107511379983087,
+              "track_id": 21
+            },
+            {
+              "candidate_index": 5,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 4,
+              "target_iou": 0.4146453924489204,
+              "track_id": 41
+            },
+            {
+              "candidate_index": 6,
+              "hypothesis": "HBEST",
+              "target_gt_index": 10,
+              "target_iou": 0.4552103403135846,
+              "track_id": 52
+            }
+          ],
+          "scene0025_00": [
+            {
+              "candidate_index": 18,
+              "hypothesis": "HBEST",
+              "target_gt_index": 9,
+              "target_iou": 0.38469482038071945,
+              "track_id": 95
+            }
+          ],
+          "scene0030_01": [
+            {
+              "candidate_index": 24,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 22,
+              "target_iou": 0.3394705581789874,
+              "track_id": 61
+            },
+            {
+              "candidate_index": 31,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 10,
+              "target_iou": 0.26954826336228155,
+              "track_id": 82
+            },
+            {
+              "candidate_index": 41,
+              "hypothesis": "HBEST",
+              "target_gt_index": 9,
+              "target_iou": 0.43681480067555895,
+              "track_id": 163
+            },
+            {
+              "candidate_index": 51,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 30,
+              "target_iou": 0.2977286794539889,
+              "track_id": 209
+            },
+            {
+              "candidate_index": 61,
+              "hypothesis": "HBEST",
+              "target_gt_index": 2,
+              "target_iou": 0.6529889059942807,
+              "track_id": 270
+            },
+            {
+              "candidate_index": 65,
+              "hypothesis": "HBEST",
+              "target_gt_index": 8,
+              "target_iou": 0.42613619785372236,
+              "track_id": 305
+            }
+          ],
+          "scene0046_00": [
+            {
+              "candidate_index": 6,
+              "hypothesis": "HBEST",
+              "target_gt_index": 0,
+              "target_iou": 0.5190805259682215,
+              "track_id": 68
+            },
+            {
+              "candidate_index": 35,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 8,
+              "target_iou": 0.5643241456303555,
+              "track_id": 192
+            },
+            {
+              "candidate_index": 38,
+              "hypothesis": "HBEST",
+              "target_gt_index": 9,
+              "target_iou": 0.3381806984674385,
+              "track_id": 209
+            }
+          ],
+          "scene0050_01": [
+            {
+              "candidate_index": 16,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 12,
+              "target_iou": 0.32855782091081986,
+              "track_id": 142
+            },
+            {
+              "candidate_index": 28,
+              "hypothesis": "HBEST",
+              "target_gt_index": 5,
+              "target_iou": 0.25439929318597837,
+              "track_id": 335
+            }
+          ],
+          "scene0064_00": [
+            {
+              "candidate_index": 11,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 7,
+              "target_iou": 0.4554054138362376,
+              "track_id": 218
+            }
+          ],
+          "scene0077_00": [],
+          "scene0081_02": [],
+          "scene0084_00": [
+            {
+              "candidate_index": 11,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 4,
+              "target_iou": 0.3929291468842674,
+              "track_id": 51
+            },
+            {
+              "candidate_index": 17,
+              "hypothesis": "HBEST",
+              "target_gt_index": 8,
+              "target_iou": 0.40724926127514904,
+              "track_id": 77
+            },
+            {
+              "candidate_index": 18,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 2,
+              "target_iou": 0.5552876883694912,
+              "track_id": 85
+            },
+            {
+              "candidate_index": 29,
+              "hypothesis": "HBEST",
+              "target_gt_index": 1,
+              "target_iou": 0.4491216693663174,
+              "track_id": 138
+            },
+            {
+              "candidate_index": 42,
+              "hypothesis": "HBEST",
+              "target_gt_index": 10,
+              "target_iou": 0.4827286758681787,
+              "track_id": 199
+            }
+          ],
+          "scene0086_02": [
+            {
+              "candidate_index": 8,
+              "hypothesis": "HBEST",
+              "target_gt_index": 9,
+              "target_iou": 0.3868405612906642,
+              "track_id": 12
+            },
+            {
+              "candidate_index": 21,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 3,
+              "target_iou": 0.5100378736370137,
+              "track_id": 53
+            },
+            {
+              "candidate_index": 24,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 1,
+              "target_iou": 0.5200677674126419,
+              "track_id": 66
+            },
+            {
+              "candidate_index": 42,
+              "hypothesis": "HBEST",
+              "target_gt_index": 8,
+              "target_iou": 0.28495024624918086,
+              "track_id": 139
+            }
+          ],
+          "scene0088_00": [],
+          "scene0088_03": [],
+          "scene0131_02": [
+            {
+              "candidate_index": 23,
+              "hypothesis": "HBEST",
+              "target_gt_index": 12,
+              "target_iou": 0.6163252559525525,
+              "track_id": 123
+            }
+          ],
+          "scene0144_01": [
+            {
+              "candidate_index": 7,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 5,
+              "target_iou": 0.41766150018263815,
+              "track_id": 28
+            }
+          ],
+          "scene0146_02": [
+            {
+              "candidate_index": 17,
+              "hypothesis": "HBEST",
+              "target_gt_index": 3,
+              "target_iou": 0.6197586405794746,
+              "track_id": 59
+            }
+          ],
+          "scene0153_00": [
+            {
+              "candidate_index": 3,
+              "hypothesis": "HBEST",
+              "target_gt_index": 6,
+              "target_iou": 0.6642052288010368,
+              "track_id": 18
+            },
+            {
+              "candidate_index": 8,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 3,
+              "target_iou": 0.3464756624291944,
+              "track_id": 39
+            }
+          ],
+          "scene0164_02": [
+            {
+              "candidate_index": 13,
+              "hypothesis": "HBEST",
+              "target_gt_index": 6,
+              "target_iou": 0.2927254322231105,
+              "track_id": 90
+            },
+            {
+              "candidate_index": 15,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 4,
+              "target_iou": 0.2960417627788373,
+              "track_id": 96
+            }
+          ],
+          "scene0169_00": [
+            {
+              "candidate_index": 21,
+              "hypothesis": "HBEST",
+              "target_gt_index": 9,
+              "target_iou": 0.4062793444984693,
+              "track_id": 109
+            },
+            {
+              "candidate_index": 33,
+              "hypothesis": "HBEST",
+              "target_gt_index": 8,
+              "target_iou": 0.4445527419051891,
+              "track_id": 154
+            },
+            {
+              "candidate_index": 49,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 0,
+              "target_iou": 0.5560634679522949,
+              "track_id": 235
+            }
+          ],
+          "scene0187_01": [
+            {
+              "candidate_index": 13,
+              "hypothesis": "HBEST",
+              "target_gt_index": 4,
+              "target_iou": 0.7169258419601567,
+              "track_id": 82
+            },
+            {
+              "candidate_index": 22,
+              "hypothesis": "HBEST",
+              "target_gt_index": 10,
+              "target_iou": 0.2695575681996085,
+              "track_id": 111
+            }
+          ],
+          "scene0193_01": [],
+          "scene0203_00": [],
+          "scene0207_02": [
+            {
+              "candidate_index": 32,
+              "hypothesis": "HBEST",
+              "target_gt_index": 24,
+              "target_iou": 0.47660677783442457,
+              "track_id": 194
+            },
+            {
+              "candidate_index": 46,
+              "hypothesis": "HBEST",
+              "target_gt_index": 4,
+              "target_iou": 0.3322572346929883,
+              "track_id": 280
+            },
+            {
+              "candidate_index": 48,
+              "hypothesis": "HBEST",
+              "target_gt_index": 8,
+              "target_iou": 0.7222678581002401,
+              "track_id": 288
+            },
+            {
+              "candidate_index": 53,
+              "hypothesis": "HBEST",
+              "target_gt_index": 2,
+              "target_iou": 0.26042008174197073,
+              "track_id": 335
+            }
+          ],
+          "scene0221_00": [
+            {
+              "candidate_index": 12,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 17,
+              "target_iou": 0.43216561840844325,
+              "track_id": 81
+            }
+          ],
+          "scene0222_01": [
+            {
+              "candidate_index": 38,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 5,
+              "target_iou": 0.5219391818267646,
+              "track_id": 217
+            },
+            {
+              "candidate_index": 63,
+              "hypothesis": "HBEST",
+              "target_gt_index": 13,
+              "target_iou": 0.3604447897116219,
+              "track_id": 363
+            },
+            {
+              "candidate_index": 71,
+              "hypothesis": "HBEST",
+              "target_gt_index": 8,
+              "target_iou": 0.3644681826610806,
+              "track_id": 407
+            }
+          ],
+          "scene0231_02": [
+            {
+              "candidate_index": 52,
+              "hypothesis": "HBEST",
+              "target_gt_index": 10,
+              "target_iou": 0.31369370057093343,
+              "track_id": 720
+            }
+          ],
+          "scene0246_00": [
+            {
+              "candidate_index": 38,
+              "hypothesis": "HBEST",
+              "target_gt_index": 9,
+              "target_iou": 0.5384329591585924,
+              "track_id": 308
+            }
+          ],
+          "scene0249_00": [
+            {
+              "candidate_index": 13,
+              "hypothesis": "HBEST",
+              "target_gt_index": 23,
+              "target_iou": 0.29257721995414293,
+              "track_id": 91
+            },
+            {
+              "candidate_index": 16,
+              "hypothesis": "HBEST",
+              "target_gt_index": 9,
+              "target_iou": 0.3318596284492024,
+              "track_id": 97
+            }
+          ],
+          "scene0256_00": [
+            {
+              "candidate_index": 5,
+              "hypothesis": "HBEST",
+              "target_gt_index": 4,
+              "target_iou": 0.5254008257010555,
+              "track_id": 16
+            }
+          ],
+          "scene0277_00": [
+            {
+              "candidate_index": 13,
+              "hypothesis": "HBEST",
+              "target_gt_index": 1,
+              "target_iou": 0.6508311307281998,
+              "track_id": 59
+            }
+          ],
+          "scene0278_01": [],
+          "scene0300_00": [
+            {
+              "candidate_index": 6,
+              "hypothesis": "HBEST",
+              "target_gt_index": 9,
+              "target_iou": 0.3129662775230601,
+              "track_id": 30
+            },
+            {
+              "candidate_index": 11,
+              "hypothesis": "HBEST",
+              "target_gt_index": 10,
+              "target_iou": 0.5442123757389594,
+              "track_id": 68
+            },
+            {
+              "candidate_index": 21,
+              "hypothesis": "HBEST",
+              "target_gt_index": 2,
+              "target_iou": 0.28372963495922693,
+              "track_id": 111
+            },
+            {
+              "candidate_index": 29,
+              "hypothesis": "HBEST",
+              "target_gt_index": 4,
+              "target_iou": 0.6949109035970054,
+              "track_id": 141
+            },
+            {
+              "candidate_index": 32,
+              "hypothesis": "HBEST",
+              "target_gt_index": 7,
+              "target_iou": 0.47565561895803044,
+              "track_id": 148
+            },
+            {
+              "candidate_index": 33,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 8,
+              "target_iou": 0.3953683899848636,
+              "track_id": 151
+            }
+          ],
+          "scene0304_00": [],
+          "scene0307_01": [
+            {
+              "candidate_index": 3,
+              "hypothesis": "HBEST",
+              "target_gt_index": 3,
+              "target_iou": 0.5797608586430718,
+              "track_id": 9
+            },
+            {
+              "candidate_index": 46,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 1,
+              "target_iou": 0.3566453374590117,
+              "track_id": 362
+            },
+            {
+              "candidate_index": 100,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 11,
+              "target_iou": 0.38534578828241084,
+              "track_id": 725
+            }
+          ],
+          "scene0329_00": [
+            {
+              "candidate_index": 9,
+              "hypothesis": "HBEST",
+              "target_gt_index": 26,
+              "target_iou": 0.33338813731166583,
+              "track_id": 67
+            },
+            {
+              "candidate_index": 11,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 15,
+              "target_iou": 0.6548734274679586,
+              "track_id": 126
+            },
+            {
+              "candidate_index": 13,
+              "hypothesis": "HBEST",
+              "target_gt_index": 18,
+              "target_iou": 0.6211650412684566,
+              "track_id": 138
+            },
+            {
+              "candidate_index": 25,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 25,
+              "target_iou": 0.4545051925258588,
+              "track_id": 287
+            }
+          ],
+          "scene0334_00": [],
+          "scene0338_02": [],
+          "scene0351_00": [
+            {
+              "candidate_index": 5,
+              "hypothesis": "HBEST",
+              "target_gt_index": 5,
+              "target_iou": 0.27697768112468696,
+              "track_id": 14
+            }
+          ],
+          "scene0353_02": [],
+          "scene0355_01": [],
+          "scene0356_01": [
+            {
+              "candidate_index": 5,
+              "hypothesis": "HBEST",
+              "target_gt_index": 0,
+              "target_iou": 0.5410874445045621,
+              "track_id": 8
+            }
+          ],
+          "scene0377_02": [
+            {
+              "candidate_index": 7,
+              "hypothesis": "HBEST",
+              "target_gt_index": 1,
+              "target_iou": 0.7245269150777321,
+              "track_id": 58
+            }
+          ],
+          "scene0378_02": [
+            {
+              "candidate_index": 48,
+              "hypothesis": "HBEST",
+              "target_gt_index": 10,
+              "target_iou": 0.5196949388365399,
+              "track_id": 226
+            }
+          ],
+          "scene0389_00": [],
+          "scene0406_01": [
+            {
+              "candidate_index": 15,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 7,
+              "target_iou": 0.321311229399899,
+              "track_id": 75
+            }
+          ],
+          "scene0412_00": [
+            {
+              "candidate_index": 0,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 15,
+              "target_iou": 0.3187356334481556,
+              "track_id": 36
+            },
+            {
+              "candidate_index": 20,
+              "hypothesis": "HBEST",
+              "target_gt_index": 4,
+              "target_iou": 0.37043717826272676,
+              "track_id": 138
+            }
+          ],
+          "scene0423_01": [],
+          "scene0426_00": [
+            {
+              "candidate_index": 11,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 4,
+              "target_iou": 0.365042431265631,
+              "track_id": 109
+            }
+          ],
+          "scene0426_03": [
+            {
+              "candidate_index": 3,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 9,
+              "target_iou": 0.5143731737021001,
+              "track_id": 78
+            }
+          ],
+          "scene0427_00": [
+            {
+              "candidate_index": 8,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 1,
+              "target_iou": 0.39177500165077717,
+              "track_id": 29
+            }
+          ],
+          "scene0432_01": [],
+          "scene0435_00": [
+            {
+              "candidate_index": 15,
+              "hypothesis": "HBEST",
+              "target_gt_index": 6,
+              "target_iou": 0.5531920213857787,
+              "track_id": 74
+            },
+            {
+              "candidate_index": 24,
+              "hypothesis": "HBEST",
+              "target_gt_index": 16,
+              "target_iou": 0.6272000553538637,
+              "track_id": 93
+            },
+            {
+              "candidate_index": 63,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 8,
+              "target_iou": 0.2817262526151532,
+              "track_id": 271
+            },
+            {
+              "candidate_index": 71,
+              "hypothesis": "HBEST",
+              "target_gt_index": 4,
+              "target_iou": 0.5298394617136103,
+              "track_id": 287
+            },
+            {
+              "candidate_index": 72,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 10,
+              "target_iou": 0.517702317632445,
+              "track_id": 291
+            },
+            {
+              "candidate_index": 90,
+              "hypothesis": "HBEST",
+              "target_gt_index": 3,
+              "target_iou": 0.5484849594040461,
+              "track_id": 358
+            }
+          ],
+          "scene0435_03": [
+            {
+              "candidate_index": 11,
+              "hypothesis": "HBEST",
+              "target_gt_index": 2,
+              "target_iou": 0.7459575722304449,
+              "track_id": 43
+            },
+            {
+              "candidate_index": 15,
+              "hypothesis": "HBEST",
+              "target_gt_index": 10,
+              "target_iou": 0.6810496302130525,
+              "track_id": 53
+            },
+            {
+              "candidate_index": 21,
+              "hypothesis": "HBEST",
+              "target_gt_index": 8,
+              "target_iou": 0.4525097944562362,
+              "track_id": 85
+            },
+            {
+              "candidate_index": 29,
+              "hypothesis": "HBEST",
+              "target_gt_index": 9,
+              "target_iou": 0.6373783154703678,
+              "track_id": 98
+            }
+          ],
+          "scene0458_00": [
+            {
+              "candidate_index": 2,
+              "hypothesis": "HBEST",
+              "target_gt_index": 7,
+              "target_iou": 0.27849613436162246,
+              "track_id": 13
+            },
+            {
+              "candidate_index": 21,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 1,
+              "target_iou": 0.26747829992704336,
+              "track_id": 184
+            },
+            {
+              "candidate_index": 24,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 6,
+              "target_iou": 0.2502940703475834,
+              "track_id": 187
+            }
+          ],
+          "scene0474_01": [
+            {
+              "candidate_index": 0,
+              "hypothesis": "HBEST",
+              "target_gt_index": 6,
+              "target_iou": 0.3428460949719463,
+              "track_id": 4
+            },
+            {
+              "candidate_index": 56,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 8,
+              "target_iou": 0.6066391269448705,
+              "track_id": 256
+            },
+            {
+              "candidate_index": 58,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 7,
+              "target_iou": 0.47139716501206574,
+              "track_id": 266
+            }
+          ],
+          "scene0474_04": [
+            {
+              "candidate_index": 2,
+              "hypothesis": "HBEST",
+              "target_gt_index": 3,
+              "target_iou": 0.27644703655704456,
+              "track_id": 103
+            },
+            {
+              "candidate_index": 3,
+              "hypothesis": "HBEST",
+              "target_gt_index": 10,
+              "target_iou": 0.5452218489643144,
+              "track_id": 105
+            }
+          ],
+          "scene0490_00": [],
+          "scene0496_00": [
+            {
+              "candidate_index": 22,
+              "hypothesis": "HBEST",
+              "target_gt_index": 19,
+              "target_iou": 0.2933333460424702,
+              "track_id": 74
+            },
+            {
+              "candidate_index": 27,
+              "hypothesis": "HBEST",
+              "target_gt_index": 20,
+              "target_iou": 0.6212219157625931,
+              "track_id": 99
+            },
+            {
+              "candidate_index": 37,
+              "hypothesis": "HBEST",
+              "target_gt_index": 16,
+              "target_iou": 0.35951341813508886,
+              "track_id": 154
+            }
+          ],
+          "scene0500_00": [
+            {
+              "candidate_index": 18,
+              "hypothesis": "HBEST",
+              "target_gt_index": 35,
+              "target_iou": 0.3389553355392128,
+              "track_id": 62
+            },
+            {
+              "candidate_index": 94,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 23,
+              "target_iou": 0.6368222802388899,
+              "track_id": 354
+            },
+            {
+              "candidate_index": 98,
+              "hypothesis": "HBEST",
+              "target_gt_index": 27,
+              "target_iou": 0.36629106505408887,
+              "track_id": 385
+            }
+          ],
+          "scene0518_00": [],
+          "scene0535_00": [
+            {
+              "candidate_index": 2,
+              "hypothesis": "HBEST",
+              "target_gt_index": 6,
+              "target_iou": 0.5596611248830617,
+              "track_id": 8
+            }
+          ],
+          "scene0552_01": [
+            {
+              "candidate_index": 3,
+              "hypothesis": "HBEST",
+              "target_gt_index": 7,
+              "target_iou": 0.41134591250360864,
+              "track_id": 23
+            },
+            {
+              "candidate_index": 4,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 3,
+              "target_iou": 0.29554729328621654,
+              "track_id": 24
+            },
+            {
+              "candidate_index": 8,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 4,
+              "target_iou": 0.442039135144798,
+              "track_id": 40
+            }
+          ],
+          "scene0553_01": [
+            {
+              "candidate_index": 15,
+              "hypothesis": "HBEST",
+              "target_gt_index": 1,
+              "target_iou": 0.4995170816467844,
+              "track_id": 59
+            }
+          ],
+          "scene0559_02": [
+            {
+              "candidate_index": 7,
+              "hypothesis": "HBEST",
+              "target_gt_index": 4,
+              "target_iou": 0.3003411394336213,
+              "track_id": 42
+            }
+          ],
+          "scene0568_00": [
+            {
+              "candidate_index": 30,
+              "hypothesis": "HBEST",
+              "target_gt_index": 11,
+              "target_iou": 0.321110406197905,
+              "track_id": 172
+            },
+            {
+              "candidate_index": 31,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 10,
+              "target_iou": 0.4569628189543046,
+              "track_id": 173
+            }
+          ],
+          "scene0574_00": [
+            {
+              "candidate_index": 3,
+              "hypothesis": "HBEST",
+              "target_gt_index": 6,
+              "target_iou": 0.4017900007814337,
+              "track_id": 18
+            },
+            {
+              "candidate_index": 11,
+              "hypothesis": "HBEST",
+              "target_gt_index": 1,
+              "target_iou": 0.6400779049436642,
+              "track_id": 56
+            }
+          ],
+          "scene0575_00": [],
+          "scene0578_00": [
+            {
+              "candidate_index": 1,
+              "hypothesis": "HBEST",
+              "target_gt_index": 10,
+              "target_iou": 0.37469320071328854,
+              "track_id": 1
+            },
+            {
+              "candidate_index": 18,
+              "hypothesis": "HBEST",
+              "target_gt_index": 6,
+              "target_iou": 0.6805169823061674,
+              "track_id": 54
+            }
+          ],
+          "scene0580_00": [
+            {
+              "candidate_index": 24,
+              "hypothesis": "HBEST",
+              "target_gt_index": 4,
+              "target_iou": 0.39708669596975416,
+              "track_id": 110
+            },
+            {
+              "candidate_index": 67,
+              "hypothesis": "HBEST",
+              "target_gt_index": 8,
+              "target_iou": 0.6501696673275031,
+              "track_id": 430
+            }
+          ],
+          "scene0583_00": [
+            {
+              "candidate_index": 10,
+              "hypothesis": "HBEST",
+              "target_gt_index": 10,
+              "target_iou": 0.4928600830004467,
+              "track_id": 19
+            },
+            {
+              "candidate_index": 16,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 7,
+              "target_iou": 0.26136544785170873,
+              "track_id": 70
+            },
+            {
+              "candidate_index": 31,
+              "hypothesis": "HBEST",
+              "target_gt_index": 9,
+              "target_iou": 0.2671812997194549,
+              "track_id": 137
+            }
+          ],
+          "scene0591_01": [],
+          "scene0598_01": [
+            {
+              "candidate_index": 14,
+              "hypothesis": "HBEST",
+              "target_gt_index": 0,
+              "target_iou": 0.5313500062918274,
+              "track_id": 141
+            },
+            {
+              "candidate_index": 18,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 9,
+              "target_iou": 0.32800766985382973,
+              "track_id": 153
+            }
+          ],
+          "scene0599_01": [
+            {
+              "candidate_index": 6,
+              "hypothesis": "HBEST",
+              "target_gt_index": 14,
+              "target_iou": 0.3890133618597689,
+              "track_id": 16
+            },
+            {
+              "candidate_index": 42,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 12,
+              "target_iou": 0.503341144651367,
+              "track_id": 134
+            }
+          ],
+          "scene0606_01": [],
+          "scene0607_01": [],
+          "scene0608_02": [
+            {
+              "candidate_index": 7,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 13,
+              "target_iou": 0.5321201386906128,
+              "track_id": 14
+            },
+            {
+              "candidate_index": 13,
+              "hypothesis": "HBEST",
+              "target_gt_index": 14,
+              "target_iou": 0.6093718530118337,
+              "track_id": 72
+            },
+            {
+              "candidate_index": 17,
+              "hypothesis": "HBEST",
+              "target_gt_index": 6,
+              "target_iou": 0.4777471226207466,
+              "track_id": 79
+            },
+            {
+              "candidate_index": 49,
+              "hypothesis": "HBEST",
+              "target_gt_index": 16,
+              "target_iou": 0.5367634340397678,
+              "track_id": 217
+            }
+          ],
+          "scene0609_01": [],
+          "scene0616_01": [
+            {
+              "candidate_index": 16,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 0,
+              "target_iou": 0.48935411083858876,
+              "track_id": 185
+            },
+            {
+              "candidate_index": 34,
+              "hypothesis": "HBEST",
+              "target_gt_index": 17,
+              "target_iou": 0.3150281654372519,
+              "track_id": 352
+            },
+            {
+              "candidate_index": 37,
+              "hypothesis": "HBEST",
+              "target_gt_index": 3,
+              "target_iou": 0.649083195474099,
+              "track_id": 371
+            },
+            {
+              "candidate_index": 41,
+              "hypothesis": "HBEST",
+              "target_gt_index": 5,
+              "target_iou": 0.4271895130479863,
+              "track_id": 407
+            }
+          ],
+          "scene0618_00": [],
+          "scene0629_00": [
+            {
+              "candidate_index": 6,
+              "hypothesis": "HBEST",
+              "target_gt_index": 1,
+              "target_iou": 0.5073894240280068,
+              "track_id": 20
+            },
+            {
+              "candidate_index": 67,
+              "hypothesis": "HBEST",
+              "target_gt_index": 9,
+              "target_iou": 0.437372988269933,
+              "track_id": 211
+            },
+            {
+              "candidate_index": 85,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 0,
+              "target_iou": 0.5620974080191393,
+              "track_id": 278
+            }
+          ],
+          "scene0644_00": [
+            {
+              "candidate_index": 31,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 20,
+              "target_iou": 0.430755127095,
+              "track_id": 235
+            }
+          ],
+          "scene0645_02": [
+            {
+              "candidate_index": 13,
+              "hypothesis": "HBEST",
+              "target_gt_index": 23,
+              "target_iou": 0.3669600506286863,
+              "track_id": 33
+            },
+            {
+              "candidate_index": 50,
+              "hypothesis": "HBEST",
+              "target_gt_index": 5,
+              "target_iou": 0.496342489635713,
+              "track_id": 234
+            }
+          ],
+          "scene0651_02": [
+            {
+              "candidate_index": 19,
+              "hypothesis": "HBEST",
+              "target_gt_index": 13,
+              "target_iou": 0.3393465256723105,
+              "track_id": 103
+            }
+          ],
+          "scene0655_01": [
+            {
+              "candidate_index": 12,
+              "hypothesis": "HBEST",
+              "target_gt_index": 8,
+              "target_iou": 0.3176719445439628,
+              "track_id": 53
+            },
+            {
+              "candidate_index": 21,
+              "hypothesis": "HBEST",
+              "target_gt_index": 3,
+              "target_iou": 0.39298535555196806,
+              "track_id": 80
+            },
+            {
+              "candidate_index": 24,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 14,
+              "target_iou": 0.26307867496184545,
+              "track_id": 107
+            },
+            {
+              "candidate_index": 26,
+              "hypothesis": "HBEST",
+              "target_gt_index": 17,
+              "target_iou": 0.3137787340337992,
+              "track_id": 114
+            }
+          ],
+          "scene0663_00": [
+            {
+              "candidate_index": 12,
+              "hypothesis": "HBEST",
+              "target_gt_index": 1,
+              "target_iou": 0.2790329922941717,
+              "track_id": 73
+            },
+            {
+              "candidate_index": 28,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 0,
+              "target_iou": 0.6094702767794096,
+              "track_id": 169
+            }
+          ],
+          "scene0664_00": [],
+          "scene0665_00": [
+            {
+              "candidate_index": 0,
+              "hypothesis": "HBEST",
+              "target_gt_index": 28,
+              "target_iou": 0.5875458028618756,
+              "track_id": 1
+            },
+            {
+              "candidate_index": 2,
+              "hypothesis": "HBEST",
+              "target_gt_index": 15,
+              "target_iou": 0.7125937525592155,
+              "track_id": 3
+            },
+            {
+              "candidate_index": 6,
+              "hypothesis": "HBEST",
+              "target_gt_index": 7,
+              "target_iou": 0.33499224523032783,
+              "track_id": 9
+            },
+            {
+              "candidate_index": 27,
+              "hypothesis": "HBEST",
+              "target_gt_index": 1,
+              "target_iou": 0.8036371682569009,
+              "track_id": 95
+            },
+            {
+              "candidate_index": 29,
+              "hypothesis": "HBEST",
+              "target_gt_index": 20,
+              "target_iou": 0.3247397871380821,
+              "track_id": 115
+            }
+          ],
+          "scene0678_01": [
+            {
+              "candidate_index": 1,
+              "hypothesis": "HBEST",
+              "target_gt_index": 6,
+              "target_iou": 0.32171447064515524,
+              "track_id": 4
+            },
+            {
+              "candidate_index": 51,
+              "hypothesis": "HBEST",
+              "target_gt_index": 3,
+              "target_iou": 0.251389996780223,
+              "track_id": 311
+            },
+            {
+              "candidate_index": 55,
+              "hypothesis": "HBEST",
+              "target_gt_index": 5,
+              "target_iou": 0.41621512997217547,
+              "track_id": 334
+            },
+            {
+              "candidate_index": 57,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 0,
+              "target_iou": 0.3203477817522848,
+              "track_id": 337
+            }
+          ],
+          "scene0684_01": [],
+          "scene0686_01": [
+            {
+              "candidate_index": 9,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 1,
+              "target_iou": 0.2562242860399495,
+              "track_id": 14
+            }
+          ],
+          "scene0689_00": [],
+          "scene0693_00": [
+            {
+              "candidate_index": 23,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 8,
+              "target_iou": 0.2815992301371751,
+              "track_id": 90
+            }
+          ],
+          "scene0695_01": [],
+          "scene0696_00": [
+            {
+              "candidate_index": 17,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 17,
+              "target_iou": 0.3322277144334718,
+              "track_id": 97
+            },
+            {
+              "candidate_index": 20,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 0,
+              "target_iou": 0.479158418675346,
+              "track_id": 118
+            },
+            {
+              "candidate_index": 23,
+              "hypothesis": "HBEST",
+              "target_gt_index": 9,
+              "target_iou": 0.4227182565894462,
+              "track_id": 123
+            },
+            {
+              "candidate_index": 24,
+              "hypothesis": "HBEST",
+              "target_gt_index": 12,
+              "target_iou": 0.572135288423258,
+              "track_id": 128
+            },
+            {
+              "candidate_index": 41,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 2,
+              "target_iou": 0.4210569982782051,
+              "track_id": 176
+            },
+            {
+              "candidate_index": 56,
+              "hypothesis": "HBEST",
+              "target_gt_index": 15,
+              "target_iou": 0.6956793274975696,
+              "track_id": 233
+            }
+          ],
+          "scene0697_02": [
+            {
+              "candidate_index": 85,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 2,
+              "target_iou": 0.3399841199075928,
+              "track_id": 350
+            }
+          ],
+          "scene0699_00": [
+            {
+              "candidate_index": 43,
+              "hypothesis": "HBEST",
+              "target_gt_index": 6,
+              "target_iou": 0.6340544319564212,
+              "track_id": 171
+            },
+            {
+              "candidate_index": 52,
+              "hypothesis": "HBEST",
+              "target_gt_index": 3,
+              "target_iou": 0.6446210814116701,
+              "track_id": 198
+            },
+            {
+              "candidate_index": 53,
+              "hypothesis": "HBEST",
+              "target_gt_index": 8,
+              "target_iou": 0.5900611288202339,
+              "track_id": 201
+            },
+            {
+              "candidate_index": 68,
+              "hypothesis": "HBEST",
+              "target_gt_index": 9,
+              "target_iou": 0.33038156112681105,
+              "track_id": 263
+            }
+          ],
+          "scene0700_00": [],
+          "scene0701_00": [],
+          "scene0702_01": [],
+          "scene0704_00": []
+        },
+        "selected_candidate_count": 162
+      },
+      "hypothesis_choice": "GT-assisted NROBUST-versus-HBEST; oracle only",
+      "identity_constraint": "one F3 track contributes at most one dual-geometry edge",
+      "iou_threshold": 0.25,
+      "native_maximum_matching_count": 810,
+      "passes_144_match_capacity_gate": true,
+      "required_additional_union_matches": 144,
+      "union_maximum_matching_count": 973
+    },
+    "0.50": {
+      "additional_union_matching_over_native": 85,
+      "baseline_official_constant_score": {
+        "ap": 0.12066851830119436,
+        "ap_points": 12.066851830119436,
+        "false_positive": 1240,
+        "greedy_tp": 548,
+        "precision": 0.30648769574944074,
+        "recall": 0.38241451473662624,
+        "unmatched_gt_count": 885
+      },
+      "candidate_maximum_matching_count": 225,
+      "gt_selected_candidate_suffix": {
+        "delta_ap_points": 3.266467465646965,
+        "deployable": false,
+        "formal_score": 1.0,
+        "native_prefix_unchanged": true,
+        "official_evaluation": {
+          "ap": 0.153333192957664,
+          "ap_points": 15.333319295766401,
+          "false_positive": 1242,
+          "greedy_tp": 631,
+          "precision": 0.3368926855312333,
+          "recall": 0.44033496131169925,
+          "unmatched_gt_count": 802
+        },
+        "oracle_only": true,
+        "passes_plus10_ap": false,
+        "per_scene_selection": {
+          "scene0011_01": [],
+          "scene0019_00": [],
+          "scene0025_00": [
+            {
+              "candidate_index": 36,
+              "hypothesis": "HBEST",
+              "target_gt_index": 5,
+              "target_iou": 0.5516108028626788,
+              "track_id": 207
+            }
+          ],
+          "scene0030_01": [
+            {
+              "candidate_index": 58,
+              "hypothesis": "HBEST",
+              "target_gt_index": 10,
+              "target_iou": 0.5195549190500189,
+              "track_id": 243
+            },
+            {
+              "candidate_index": 61,
+              "hypothesis": "HBEST",
+              "target_gt_index": 2,
+              "target_iou": 0.6529889059942807,
+              "track_id": 270
+            }
+          ],
+          "scene0046_00": [
+            {
+              "candidate_index": 6,
+              "hypothesis": "HBEST",
+              "target_gt_index": 0,
+              "target_iou": 0.5190805259682215,
+              "track_id": 68
+            },
+            {
+              "candidate_index": 35,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 8,
+              "target_iou": 0.5643241456303555,
+              "track_id": 192
+            }
+          ],
+          "scene0050_01": [
+            {
+              "candidate_index": 16,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 5,
+              "target_iou": 0.6514636181008497,
+              "track_id": 142
+            },
+            {
+              "candidate_index": 19,
+              "hypothesis": "HBEST",
+              "target_gt_index": 7,
+              "target_iou": 0.504893726092571,
+              "track_id": 171
+            }
+          ],
+          "scene0064_00": [],
+          "scene0077_00": [],
+          "scene0081_02": [],
+          "scene0084_00": [
+            {
+              "candidate_index": 18,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 2,
+              "target_iou": 0.5552876883694912,
+              "track_id": 85
+            },
+            {
+              "candidate_index": 29,
+              "hypothesis": "HBEST",
+              "target_gt_index": 4,
+              "target_iou": 0.5278264704558882,
+              "track_id": 138
+            }
+          ],
+          "scene0086_02": [
+            {
+              "candidate_index": 21,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 3,
+              "target_iou": 0.5100378736370137,
+              "track_id": 53
+            },
+            {
+              "candidate_index": 24,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 1,
+              "target_iou": 0.5200677674126419,
+              "track_id": 66
+            }
+          ],
+          "scene0088_00": [],
+          "scene0088_03": [],
+          "scene0131_02": [
+            {
+              "candidate_index": 23,
+              "hypothesis": "HBEST",
+              "target_gt_index": 12,
+              "target_iou": 0.6163252559525525,
+              "track_id": 123
+            }
+          ],
+          "scene0144_01": [],
+          "scene0146_02": [
+            {
+              "candidate_index": 17,
+              "hypothesis": "HBEST",
+              "target_gt_index": 3,
+              "target_iou": 0.6197586405794746,
+              "track_id": 59
+            }
+          ],
+          "scene0153_00": [
+            {
+              "candidate_index": 3,
+              "hypothesis": "HBEST",
+              "target_gt_index": 6,
+              "target_iou": 0.6642052288010368,
+              "track_id": 18
+            }
+          ],
+          "scene0164_02": [],
+          "scene0169_00": [
+            {
+              "candidate_index": 49,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 0,
+              "target_iou": 0.5560634679522949,
+              "track_id": 235
+            }
+          ],
+          "scene0187_01": [
+            {
+              "candidate_index": 13,
+              "hypothesis": "HBEST",
+              "target_gt_index": 4,
+              "target_iou": 0.7169258419601567,
+              "track_id": 82
+            }
+          ],
+          "scene0193_01": [],
+          "scene0203_00": [],
+          "scene0207_02": [
+            {
+              "candidate_index": 7,
+              "hypothesis": "HBEST",
+              "target_gt_index": 11,
+              "target_iou": 0.7148414144378299,
+              "track_id": 71
+            },
+            {
+              "candidate_index": 48,
+              "hypothesis": "HBEST",
+              "target_gt_index": 8,
+              "target_iou": 0.7222678581002401,
+              "track_id": 288
+            },
+            {
+              "candidate_index": 64,
+              "hypothesis": "HBEST",
+              "target_gt_index": 10,
+              "target_iou": 0.7555112957647457,
+              "track_id": 386
+            }
+          ],
+          "scene0221_00": [],
+          "scene0222_01": [
+            {
+              "candidate_index": 38,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 5,
+              "target_iou": 0.5219391818267646,
+              "track_id": 217
+            },
+            {
+              "candidate_index": 88,
+              "hypothesis": "HBEST",
+              "target_gt_index": 12,
+              "target_iou": 0.5261993693032033,
+              "track_id": 555
+            },
+            {
+              "candidate_index": 97,
+              "hypothesis": "HBEST",
+              "target_gt_index": 14,
+              "target_iou": 0.505438231741718,
+              "track_id": 584
+            }
+          ],
+          "scene0231_02": [],
+          "scene0246_00": [
+            {
+              "candidate_index": 38,
+              "hypothesis": "HBEST",
+              "target_gt_index": 9,
+              "target_iou": 0.5384329591585924,
+              "track_id": 308
+            }
+          ],
+          "scene0249_00": [],
+          "scene0256_00": [
+            {
+              "candidate_index": 5,
+              "hypothesis": "HBEST",
+              "target_gt_index": 4,
+              "target_iou": 0.5254008257010555,
+              "track_id": 16
+            }
+          ],
+          "scene0277_00": [
+            {
+              "candidate_index": 13,
+              "hypothesis": "HBEST",
+              "target_gt_index": 1,
+              "target_iou": 0.6508311307281998,
+              "track_id": 59
+            }
+          ],
+          "scene0278_01": [],
+          "scene0300_00": [
+            {
+              "candidate_index": 11,
+              "hypothesis": "HBEST",
+              "target_gt_index": 10,
+              "target_iou": 0.5442123757389594,
+              "track_id": 68
+            },
+            {
+              "candidate_index": 29,
+              "hypothesis": "HBEST",
+              "target_gt_index": 4,
+              "target_iou": 0.6949109035970054,
+              "track_id": 141
+            }
+          ],
+          "scene0304_00": [],
+          "scene0307_01": [
+            {
+              "candidate_index": 3,
+              "hypothesis": "HBEST",
+              "target_gt_index": 3,
+              "target_iou": 0.5797608586430718,
+              "track_id": 9
+            }
+          ],
+          "scene0329_00": [
+            {
+              "candidate_index": 11,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 15,
+              "target_iou": 0.6548734274679586,
+              "track_id": 126
+            },
+            {
+              "candidate_index": 13,
+              "hypothesis": "HBEST",
+              "target_gt_index": 18,
+              "target_iou": 0.6211650412684566,
+              "track_id": 138
+            }
+          ],
+          "scene0334_00": [
+            {
+              "candidate_index": 0,
+              "hypothesis": "HBEST",
+              "target_gt_index": 2,
+              "target_iou": 0.7008717551000634,
+              "track_id": 0
+            },
+            {
+              "candidate_index": 8,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 0,
+              "target_iou": 0.593217743669798,
+              "track_id": 30
+            }
+          ],
+          "scene0338_02": [],
+          "scene0351_00": [],
+          "scene0353_02": [],
+          "scene0355_01": [],
+          "scene0356_01": [
+            {
+              "candidate_index": 5,
+              "hypothesis": "HBEST",
+              "target_gt_index": 0,
+              "target_iou": 0.5410874445045621,
+              "track_id": 8
+            }
+          ],
+          "scene0377_02": [
+            {
+              "candidate_index": 7,
+              "hypothesis": "HBEST",
+              "target_gt_index": 1,
+              "target_iou": 0.7245269150777321,
+              "track_id": 58
+            }
+          ],
+          "scene0378_02": [
+            {
+              "candidate_index": 48,
+              "hypothesis": "HBEST",
+              "target_gt_index": 10,
+              "target_iou": 0.5196949388365399,
+              "track_id": 226
+            }
+          ],
+          "scene0389_00": [],
+          "scene0406_01": [],
+          "scene0412_00": [],
+          "scene0423_01": [],
+          "scene0426_00": [
+            {
+              "candidate_index": 2,
+              "hypothesis": "HBEST",
+              "target_gt_index": 7,
+              "target_iou": 0.6884024249803197,
+              "track_id": 11
+            }
+          ],
+          "scene0426_03": [
+            {
+              "candidate_index": 3,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 9,
+              "target_iou": 0.5143731737021001,
+              "track_id": 78
+            }
+          ],
+          "scene0427_00": [],
+          "scene0432_01": [],
+          "scene0435_00": [
+            {
+              "candidate_index": 15,
+              "hypothesis": "HBEST",
+              "target_gt_index": 6,
+              "target_iou": 0.5531920213857787,
+              "track_id": 74
+            },
+            {
+              "candidate_index": 24,
+              "hypothesis": "HBEST",
+              "target_gt_index": 16,
+              "target_iou": 0.6272000553538637,
+              "track_id": 93
+            },
+            {
+              "candidate_index": 71,
+              "hypothesis": "HBEST",
+              "target_gt_index": 4,
+              "target_iou": 0.5298394617136103,
+              "track_id": 287
+            },
+            {
+              "candidate_index": 72,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 10,
+              "target_iou": 0.517702317632445,
+              "track_id": 291
+            },
+            {
+              "candidate_index": 90,
+              "hypothesis": "HBEST",
+              "target_gt_index": 3,
+              "target_iou": 0.5484849594040461,
+              "track_id": 358
+            }
+          ],
+          "scene0435_03": [
+            {
+              "candidate_index": 11,
+              "hypothesis": "HBEST",
+              "target_gt_index": 2,
+              "target_iou": 0.7459575722304449,
+              "track_id": 43
+            },
+            {
+              "candidate_index": 15,
+              "hypothesis": "HBEST",
+              "target_gt_index": 10,
+              "target_iou": 0.6810496302130525,
+              "track_id": 53
+            },
+            {
+              "candidate_index": 29,
+              "hypothesis": "HBEST",
+              "target_gt_index": 9,
+              "target_iou": 0.6373783154703678,
+              "track_id": 98
+            },
+            {
+              "candidate_index": 41,
+              "hypothesis": "HBEST",
+              "target_gt_index": 8,
+              "target_iou": 0.6059615323814936,
+              "track_id": 164
+            }
+          ],
+          "scene0458_00": [],
+          "scene0474_01": [
+            {
+              "candidate_index": 25,
+              "hypothesis": "HBEST",
+              "target_gt_index": 12,
+              "target_iou": 0.5484616566446173,
+              "track_id": 130
+            },
+            {
+              "candidate_index": 44,
+              "hypothesis": "HBEST",
+              "target_gt_index": 2,
+              "target_iou": 0.5824847378843769,
+              "track_id": 233
+            },
+            {
+              "candidate_index": 56,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 8,
+              "target_iou": 0.6066391269448705,
+              "track_id": 256
+            }
+          ],
+          "scene0474_04": [
+            {
+              "candidate_index": 3,
+              "hypothesis": "HBEST",
+              "target_gt_index": 10,
+              "target_iou": 0.5452218489643144,
+              "track_id": 105
+            }
+          ],
+          "scene0490_00": [],
+          "scene0496_00": [
+            {
+              "candidate_index": 27,
+              "hypothesis": "HBEST",
+              "target_gt_index": 20,
+              "target_iou": 0.6212219157625931,
+              "track_id": 99
+            }
+          ],
+          "scene0500_00": [
+            {
+              "candidate_index": 35,
+              "hypothesis": "HBEST",
+              "target_gt_index": 32,
+              "target_iou": 0.739875294979879,
+              "track_id": 131
+            },
+            {
+              "candidate_index": 94,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 23,
+              "target_iou": 0.6368222802388899,
+              "track_id": 354
+            }
+          ],
+          "scene0518_00": [],
+          "scene0535_00": [
+            {
+              "candidate_index": 2,
+              "hypothesis": "HBEST",
+              "target_gt_index": 6,
+              "target_iou": 0.5596611248830617,
+              "track_id": 8
+            }
+          ],
+          "scene0552_01": [],
+          "scene0553_01": [],
+          "scene0559_02": [],
+          "scene0568_00": [],
+          "scene0574_00": [
+            {
+              "candidate_index": 11,
+              "hypothesis": "HBEST",
+              "target_gt_index": 1,
+              "target_iou": 0.6400779049436642,
+              "track_id": 56
+            }
+          ],
+          "scene0575_00": [
+            {
+              "candidate_index": 31,
+              "hypothesis": "HBEST",
+              "target_gt_index": 12,
+              "target_iou": 0.5247237184601307,
+              "track_id": 135
+            }
+          ],
+          "scene0578_00": [
+            {
+              "candidate_index": 18,
+              "hypothesis": "HBEST",
+              "target_gt_index": 6,
+              "target_iou": 0.6805169823061674,
+              "track_id": 54
+            }
+          ],
+          "scene0580_00": [
+            {
+              "candidate_index": 67,
+              "hypothesis": "HBEST",
+              "target_gt_index": 8,
+              "target_iou": 0.6501696673275031,
+              "track_id": 430
+            }
+          ],
+          "scene0583_00": [],
+          "scene0591_01": [],
+          "scene0598_01": [
+            {
+              "candidate_index": 14,
+              "hypothesis": "HBEST",
+              "target_gt_index": 0,
+              "target_iou": 0.5313500062918274,
+              "track_id": 141
+            }
+          ],
+          "scene0599_01": [
+            {
+              "candidate_index": 33,
+              "hypothesis": "HBEST",
+              "target_gt_index": 14,
+              "target_iou": 0.5629905134729544,
+              "track_id": 89
+            },
+            {
+              "candidate_index": 42,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 12,
+              "target_iou": 0.503341144651367,
+              "track_id": 134
+            }
+          ],
+          "scene0606_01": [],
+          "scene0607_01": [],
+          "scene0608_02": [
+            {
+              "candidate_index": 7,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 13,
+              "target_iou": 0.5321201386906128,
+              "track_id": 14
+            },
+            {
+              "candidate_index": 13,
+              "hypothesis": "HBEST",
+              "target_gt_index": 14,
+              "target_iou": 0.6093718530118337,
+              "track_id": 72
+            },
+            {
+              "candidate_index": 49,
+              "hypothesis": "HBEST",
+              "target_gt_index": 16,
+              "target_iou": 0.5367634340397678,
+              "track_id": 217
+            }
+          ],
+          "scene0609_01": [],
+          "scene0616_01": [
+            {
+              "candidate_index": 37,
+              "hypothesis": "HBEST",
+              "target_gt_index": 3,
+              "target_iou": 0.649083195474099,
+              "track_id": 371
+            }
+          ],
+          "scene0618_00": [
+            {
+              "candidate_index": 11,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 12,
+              "target_iou": 0.5041681699604948,
+              "track_id": 46
+            }
+          ],
+          "scene0629_00": [
+            {
+              "candidate_index": 6,
+              "hypothesis": "HBEST",
+              "target_gt_index": 1,
+              "target_iou": 0.5073894240280068,
+              "track_id": 20
+            },
+            {
+              "candidate_index": 85,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 0,
+              "target_iou": 0.5620974080191393,
+              "track_id": 278
+            }
+          ],
+          "scene0644_00": [],
+          "scene0645_02": [
+            {
+              "candidate_index": 51,
+              "hypothesis": "HBEST",
+              "target_gt_index": 18,
+              "target_iou": 0.5694243062081119,
+              "track_id": 237
+            },
+            {
+              "candidate_index": 53,
+              "hypothesis": "HBEST",
+              "target_gt_index": 8,
+              "target_iou": 0.6207405272238399,
+              "track_id": 240
+            },
+            {
+              "candidate_index": 68,
+              "hypothesis": "HBEST",
+              "target_gt_index": 5,
+              "target_iou": 0.5118368262846197,
+              "track_id": 274
+            }
+          ],
+          "scene0651_02": [],
+          "scene0655_01": [
+            {
+              "candidate_index": 6,
+              "hypothesis": "HBEST",
+              "target_gt_index": 6,
+              "target_iou": 0.5624500559130245,
+              "track_id": 42
+            }
+          ],
+          "scene0663_00": [
+            {
+              "candidate_index": 28,
+              "hypothesis": "NROBUST",
+              "target_gt_index": 0,
+              "target_iou": 0.6094702767794096,
+              "track_id": 169
+            }
+          ],
+          "scene0664_00": [],
+          "scene0665_00": [
+            {
+              "candidate_index": 0,
+              "hypothesis": "HBEST",
+              "target_gt_index": 28,
+              "target_iou": 0.5875458028618756,
+              "track_id": 1
+            },
+            {
+              "candidate_index": 2,
+              "hypothesis": "HBEST",
+              "target_gt_index": 15,
+              "target_iou": 0.7125937525592155,
+              "track_id": 3
+            },
+            {
+              "candidate_index": 27,
+              "hypothesis": "HBEST",
+              "target_gt_index": 1,
+              "target_iou": 0.8036371682569009,
+              "track_id": 95
+            }
+          ],
+          "scene0678_01": [],
+          "scene0684_01": [],
+          "scene0686_01": [
+            {
+              "candidate_index": 10,
+              "hypothesis": "HBEST",
+              "target_gt_index": 1,
+              "target_iou": 0.5917416799678002,
+              "track_id": 15
+            }
+          ],
+          "scene0689_00": [
+            {
+              "candidate_index": 4,
+              "hypothesis": "HBEST",
+              "target_gt_index": 4,
+              "target_iou": 0.5157033680585625,
+              "track_id": 31
+            }
+          ],
+          "scene0693_00": [],
+          "scene0695_01": [],
+          "scene0696_00": [
+            {
+              "candidate_index": 1,
+              "hypothesis": "HBEST",
+              "target_gt_index": 16,
+              "target_iou": 0.5543802175403267,
+              "track_id": 1
+            },
+            {
+              "candidate_index": 24,
+              "hypothesis": "HBEST",
+              "target_gt_index": 12,
+              "target_iou": 0.572135288423258,
+              "track_id": 128
+            },
+            {
+              "candidate_index": 56,
+              "hypothesis": "HBEST",
+              "target_gt_index": 15,
+              "target_iou": 0.6956793274975696,
+              "track_id": 233
+            }
+          ],
+          "scene0697_02": [
+            {
+              "candidate_index": 54,
+              "hypothesis": "HBEST",
+              "target_gt_index": 3,
+              "target_iou": 0.5157068637159234,
+              "track_id": 182
+            }
+          ],
+          "scene0699_00": [
+            {
+              "candidate_index": 43,
+              "hypothesis": "HBEST",
+              "target_gt_index": 6,
+              "target_iou": 0.6340544319564212,
+              "track_id": 171
+            },
+            {
+              "candidate_index": 52,
+              "hypothesis": "HBEST",
+              "target_gt_index": 3,
+              "target_iou": 0.6446210814116701,
+              "track_id": 198
+            },
+            {
+              "candidate_index": 53,
+              "hypothesis": "HBEST",
+              "target_gt_index": 8,
+              "target_iou": 0.5900611288202339,
+              "track_id": 201
+            }
+          ],
+          "scene0700_00": [],
+          "scene0701_00": [],
+          "scene0702_01": [],
+          "scene0704_00": []
+        },
+        "selected_candidate_count": 85
+      },
+      "hypothesis_choice": "GT-assisted NROBUST-versus-HBEST; oracle only",
+      "identity_constraint": "one F3 track contributes at most one dual-geometry edge",
+      "iou_threshold": 0.5,
+      "native_maximum_matching_count": 548,
+      "passes_144_match_capacity_gate": false,
+      "required_additional_union_matches": 144,
+      "union_maximum_matching_count": 633
+    }
+  },
+  "protocol_id": "F0-F3-N0-SAM2-TSDF-MV3DIS-DUAL-OBB-SHADOW-PAPER100-V1",
+  "receipt": {
+    "path": "/data/ZhaoX/BoxFusion/logs/scannet_sam2_n0_fullroute_paper100_score05/final/N0_FULLROUTE_PAPER100.json",
+    "sha256": "b7cfb2349b3ca7d0a65fdd1be3ef9e85bad329f10cb549c7a6a04789dc541df8"
+  },
+  "scenes": {
+    "scene0011_01": {
+      "gt_count": 23,
+      "invalid_geometry_track_count": 17,
+      "native_prediction_count": 21,
+      "valid_identity_constrained_track_count": 48
+    },
+    "scene0019_00": {
+      "gt_count": 14,
+      "invalid_geometry_track_count": 0,
+      "native_prediction_count": 13,
+      "valid_identity_constrained_track_count": 9
+    },
+    "scene0025_00": {
+      "gt_count": 16,
+      "invalid_geometry_track_count": 31,
+      "native_prediction_count": 20,
+      "valid_identity_constrained_track_count": 69
+    },
+    "scene0030_01": {
+      "gt_count": 32,
+      "invalid_geometry_track_count": 14,
+      "native_prediction_count": 27,
+      "valid_identity_constrained_track_count": 75
+    },
+    "scene0046_00": {
+      "gt_count": 15,
+      "invalid_geometry_track_count": 27,
+      "native_prediction_count": 13,
+      "valid_identity_constrained_track_count": 61
+    },
+    "scene0050_01": {
+      "gt_count": 13,
+      "invalid_geometry_track_count": 45,
+      "native_prediction_count": 12,
+      "valid_identity_constrained_track_count": 43
+    },
+    "scene0064_00": {
+      "gt_count": 9,
+      "invalid_geometry_track_count": 12,
+      "native_prediction_count": 15,
+      "valid_identity_constrained_track_count": 29
+    },
+    "scene0077_00": {
+      "gt_count": 10,
+      "invalid_geometry_track_count": 2,
+      "native_prediction_count": 13,
+      "valid_identity_constrained_track_count": 8
+    },
+    "scene0081_02": {
+      "gt_count": 34,
+      "invalid_geometry_track_count": 5,
+      "native_prediction_count": 30,
+      "valid_identity_constrained_track_count": 12
+    },
+    "scene0084_00": {
+      "gt_count": 12,
+      "invalid_geometry_track_count": 22,
+      "native_prediction_count": 3,
+      "valid_identity_constrained_track_count": 54
+    },
+    "scene0086_02": {
+      "gt_count": 12,
+      "invalid_geometry_track_count": 8,
+      "native_prediction_count": 11,
+      "valid_identity_constrained_track_count": 46
+    },
+    "scene0088_00": {
+      "gt_count": 30,
+      "invalid_geometry_track_count": 7,
+      "native_prediction_count": 27,
+      "valid_identity_constrained_track_count": 25
+    },
+    "scene0088_03": {
+      "gt_count": 25,
+      "invalid_geometry_track_count": 1,
+      "native_prediction_count": 30,
+      "valid_identity_constrained_track_count": 14
+    },
+    "scene0131_02": {
+      "gt_count": 14,
+      "invalid_geometry_track_count": 5,
+      "native_prediction_count": 18,
+      "valid_identity_constrained_track_count": 46
+    },
+    "scene0144_01": {
+      "gt_count": 10,
+      "invalid_geometry_track_count": 8,
+      "native_prediction_count": 14,
+      "valid_identity_constrained_track_count": 16
+    },
+    "scene0146_02": {
+      "gt_count": 4,
+      "invalid_geometry_track_count": 15,
+      "native_prediction_count": 4,
+      "valid_identity_constrained_track_count": 31
+    },
+    "scene0153_00": {
+      "gt_count": 7,
+      "invalid_geometry_track_count": 4,
+      "native_prediction_count": 2,
+      "valid_identity_constrained_track_count": 9
+    },
+    "scene0164_02": {
+      "gt_count": 9,
+      "invalid_geometry_track_count": 16,
+      "native_prediction_count": 13,
+      "valid_identity_constrained_track_count": 41
+    },
+    "scene0169_00": {
+      "gt_count": 33,
+      "invalid_geometry_track_count": 10,
+      "native_prediction_count": 25,
+      "valid_identity_constrained_track_count": 50
+    },
+    "scene0187_01": {
+      "gt_count": 12,
+      "invalid_geometry_track_count": 4,
+      "native_prediction_count": 16,
+      "valid_identity_constrained_track_count": 44
+    },
+    "scene0193_01": {
+      "gt_count": 6,
+      "invalid_geometry_track_count": 2,
+      "native_prediction_count": 6,
+      "valid_identity_constrained_track_count": 8
+    },
+    "scene0203_00": {
+      "gt_count": 14,
+      "invalid_geometry_track_count": 3,
+      "native_prediction_count": 43,
+      "valid_identity_constrained_track_count": 25
+    },
+    "scene0207_02": {
+      "gt_count": 25,
+      "invalid_geometry_track_count": 22,
+      "native_prediction_count": 41,
+      "valid_identity_constrained_track_count": 74
+    },
+    "scene0221_00": {
+      "gt_count": 24,
+      "invalid_geometry_track_count": 5,
+      "native_prediction_count": 21,
+      "valid_identity_constrained_track_count": 24
+    },
+    "scene0222_01": {
+      "gt_count": 17,
+      "invalid_geometry_track_count": 45,
+      "native_prediction_count": 27,
+      "valid_identity_constrained_track_count": 116
+    },
+    "scene0231_02": {
+      "gt_count": 33,
+      "invalid_geometry_track_count": 19,
+      "native_prediction_count": 59,
+      "valid_identity_constrained_track_count": 60
+    },
+    "scene0246_00": {
+      "gt_count": 12,
+      "invalid_geometry_track_count": 33,
+      "native_prediction_count": 18,
+      "valid_identity_constrained_track_count": 71
+    },
+    "scene0249_00": {
+      "gt_count": 44,
+      "invalid_geometry_track_count": 17,
+      "native_prediction_count": 57,
+      "valid_identity_constrained_track_count": 67
+    },
+    "scene0256_00": {
+      "gt_count": 6,
+      "invalid_geometry_track_count": 19,
+      "native_prediction_count": 13,
+      "valid_identity_constrained_track_count": 34
+    },
+    "scene0277_00": {
+      "gt_count": 9,
+      "invalid_geometry_track_count": 1,
+      "native_prediction_count": 8,
+      "valid_identity_constrained_track_count": 26
+    },
+    "scene0278_01": {
+      "gt_count": 6,
+      "invalid_geometry_track_count": 3,
+      "native_prediction_count": 9,
+      "valid_identity_constrained_track_count": 15
+    },
+    "scene0300_00": {
+      "gt_count": 11,
+      "invalid_geometry_track_count": 5,
+      "native_prediction_count": 5,
+      "valid_identity_constrained_track_count": 52
+    },
+    "scene0304_00": {
+      "gt_count": 3,
+      "invalid_geometry_track_count": 2,
+      "native_prediction_count": 10,
+      "valid_identity_constrained_track_count": 33
+    },
+    "scene0307_01": {
+      "gt_count": 20,
+      "invalid_geometry_track_count": 52,
+      "native_prediction_count": 33,
+      "valid_identity_constrained_track_count": 112
+    },
+    "scene0329_00": {
+      "gt_count": 29,
+      "invalid_geometry_track_count": 3,
+      "native_prediction_count": 42,
+      "valid_identity_constrained_track_count": 26
+    },
+    "scene0334_00": {
+      "gt_count": 5,
+      "invalid_geometry_track_count": 4,
+      "native_prediction_count": 9,
+      "valid_identity_constrained_track_count": 50
+    },
+    "scene0338_02": {
+      "gt_count": 6,
+      "invalid_geometry_track_count": 0,
+      "native_prediction_count": 8,
+      "valid_identity_constrained_track_count": 5
+    },
+    "scene0351_00": {
+      "gt_count": 8,
+      "invalid_geometry_track_count": 31,
+      "native_prediction_count": 16,
+      "valid_identity_constrained_track_count": 38
+    },
+    "scene0353_02": {
+      "gt_count": 14,
+      "invalid_geometry_track_count": 26,
+      "native_prediction_count": 24,
+      "valid_identity_constrained_track_count": 31
+    },
+    "scene0355_01": {
+      "gt_count": 6,
+      "invalid_geometry_track_count": 0,
+      "native_prediction_count": 22,
+      "valid_identity_constrained_track_count": 4
+    },
+    "scene0356_01": {
+      "gt_count": 11,
+      "invalid_geometry_track_count": 9,
+      "native_prediction_count": 6,
+      "valid_identity_constrained_track_count": 29
+    },
+    "scene0377_02": {
+      "gt_count": 3,
+      "invalid_geometry_track_count": 11,
+      "native_prediction_count": 5,
+      "valid_identity_constrained_track_count": 20
+    },
+    "scene0378_02": {
+      "gt_count": 14,
+      "invalid_geometry_track_count": 31,
+      "native_prediction_count": 20,
+      "valid_identity_constrained_track_count": 68
+    },
+    "scene0389_00": {
+      "gt_count": 13,
+      "invalid_geometry_track_count": 5,
+      "native_prediction_count": 14,
+      "valid_identity_constrained_track_count": 28
+    },
+    "scene0406_01": {
+      "gt_count": 9,
+      "invalid_geometry_track_count": 7,
+      "native_prediction_count": 5,
+      "valid_identity_constrained_track_count": 26
+    },
+    "scene0412_00": {
+      "gt_count": 18,
+      "invalid_geometry_track_count": 26,
+      "native_prediction_count": 20,
+      "valid_identity_constrained_track_count": 53
+    },
+    "scene0423_01": {
+      "gt_count": 5,
+      "invalid_geometry_track_count": 5,
+      "native_prediction_count": 7,
+      "valid_identity_constrained_track_count": 7
+    },
+    "scene0426_00": {
+      "gt_count": 11,
+      "invalid_geometry_track_count": 14,
+      "native_prediction_count": 17,
+      "valid_identity_constrained_track_count": 21
+    },
+    "scene0426_03": {
+      "gt_count": 10,
+      "invalid_geometry_track_count": 6,
+      "native_prediction_count": 21,
+      "valid_identity_constrained_track_count": 8
+    },
+    "scene0427_00": {
+      "gt_count": 8,
+      "invalid_geometry_track_count": 2,
+      "native_prediction_count": 7,
+      "valid_identity_constrained_track_count": 23
+    },
+    "scene0432_01": {
+      "gt_count": 5,
+      "invalid_geometry_track_count": 0,
+      "native_prediction_count": 5,
+      "valid_identity_constrained_track_count": 9
+    },
+    "scene0435_00": {
+      "gt_count": 22,
+      "invalid_geometry_track_count": 23,
+      "native_prediction_count": 14,
+      "valid_identity_constrained_track_count": 113
+    },
+    "scene0435_03": {
+      "gt_count": 12,
+      "invalid_geometry_track_count": 6,
+      "native_prediction_count": 16,
+      "valid_identity_constrained_track_count": 59
+    },
+    "scene0458_00": {
+      "gt_count": 8,
+      "invalid_geometry_track_count": 17,
+      "native_prediction_count": 3,
+      "valid_identity_constrained_track_count": 37
+    },
+    "scene0474_01": {
+      "gt_count": 13,
+      "invalid_geometry_track_count": 17,
+      "native_prediction_count": 23,
+      "valid_identity_constrained_track_count": 66
+    },
+    "scene0474_04": {
+      "gt_count": 16,
+      "invalid_geometry_track_count": 4,
+      "native_prediction_count": 13,
+      "valid_identity_constrained_track_count": 5
+    },
+    "scene0490_00": {
+      "gt_count": 11,
+      "invalid_geometry_track_count": 3,
+      "native_prediction_count": 23,
+      "valid_identity_constrained_track_count": 12
+    },
+    "scene0496_00": {
+      "gt_count": 24,
+      "invalid_geometry_track_count": 1,
+      "native_prediction_count": 29,
+      "valid_identity_constrained_track_count": 40
+    },
+    "scene0500_00": {
+      "gt_count": 47,
+      "invalid_geometry_track_count": 18,
+      "native_prediction_count": 44,
+      "valid_identity_constrained_track_count": 99
+    },
+    "scene0518_00": {
+      "gt_count": 9,
+      "invalid_geometry_track_count": 17,
+      "native_prediction_count": 13,
+      "valid_identity_constrained_track_count": 34
+    },
+    "scene0535_00": {
+      "gt_count": 11,
+      "invalid_geometry_track_count": 2,
+      "native_prediction_count": 12,
+      "valid_identity_constrained_track_count": 22
+    },
+    "scene0552_01": {
+      "gt_count": 17,
+      "invalid_geometry_track_count": 0,
+      "native_prediction_count": 15,
+      "valid_identity_constrained_track_count": 11
+    },
+    "scene0553_01": {
+      "gt_count": 4,
+      "invalid_geometry_track_count": 11,
+      "native_prediction_count": 4,
+      "valid_identity_constrained_track_count": 40
+    },
+    "scene0559_02": {
+      "gt_count": 7,
+      "invalid_geometry_track_count": 3,
+      "native_prediction_count": 17,
+      "valid_identity_constrained_track_count": 15
+    },
+    "scene0568_00": {
+      "gt_count": 12,
+      "invalid_geometry_track_count": 17,
+      "native_prediction_count": 19,
+      "valid_identity_constrained_track_count": 48
+    },
+    "scene0574_00": {
+      "gt_count": 8,
+      "invalid_geometry_track_count": 16,
+      "native_prediction_count": 3,
+      "valid_identity_constrained_track_count": 20
+    },
+    "scene0575_00": {
+      "gt_count": 14,
+      "invalid_geometry_track_count": 25,
+      "native_prediction_count": 17,
+      "valid_identity_constrained_track_count": 55
+    },
+    "scene0578_00": {
+      "gt_count": 11,
+      "invalid_geometry_track_count": 8,
+      "native_prediction_count": 6,
+      "valid_identity_constrained_track_count": 41
+    },
+    "scene0580_00": {
+      "gt_count": 9,
+      "invalid_geometry_track_count": 27,
+      "native_prediction_count": 17,
+      "valid_identity_constrained_track_count": 73
+    },
+    "scene0583_00": {
+      "gt_count": 13,
+      "invalid_geometry_track_count": 15,
+      "native_prediction_count": 12,
+      "valid_identity_constrained_track_count": 45
+    },
+    "scene0591_01": {
+      "gt_count": 14,
+      "invalid_geometry_track_count": 21,
+      "native_prediction_count": 19,
+      "valid_identity_constrained_track_count": 76
+    },
+    "scene0598_01": {
+      "gt_count": 11,
+      "invalid_geometry_track_count": 6,
+      "native_prediction_count": 13,
+      "valid_identity_constrained_track_count": 19
+    },
+    "scene0599_01": {
+      "gt_count": 15,
+      "invalid_geometry_track_count": 14,
+      "native_prediction_count": 11,
+      "valid_identity_constrained_track_count": 96
+    },
+    "scene0606_01": {
+      "gt_count": 13,
+      "invalid_geometry_track_count": 23,
+      "native_prediction_count": 29,
+      "valid_identity_constrained_track_count": 95
+    },
+    "scene0607_01": {
+      "gt_count": 11,
+      "invalid_geometry_track_count": 2,
+      "native_prediction_count": 10,
+      "valid_identity_constrained_track_count": 14
+    },
+    "scene0608_02": {
+      "gt_count": 30,
+      "invalid_geometry_track_count": 21,
+      "native_prediction_count": 31,
+      "valid_identity_constrained_track_count": 78
+    },
+    "scene0609_01": {
+      "gt_count": 12,
+      "invalid_geometry_track_count": 1,
+      "native_prediction_count": 6,
+      "valid_identity_constrained_track_count": 5
+    },
+    "scene0616_01": {
+      "gt_count": 18,
+      "invalid_geometry_track_count": 20,
+      "native_prediction_count": 26,
+      "valid_identity_constrained_track_count": 56
+    },
+    "scene0618_00": {
+      "gt_count": 19,
+      "invalid_geometry_track_count": 4,
+      "native_prediction_count": 15,
+      "valid_identity_constrained_track_count": 34
+    },
+    "scene0629_00": {
+      "gt_count": 14,
+      "invalid_geometry_track_count": 16,
+      "native_prediction_count": 23,
+      "valid_identity_constrained_track_count": 93
+    },
+    "scene0644_00": {
+      "gt_count": 21,
+      "invalid_geometry_track_count": 25,
+      "native_prediction_count": 51,
+      "valid_identity_constrained_track_count": 69
+    },
+    "scene0645_02": {
+      "gt_count": 24,
+      "invalid_geometry_track_count": 16,
+      "native_prediction_count": 33,
+      "valid_identity_constrained_track_count": 80
+    },
+    "scene0651_02": {
+      "gt_count": 15,
+      "invalid_geometry_track_count": 1,
+      "native_prediction_count": 12,
+      "valid_identity_constrained_track_count": 25
+    },
+    "scene0655_01": {
+      "gt_count": 18,
+      "invalid_geometry_track_count": 8,
+      "native_prediction_count": 18,
+      "valid_identity_constrained_track_count": 28
+    },
+    "scene0663_00": {
+      "gt_count": 13,
+      "invalid_geometry_track_count": 49,
+      "native_prediction_count": 17,
+      "valid_identity_constrained_track_count": 70
+    },
+    "scene0664_00": {
+      "gt_count": 9,
+      "invalid_geometry_track_count": 13,
+      "native_prediction_count": 4,
+      "valid_identity_constrained_track_count": 26
+    },
+    "scene0665_00": {
+      "gt_count": 30,
+      "invalid_geometry_track_count": 2,
+      "native_prediction_count": 22,
+      "valid_identity_constrained_track_count": 34
+    },
+    "scene0678_01": {
+      "gt_count": 20,
+      "invalid_geometry_track_count": 48,
+      "native_prediction_count": 53,
+      "valid_identity_constrained_track_count": 109
+    },
+    "scene0684_01": {
+      "gt_count": 6,
+      "invalid_geometry_track_count": 4,
+      "native_prediction_count": 4,
+      "valid_identity_constrained_track_count": 8
+    },
+    "scene0686_01": {
+      "gt_count": 6,
+      "invalid_geometry_track_count": 4,
+      "native_prediction_count": 5,
+      "valid_identity_constrained_track_count": 43
+    },
+    "scene0689_00": {
+      "gt_count": 13,
+      "invalid_geometry_track_count": 0,
+      "native_prediction_count": 13,
+      "valid_identity_constrained_track_count": 17
+    },
+    "scene0693_00": {
+      "gt_count": 9,
+      "invalid_geometry_track_count": 16,
+      "native_prediction_count": 4,
+      "valid_identity_constrained_track_count": 38
+    },
+    "scene0695_01": {
+      "gt_count": 9,
+      "invalid_geometry_track_count": 11,
+      "native_prediction_count": 23,
+      "valid_identity_constrained_track_count": 25
+    },
+    "scene0696_00": {
+      "gt_count": 18,
+      "invalid_geometry_track_count": 11,
+      "native_prediction_count": 39,
+      "valid_identity_constrained_track_count": 75
+    },
+    "scene0697_02": {
+      "gt_count": 5,
+      "invalid_geometry_track_count": 18,
+      "native_prediction_count": 18,
+      "valid_identity_constrained_track_count": 90
+    },
+    "scene0699_00": {
+      "gt_count": 13,
+      "invalid_geometry_track_count": 15,
+      "native_prediction_count": 12,
+      "valid_identity_constrained_track_count": 70
+    },
+    "scene0700_00": {
+      "gt_count": 13,
+      "invalid_geometry_track_count": 33,
+      "native_prediction_count": 19,
+      "valid_identity_constrained_track_count": 51
+    },
+    "scene0701_00": {
+      "gt_count": 3,
+      "invalid_geometry_track_count": 0,
+      "native_prediction_count": 5,
+      "valid_identity_constrained_track_count": 10
+    },
+    "scene0702_01": {
+      "gt_count": 9,
+      "invalid_geometry_track_count": 5,
+      "native_prediction_count": 3,
+      "valid_identity_constrained_track_count": 3
+    },
+    "scene0704_00": {
+      "gt_count": 15,
+      "invalid_geometry_track_count": 27,
+      "native_prediction_count": 25,
+      "valid_identity_constrained_track_count": 58
+    }
+  },
+  "schema": "boxfusion.scannet_sam2_n0_fullroute_paper100_oracle.v1"
+}

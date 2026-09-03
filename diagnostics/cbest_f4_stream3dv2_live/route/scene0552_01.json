@@ -1,0 +1,154 @@
+{
+  "annotation_access": false,
+  "bounded": {
+    "fastsam_candidates_per_keyframe": 16,
+    "sam3_queue_capacity": 1,
+    "semantic_views": 8,
+    "state_max_tracks": 1024,
+    "state_max_views_per_track": 5
+  },
+  "chosen_hypotheses": {
+    "HB": 55,
+    "PMR_HB": 12,
+    "PMR_YAW": 44
+  },
+  "complete": true,
+  "counts": {
+    "births": 6,
+    "candidates": 111,
+    "deadline_misses": 2,
+    "f0_candidates": 159,
+    "f4_invalid": 0,
+    "f4_valid": 159,
+    "fastsam_masks": 879,
+    "keyframes": 24,
+    "native": 15,
+    "output": 21,
+    "overlays": 0,
+    "sam3_proposals": 35,
+    "sam3_results_accepted": 5,
+    "sam3_submitted": 5,
+    "semantic_views": 5
+  },
+  "deadline_ms": 833.333333,
+  "evaluator_access": false,
+  "future_access_count": 0,
+  "gt_access": false,
+  "late_result_count": 0,
+  "native_score_lower_bound": 0.125,
+  "native_scores_preserved": true,
+  "past_only": true,
+  "peak_cuda_allocated_bytes": 5855320576,
+  "peak_cuda_reserved_bytes": 6306136064,
+  "proposal_cache_access": false,
+  "query_before_commit": true,
+  "sam3": {
+    "closed": true,
+    "completed": 5,
+    "delivered": 5,
+    "drop_count": 0,
+    "dropped_disabled": 0,
+    "dropped_late": 0,
+    "dropped_pending": 0,
+    "enabled": true,
+    "end_to_end_runtime_ms_total": 5626.253843773156,
+    "gpu_runtime_ms_total": 5289.927185058594,
+    "healthy": true,
+    "last_end_to_end_runtime_ms": 1167.8598779253662,
+    "last_error": null,
+    "last_gpu_runtime_ms": 1110.7464599609375,
+    "last_worker_runtime_ms": 1111.5806689485908,
+    "late_count": 0,
+    "max_queue_depth": 1,
+    "queue_depth": 0,
+    "started": true,
+    "submitted": 5,
+    "worker_error_count": 0,
+    "worker_pid": null,
+    "worker_runtime_ms_total": 5298.718911828473
+  },
+  "scene_id": "scene0552_01",
+  "schema": "boxfusion.stream3dv2_live.v1",
+  "state": {
+    "committed_frame_count": 24,
+    "committed_view_count": 159,
+    "future_access_count": 0,
+    "last_committed_frame_ordinal": 23,
+    "live_track_count": 0,
+    "live_view_count": 0,
+    "peak_live_track_count": 64,
+    "peak_live_view_count": 96,
+    "query_before_commit": true,
+    "retired_track_count": 49,
+    "terminal_finalized_track_count": 62
+  },
+  "teacher_cache_access": false,
+  "terminal_cache_access": false,
+  "terminal_output_decision": true,
+  "timing_ms": {
+    "f0_residual_lift": {
+      "count": 24,
+      "max": 194.0302939619869,
+      "mean": 78.83255323395133,
+      "p50": 75.47027943655849,
+      "p95": 135.0588481756858
+    },
+    "f2_refine": {
+      "count": 24,
+      "max": 34.48538901284337,
+      "mean": 13.063964016813165,
+      "p50": 11.14625041373074,
+      "p95": 23.53840268915519
+    },
+    "f3_and_memory": {
+      "count": 24,
+      "max": 73.95742298103869,
+      "mean": 19.179760352320347,
+      "p50": 15.430306550115347,
+      "p95": 41.46722048753872
+    },
+    "f4_boxer": {
+      "count": 24,
+      "max": 54.50357194058597,
+      "mean": 41.80793491347382,
+      "p50": 40.55164905730635,
+      "p95": 48.993023450020694
+    },
+    "fastsam": {
+      "count": 24,
+      "max": 673.4824371524155,
+      "mean": 92.54850615980104,
+      "p50": 55.460363859310746,
+      "p95": 299.5416287565598
+    },
+    "keyframe_total": {
+      "count": 24,
+      "max": 7614.933469099924,
+      "mean": 542.6190630629814,
+      "p50": 204.62363690603524,
+      "p95": 802.4473969009694
+    },
+    "sam3_poll": {
+      "count": 606,
+      "max": 0.3892111126333475,
+      "mean": 0.00846367859567451,
+      "p50": 0.0031370436772704124,
+      "p95": 0.02086214954033494
+    },
+    "sam3_submit": {
+      "count": 24,
+      "max": 7101.130078081042,
+      "mean": 295.9957882509722,
+      "p50": 0.0009194482117891312,
+      "p95": 0.8075572783127426
+    },
+    "sam3_terminal_drain": {
+      "count": 1,
+      "max": 0.010316958650946617,
+      "mean": 0.010316958650946617,
+      "p50": 0.010316958650946617,
+      "p95": 0.010316958650946617
+    }
+  },
+  "training_free": true
+}

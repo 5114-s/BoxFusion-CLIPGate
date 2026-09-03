@@ -1,9 +1,35 @@
 from dataclasses import dataclass
 from typing import List, Dict, Set
 from boxfusion.instances import Instances3D
+from boxfusion.causal_hungarian_association import CausalHungarianAssociator
+import operator
 import numpy as np
 import torch
 import copy 
+
+
+def _copy_observer_index(value):
+    """Return a detached Python integer for an observer-only index."""
+    if torch.is_tensor(value):
+        if value.ndim != 0:
+            raise ValueError("observer tensor indices must be scalar")
+        value = value.detach().cpu().item()
+    if isinstance(value, np.ndarray):
+        if value.ndim != 0:
+            raise ValueError("observer array indices must be scalar")
+        value = value.item()
+    if isinstance(value, np.generic):
+        value = value.item()
+    if isinstance(value, (bool, np.bool_)):
+        raise ValueError("observer indices must be integers, not booleans")
+    try:
+        result = operator.index(value)
+    except TypeError as error:
+        raise ValueError("observer indices must be integers") from error
+    result = int(result)
+    if result < 0:
+        raise ValueError("observer indices must be non-negative")
+    return result
 
 
 class BoxManager:
@@ -16,10 +42,16 @@ class BoxManager:
         self.already_fusion = []
         self.num_record = {}
         self.cfg = cfg
+        self.causal_hungarian = CausalHungarianAssociator(cfg)
         self.rotation_gap = self.cfg['association']['rotation_gap']
         self.translation_gap = self.cfg['association']['translation_gap']
         self.small_size = self.cfg['box_fusion']['small_size'] 
         self.merge_log: List[Dict] = []           
+        # Optional observer-only identity hook. It must never participate in
+        # native association, fusion, scoring, or geometry.
+        self.observer_track_registry = None
+        self.observer_track_token = None
+        self.observer_track_error = None
         self.appearance_gate_stats = {
             stage: {
                 "candidates": 0,
@@ -33,6 +65,94 @@ class BoxManager:
             }
             for stage in ("spatial", "correspondence")
         }
+
+    def attach_observer_track_registry(self, registry, token):
+        if (
+            self.observer_track_registry is not None
+            or self.observer_track_token is not None
+        ):
+            raise RuntimeError("observer track registry is already attached")
+        try:
+            registry.assert_native_row_count(token, len(self.fusion_list))
+        except Exception as error:
+            self._observer_track_fail_open(registry, token, error)
+            return False
+        self.observer_track_registry = registry
+        self.observer_track_token = token
+        self.observer_track_error = None
+        return True
+
+    def detach_observer_track_registry(self):
+        registry = self.observer_track_registry
+        token = self.observer_track_token
+        error = self.observer_track_error
+        self.observer_track_registry = None
+        self.observer_track_token = None
+        return registry, token, error
+
+    def _observer_track_fail_open(self, registry, token, error):
+        try:
+            self.observer_track_error = repr(error)
+        except Exception:
+            self.observer_track_error = "unprintable observer error"
+        try:
+            registry.abort_keyframe(token)
+        except Exception:
+            pass
+        self.observer_track_registry = None
+        self.observer_track_token = None
+
+    def _observer_track_call(self, method, *args, **kwargs):
+        registry = self.observer_track_registry
+        token = self.observer_track_token
+        if registry is None or token is None:
+            return
+        try:
+            # Observer code receives immutable snapshots of native index
+            # containers. A one-shot iterator is rejected without advancing
+            # it, so fail-open cannot consume or mutate native inputs.
+            index_positions = kwargs.pop("_observer_index_positions", ())
+            scalar_positions = kwargs.pop("_observer_scalar_positions", ())
+            copied_args = list(args)
+            for position in scalar_positions:
+                copied_args[position] = _copy_observer_index(
+                    copied_args[position]
+                )
+            for position in index_positions:
+                value = copied_args[position]
+                if isinstance(value, (str, bytes)):
+                    raise ValueError(
+                        "observer indices must be a bounded indexable container"
+                    )
+                try:
+                    length = len(value)
+                    get_item = value.__getitem__
+                except (AttributeError, TypeError) as error:
+                    raise ValueError(
+                        "observer indices must be a bounded indexable container"
+                    ) from error
+                if length > 5120:
+                    raise ValueError("observer indices exceed the hard cap of 5120")
+                copied_args[position] = tuple(
+                    _copy_observer_index(get_item(index))
+                    for index in range(length)
+                )
+            registry.assert_native_row_count(token, len(self.fusion_list))
+            getattr(registry, method)(token, *copied_args, **kwargs)
+        except Exception as error:
+            # Fail open: native BoxManager continues exactly as before.
+            self._observer_track_fail_open(registry, token, error)
+
+    def _observer_track_verify_rows(self):
+        registry = self.observer_track_registry
+        token = self.observer_track_token
+        if registry is None or token is None:
+            return
+        try:
+            registry.assert_native_row_count(token, len(self.fusion_list))
+        except Exception as error:
+            # A post-reindex mismatch also disables only the observer.
+            self._observer_track_fail_open(registry, token, error)
 
     def init_new_predictions(self,box_num,all_num):
         for i in range(box_num):
@@ -121,6 +241,18 @@ class BoxManager:
         '''
         Note: cur_id is consistent to 'all_pred_box', idx is according to 'per_frame_box'
         '''
+        if (
+            self.observer_track_registry is not None
+            and self.observer_track_token is not None
+        ):
+            self._observer_track_call(
+                "record_association",
+                cur_id,
+                fusion_inds,
+                stage="spatial",
+                _observer_scalar_positions=(0,),
+                _observer_index_positions=(1,),
+            )
         cur_box_size = box_size[cur_id,:3]
         small = False
         if np.max(cur_box_size)<self.small_size:
@@ -171,6 +303,18 @@ class BoxManager:
         '''
         Note: cur_id is consistent to 'all_pred_box', idx is according to 'per_frame_box'
         '''
+        if (
+            self.observer_track_registry is not None
+            and self.observer_track_token is not None
+        ):
+            self._observer_track_call(
+                "record_association",
+                cur_id,
+                fusion_inds,
+                stage="correspondence",
+                _observer_scalar_positions=(0,),
+                _observer_index_positions=(1,),
+            )
         for idx in fusion_inds:
             # completely new boxes and no nms is valid
             if len(self.fusion_list[idx]) == 1:
@@ -210,7 +354,21 @@ class BoxManager:
     
     def update(self, keep_idx):
 
+        if (
+            self.observer_track_registry is not None
+            and self.observer_track_token is not None
+        ):
+            self._observer_track_call(
+                "apply_keep",
+                keep_idx,
+                _observer_index_positions=(0,),
+            )
         self.fusion_list = [self.fusion_list[i] for i in keep_idx] 
+        if (
+            self.observer_track_registry is not None
+            and self.observer_track_token is not None
+        ):
+            self._observer_track_verify_rows()
         
     def update_fusion_flag(self, idx):
         self.fusion_flag[idx] = 1
@@ -239,8 +397,22 @@ class BoxManager:
             for idx in zero_boxid:
                 valid_boxid = valid_boxid[valid_boxid != idx]
 
+        if (
+            self.observer_track_registry is not None
+            and self.observer_track_token is not None
+        ):
+            self._observer_track_call(
+                "apply_keep",
+                valid_boxid,
+                _observer_index_positions=(0,),
+            )
         # update fusion_list
         self.fusion_list = [self.fusion_list[int(i)] for i in valid_boxid] 
+        if (
+            self.observer_track_registry is not None
+            and self.observer_track_token is not None
+        ):
+            self._observer_track_verify_rows()
 
         all_pred_box = all_pred_box[valid_boxid]
         return all_pred_box

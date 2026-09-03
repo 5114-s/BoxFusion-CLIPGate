@@ -1,0 +1,91 @@
+{
+  "authorization_decision": "ALLOW_STAGE_P_ONLY",
+  "ca_scratch_checkpoint_binding": {
+    "checkpoint_sha256": "d3ba6cc22f0a1a11ab47e55ccdd21c2ef4a84efaf3c6359b7e8231a6c8d3b4a7",
+    "effective_config_sha256": "38368fb5eb692ae2452d098bd4bb0814bbbb83feae780cf83446121bd9e7b88b",
+    "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/manifests/ca1m_tr3d_terminal_ca_native_train100_v3/checkpoint_binding.json",
+    "scannet_trained_module_access": false,
+    "sha256": "19b8c3d12de8dd8d3ffff1413c6c6003a5ccb1a10cf213b972ebd43fa9db5043"
+  },
+  "code": {
+    "backprojection": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/boxfusion/tr3d_incremental_online.py",
+      "sha256": "f2017f86187ab671df2bba9c3de0db82ad85092a7bf4cfba8690fa0dcef376f7"
+    },
+    "checkpoint_binding_loader": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/boxfusion/ca1m_tr3d_checkpoint_binding.py",
+      "sha256": "20395c34aac5dfa01f73c1392dc0b0af81d25ab135acec018a9ad128af4b8dbf"
+    },
+    "official_adapter": {
+      "path": "/data/ZhaoX/OVM3D-Dett/boxfusion_tr3d_r2_verifier_dev/boxfusion/tr3d_inference.py",
+      "sha256": "70ce7e18d936d279735c35a778d3255c666d757db5263080a2c4a0b57b61c535"
+    },
+    "proposal_contract": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/boxfusion/ca1m_tr3d_terminal_v4.py",
+      "sha256": "c51654df3a68370c1c795ca502949cf7b5d68dcd9b1e4ecbaf8f24e392c64ab2"
+    },
+    "proposal_runner": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/tools/run_ca1m_tr3d_proposal_cache_v4.py",
+      "sha256": "f3b1a1ac1417a4a2b40a766d3f9865487918329267bca6809f9c6cbd438ea40b"
+    },
+    "terminal_geometry": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/boxfusion/ca1m_tr3d_terminal.py",
+      "sha256": "b39e1c421e3dde63dedd39c8f108769ea02a48ecda0e89b4b86a3dbdb7263aa2"
+    },
+    "worker": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/tools/ca1m_tr3d_terminal_worker.py",
+      "sha256": "3e24f09bb1d70d78d5275f734512f243c2352bb1483f77aa162ce8edc5cd452e"
+    },
+    "worker_client": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/boxfusion/ca1m_tr3d_worker_client.py",
+      "sha256": "ebdd411b0a74ca2538f354396201b9749e59bdc3de4dde6acfd28683972a6212"
+    }
+  },
+  "complete": true,
+  "create_only": true,
+  "distribution_parity": {
+    "lineage_scenes": 100,
+    "old_diagnostic_runtime_dependency": false,
+    "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/manifests/ca1m_tr3d_terminal_ca_native_train100_v4/lineage_training_point_parity_v2.json",
+    "point_array_scenes": 100,
+    "point_byte_scenes": 100,
+    "sha256": "e06a1497367b59b0137ec8eb04c817e184b335f2e5ba4c3dea090a48e58b675b",
+    "training_distribution_points": 24382287,
+    "training_point_runtime_dependency": false
+  },
+  "final_anchor_access": false,
+  "full_two_stage_run_authorized": false,
+  "ground_truth_access": false,
+  "native_b6_access": false,
+  "old_terminal_cache_access": false,
+  "output": {
+    "create_only": true,
+    "resume_policy": "validate_complete_then_skip_else_fail",
+    "root": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_tr3d_terminal_ca_native_train100_v4/proposals",
+    "schema": "boxfusion.ca1m_tr3d_anchor_free_proposal_cache.v4"
+  },
+  "overlay_execution_authorized": false,
+  "processed_rgbd": {
+    "point_hash_must_match_parity_before_gpu": true,
+    "root": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1",
+    "runtime_source": true
+  },
+  "proposal_gpu_execution_authorized": true,
+  "protocol": {
+    "frame_lineage_schema": "boxfusion.ca1m_demo_gap20_early_finalize_lineage.v1",
+    "max_depth_m": 6.0,
+    "max_proposals": 256,
+    "min_depth_m": 0.1,
+    "pixel_stride": 4,
+    "score_threshold": 0.01,
+    "voxel_size_m": 0.01
+  },
+  "scannet_checkpoint_or_config_access": false,
+  "scene_contract": {
+    "count": 100,
+    "path": "/extra/ZhaoX/tr3d_ca1m_train100_v1/splits/train100.txt",
+    "sha256": "35321e9942dc5d512db2952b9ca6228b1291127e0c13fd92aa458f2d7eb7f9fd"
+  },
+  "schema": "boxfusion.ca1m_tr3d_v4_proposal_authorization.v1",
+  "validation_ground_truth_access": false
+}

@@ -1,0 +1,51 @@
+diff --git a/boxernet/boxernet.py b/boxernet/boxernet.py
+index f0f28c09..1746043d 100644
+--- a/boxernet/boxernet.py
++++ b/boxernet/boxernet.py
+@@ -157,22 +157,22 @@ class AleHead(torch.nn.Module):
+         logvar = self.logvar_head(h)
+         logvar = torch.clamp(logvar, -10, +3)
+ 
+-        params_v = mu
+-
+-        B, M = params_v.shape[0], params_v.shape[1]
+-        device = params_v.device
+-        pr = params_v
++        B, M = mu.shape[0], mu.shape[1]
++        device = mu.device
+         yaw_max = np.pi / 2
+ 
+         # Directly predict X,Y,Z in voxel coords.
+-        center_v = pr[..., :3]
++        center_v = mu[..., :3]
+ 
+-        # Build size
+-        pr[..., 3:6] = (
+-            torch.sigmoid(pr[..., 3:6]) * (self.bbox_max - self.bbox_min)
++        # Build size. Keep this functional rather than mutating ``mu`` views in
++        # place: the released repository is inference-only, and the original
++        # assignments break autograd when BoxerNet is used as a trainable lift
++        # head.
++        dims = (
++            torch.sigmoid(mu[..., 3:6]) * (self.bbox_max - self.bbox_min)
+             + self.bbox_min
+         )
+-        hh, ww, dd = pr[:, :, 3], pr[:, :, 4], pr[:, :, 5]
++        hh, ww, dd = dims[:, :, 0], dims[:, :, 1], dims[:, :, 2]
+         if self.min_dim > 0:
+             hh = hh.clamp(min=self.min_dim)
+             ww = ww.clamp(min=self.min_dim)
+@@ -186,8 +186,11 @@ class AleHead(torch.nn.Module):
+         bb3[:, :, 5] = dd / 2
+ 
+         # Build T_world_object
+-        pr[..., 6] = yaw_max * torch.tanh(pr[..., 6])
+-        yaw = pr[:, :, 6]
++        yaw = yaw_max * torch.tanh(mu[..., 6])
++        params_v = torch.cat(
++            [center_v, torch.stack([hh, ww, dd], dim=-1), yaw.unsqueeze(-1)],
++            dim=-1,
++        )
+         zeros = torch.zeros_like(yaw).to(device)
+         e_angles = torch.stack([zeros, zeros, yaw], dim=-1)
+         R = rotation_from_euler(e_angles.reshape(-1, 3))

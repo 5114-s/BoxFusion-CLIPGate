@@ -1,0 +1,154 @@
+{
+  "annotation_access": false,
+  "bounded": {
+    "fastsam_candidates_per_keyframe": 16,
+    "sam3_queue_capacity": 1,
+    "semantic_views": 8,
+    "state_max_tracks": 1024,
+    "state_max_views_per_track": 5
+  },
+  "chosen_hypotheses": {
+    "HB": 150,
+    "PMR_HB": 32,
+    "PMR_YAW": 62
+  },
+  "complete": true,
+  "counts": {
+    "births": 6,
+    "candidates": 244,
+    "deadline_misses": 1,
+    "f0_candidates": 579,
+    "f4_invalid": 0,
+    "f4_valid": 579,
+    "fastsam_masks": 1804,
+    "keyframes": 78,
+    "native": 3,
+    "output": 9,
+    "overlays": 0,
+    "sam3_proposals": 25,
+    "sam3_results_accepted": 16,
+    "sam3_submitted": 16,
+    "semantic_views": 8
+  },
+  "deadline_ms": 833.333333,
+  "evaluator_access": false,
+  "future_access_count": 0,
+  "gt_access": false,
+  "late_result_count": 0,
+  "native_score_lower_bound": 0.125,
+  "native_scores_preserved": true,
+  "past_only": true,
+  "peak_cuda_allocated_bytes": 5855323648,
+  "peak_cuda_reserved_bytes": 6306136064,
+  "proposal_cache_access": false,
+  "query_before_commit": true,
+  "sam3": {
+    "closed": true,
+    "completed": 16,
+    "delivered": 16,
+    "drop_count": 0,
+    "dropped_disabled": 0,
+    "dropped_late": 0,
+    "dropped_pending": 0,
+    "enabled": true,
+    "end_to_end_runtime_ms_total": 16132.267731474712,
+    "gpu_runtime_ms_total": 15631.380859375,
+    "healthy": true,
+    "last_end_to_end_runtime_ms": 1074.8611348681152,
+    "last_error": null,
+    "last_gpu_runtime_ms": 1045.4444580078125,
+    "last_worker_runtime_ms": 1046.0124290548265,
+    "late_count": 0,
+    "max_queue_depth": 1,
+    "queue_depth": 0,
+    "started": true,
+    "submitted": 16,
+    "worker_error_count": 0,
+    "worker_pid": null,
+    "worker_runtime_ms_total": 15639.721197541803
+  },
+  "scene_id": "scene0084_00",
+  "schema": "boxfusion.stream3dv2_live.v1",
+  "state": {
+    "committed_frame_count": 78,
+    "committed_view_count": 579,
+    "future_access_count": 0,
+    "last_committed_frame_ordinal": 77,
+    "live_track_count": 0,
+    "live_view_count": 0,
+    "peak_live_track_count": 72,
+    "peak_live_view_count": 150,
+    "query_before_commit": true,
+    "retired_track_count": 206,
+    "terminal_finalized_track_count": 38
+  },
+  "teacher_cache_access": false,
+  "terminal_cache_access": false,
+  "terminal_output_decision": true,
+  "timing_ms": {
+    "f0_residual_lift": {
+      "count": 78,
+      "max": 263.3923578541726,
+      "mean": 82.24547830804323,
+      "p50": 77.5528495432809,
+      "p95": 146.6403100406751
+    },
+    "f2_refine": {
+      "count": 78,
+      "max": 32.3546901345253,
+      "mean": 12.81299092508375,
+      "p50": 11.244055931456387,
+      "p95": 25.834053603466582
+    },
+    "f3_and_memory": {
+      "count": 78,
+      "max": 96.768903080374,
+      "mean": 24.94854065709007,
+      "p50": 23.153117392212152,
+      "p95": 58.37774695828557
+    },
+    "f4_boxer": {
+      "count": 78,
+      "max": 46.358090126886964,
+      "mean": 41.156315241749276,
+      "p50": 40.78800149727613,
+      "p95": 43.802547163795666
+    },
+    "fastsam": {
+      "count": 78,
+      "max": 356.69678216800094,
+      "mean": 54.02831650840548,
+      "p50": 50.14100298285484,
+      "p95": 55.427706486079835
+    },
+    "keyframe_total": {
+      "count": 78,
+      "max": 7687.622616998851,
+      "mean": 308.5471324992772,
+      "p50": 212.49278914183378,
+      "p95": 301.1539451428689
+    },
+    "sam3_poll": {
+      "count": 2025,
+      "max": 0.651107169687748,
+      "mean": 0.006276561108268338,
+      "p50": 0.0021560117602348328,
+      "p95": 0.019412720575928688
+    },
+    "sam3_submit": {
+      "count": 78,
+      "max": 7178.450552979484,
+      "mean": 92.15554756184036,
+      "p50": 0.000878586433827877,
+      "p95": 0.7271274458616964
+    },
+    "sam3_terminal_drain": {
+      "count": 1,
+      "max": 0.0040959566831588745,
+      "mean": 0.0040959566831588745,
+      "p50": 0.0040959566831588745,
+      "p95": 0.0040959566831588745
+    }
+  },
+  "training_free": true
+}

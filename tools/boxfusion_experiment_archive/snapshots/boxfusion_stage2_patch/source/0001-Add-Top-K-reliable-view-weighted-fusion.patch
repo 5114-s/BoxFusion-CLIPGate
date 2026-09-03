@@ -1,0 +1,1672 @@
+From a0bb92b04ad57fedbfc653fa65451ebd762c5c45 Mon Sep 17 00:00:00 2001
+From: 5114-s <zhao5114xuan.email@example.com>
+Date: Sat, 25 Jul 2026 17:19:07 +0800
+Subject: [PATCH] Add Top-K reliable-view weighted fusion
+
+---
+ TOPK_RELIABLE_VIEW_FUSION.md                  | 144 +++++
+ boxfusion/box_fusion.py                       | 232 +++++++-
+ boxfusion/reliable_views.py                   | 506 ++++++++++++++++++
+ ...cannet_clip_gate_topk_fusion_scorefix.yaml |  90 ++++
+ demo.py                                       |   2 +
+ ..._scannet_clip_gate_topk_fusion_scorefix.sh | 211 ++++++++
+ tests/test_clip_appearance_gate.py            |   7 +-
+ tests/test_reliable_view_fusion.py            | 299 +++++++++++
+ 8 files changed, 1477 insertions(+), 14 deletions(-)
+ create mode 100644 TOPK_RELIABLE_VIEW_FUSION.md
+ create mode 100644 boxfusion/reliable_views.py
+ create mode 100644 config/scannet_clip_gate_topk_fusion_scorefix.yaml
+ create mode 100755 scripts/run_scannet_clip_gate_topk_fusion_scorefix.sh
+ create mode 100644 tests/test_reliable_view_fusion.py
+
+diff --git a/TOPK_RELIABLE_VIEW_FUSION.md b/TOPK_RELIABLE_VIEW_FUSION.md
+new file mode 100644
+index 0000000..418a646
+--- /dev/null
++++ b/TOPK_RELIABLE_VIEW_FUSION.md
+@@ -0,0 +1,144 @@
++# Stage 2: Top-K reliable-view weighted fusion
++
++This ablation extends the score-preserving CLIP appearance-gate experiment.
++It does not change Cubify proposals, association thresholds, CLIP gating, or
++the confidence score exported for evaluation.
++
++## Experiment lineage
++
++```text
++Stage 0  Real Cubify score baseline
++Stage 1  + CLIP instance-appearance soft gate
++Stage 2  + Top-K reliable-view weighted fusion
++```
++
++Stage 2 must be compared with the completed Stage-1 result produced by:
++
++```text
++config/scannet_clip_gate_scorefix.yaml
++results/scannet_clip_gate_scorefix
++```
++
++Its outputs are isolated under:
++
++```text
++config/scannet_clip_gate_topk_fusion_scorefix.yaml
++results/scannet_clip_gate_topk_fusion_scorefix
++logs/scannet_clip_gate_topk_fusion_scorefix
++evaluation/scannet_clip_gate_topk_fusion_scorefix
++```
++
++## Reliable-view score
++
++For each observation associated with one global object, the implementation
++computes:
++
++```text
++reliability =
++    real Cubify confidence
++  * projected visible-area quality
++  * 2D detector / projected-3D agreement
++  * cross-view 3D center-and-size consistency
++```
++
++The terms are soft rather than binary:
++
++- confidence keeps the real proposal evidence;
++- projected area gently discounts very small or distant views;
++- projection IoU checks whether the detected 2D rectangle agrees with the
++  image footprint of its predicted 3D box;
++- robust median center/size consistency discounts a geometrically abnormal
++  observation without allowing semantics alone to create a fusion.
++
++The BoxManager currently stores at most five observations per object. The
++first conservative configuration retains the three highest-reliability
++observations.
++
++## Weighted fusion
++
++Selected observations affect both parts of the original optimizer:
++
++1. The initial 3D center and dimensions are reliability-weighted. Dimension
++   axes are aligned to the most reliable observation before averaging, and
++   rotation still comes from that best observation.
++2. The CUDA reprojection objective changes from:
++
++   ```text
++   mean(1 - IoU_view)
++   ```
++
++   to:
++
++   ```text
++   sum(weight_view * (1 - IoU_view)) / sum(weight_view)
++   ```
++
++The final class-agnostic detection confidence remains the original real
++Cubify score. Stage 2 therefore measures fusion geometry rather than changing
++AP through a new score aggregation rule.
++
++## Backward compatibility
++
++`reliable_views` is disabled by default. When it is absent or disabled:
++
++- no Top-K selector runs;
++- the full fusion list and its order are preserved;
++- the released unweighted initialization is used;
++- the CUDA kernel executes the original unweighted atomic-add branch.
++
++This allows Stage 0 and Stage 1 configurations to keep their original
++behavior after the Stage-2 patch is merged.
++
++## Conservative first configuration
++
++```yaml
++box_fusion:
++  reliable_views:
++    enabled: True
++    top_k: 3
++    min_views: 3
++    confidence_power: 1.0
++    area_power: 0.25
++    area_reference_ratio: 0.02
++    projection_iou_power: 0.50
++    geometry_consistency_power: 0.50
++    center_sigma: 0.75
++    size_sigma: 0.50
++    minimum_box_diagonal: 0.10
++    minimum_weight: 0.05
++```
++
++The exponents are intentionally conservative. A view is softly downweighted;
++only the Top-K ranking is discrete.
++
++## Validation
++
++CPU unit tests:
++
++```bash
++cd /data/ZhaoX/BoxFusion
++PYTHONDONTWRITEBYTECODE=1 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 \
++  /home/admin1/miniconda3/envs/boxfusion2/bin/python \
++  -m pytest -q \
++  tests/test_clip_appearance_gate.py \
++  tests/test_reliable_view_fusion.py
++```
++
++Single GPU:
++
++```bash
++bash scripts/run_scannet_clip_gate_topk_fusion_scorefix.sh 0
++```
++
++Dual GPU:
++
++```bash
++bash scripts/run_scannet_clip_gate_topk_fusion_scorefix.sh 0,1
++```
++
++The runner supports safe resume and writes unbuffered per-scene logs. Each
++scene prints a `Reliable-view fusion summary` with view counts and reliability
++quantiles.
++
++Do not start Stage 2 until all Stage-1 scenes have finished and Stage-1 AP has
++been recorded. Otherwise the ablation lineage cannot be audited cleanly.
+diff --git a/boxfusion/box_fusion.py b/boxfusion/box_fusion.py
+index 3da401e..270d481 100644
+--- a/boxfusion/box_fusion.py
++++ b/boxfusion/box_fusion.py
+@@ -5,6 +5,14 @@ import cv2
+ 
+ import os
+ 
++from boxfusion.reliable_views import (
++    resolve_reliable_view_config,
++    select_top_k_reliable_views,
++    stable_unique,
++    valid_reliable_view_mask,
++    weighted_box_initialization,
++)
++
+ try:
+   import pycuda.driver as cuda
+   import pycuda.autoprimaryctx
+@@ -61,6 +69,21 @@ class BoxFusion(object):
+         self.center_scaling_coefficient = cfg["box_fusion"]["random_opt"]["center_scaling_coefficient"]
+         self.shape_init_size = cfg["box_fusion"]["random_opt"]["shape_init_size"]
+         self.shape_scaling_coefficient = cfg["box_fusion"]["random_opt"]["shape_scaling_coefficient"]
++        self.reliable_view_cfg = resolve_reliable_view_config(
++            cfg["box_fusion"]
++        )
++        self.reliable_view_stats = {
++            "fusion_updates": 0,
++            "views_available": 0,
++            "views_selected": 0,
++            "raw_weights": [],
++            "selected_weights": [],
++            "confidence": [],
++            "area_quality": [],
++            "projection_iou": [],
++            "geometry_consistency": [],
++            "invalid_views": 0,
++        }
+ 
+ 
+ 
+@@ -285,6 +308,7 @@ class BoxFusion(object):
+             float img_w = other_params[1];
+             float node_size = other_params[2];
+             int num_boxes = (int) other_params[3];
++            bool use_view_weights = other_params[4] > 0.5f;
+             
+             if (node>=node_size){
+                 return;
+@@ -345,6 +369,9 @@ class BoxFusion(object):
+             }
+                                          
+             float score_box = scores[i];
++            float view_weight = use_view_weights
++                ? max(score_box, 0.000001f)
++                : 1.0f;
+                            
+             float uv[8][2] = {0};
+                         
+@@ -401,8 +428,19 @@ class BoxFusion(object):
+                 iou = iou; //* max(score_box,1.0);
+             }
+             
+-            atomicAdd_system(search_value+node,abs(1-iou));
+-            atomicAdd_system(search_count+node,1);
++            if (use_view_weights){
++                atomicAdd_system(
++                    search_value+node,
++                    view_weight*abs(1-iou)
++                );
++                atomicAdd_system(search_count+node,view_weight);
++            }
++            else{
++                // Keep the released objective byte-for-byte at the arithmetic
++                // operation level when reliable-view fusion is disabled.
++                atomicAdd_system(search_value+node,abs(1-iou));
++                atomicAdd_system(search_count+node,1);
++            }
+                         
+             return;
+ 
+@@ -422,7 +460,8 @@ class BoxFusion(object):
+                     camera_poses,
+                     search_size,
+                     num_of_boxes,
+-                    verbose=False):
++                    verbose=False,
++                    use_view_weights=False):
+ 
+         search_value=np.zeros((self.PST.shape[0])).astype(np.float32)
+         search_count=np.zeros((self.PST.shape[0])).astype(np.float32)
+@@ -448,7 +487,8 @@ class BoxFusion(object):
+                                         self.H,
+                                         self.W,
+                                         self.pst_size,
+-                                        num_of_boxes
++                                        num_of_boxes,
++                                        float(use_view_weights)
+                                         ], np.float32)),
+            
+                         block=(32,1,1),  
+@@ -464,6 +504,60 @@ class BoxFusion(object):
+ 
+         return fitness
+ 
++    def record_reliable_view_selection(self, selection):
++        self.reliable_view_stats["fusion_updates"] += 1
++        self.reliable_view_stats["views_available"] += int(
++            selection["weights"].shape[0]
++        )
++        self.reliable_view_stats["views_selected"] += int(
++            selection["selected_indices"].shape[0]
++        )
++        self.reliable_view_stats["raw_weights"].extend(
++            selection["weights"].tolist()
++        )
++        self.reliable_view_stats["selected_weights"].extend(
++            selection["selected_weights"].tolist()
++        )
++        for key in (
++            "confidence",
++            "area_quality",
++            "projection_iou",
++            "geometry_consistency",
++        ):
++            self.reliable_view_stats[key].extend(
++                selection[key].tolist()
++            )
++
++    def reliable_view_summary(self):
++        stats = self.reliable_view_stats
++
++        def quantiles(values):
++            values = np.asarray(values, dtype=np.float32)
++            if values.size == 0:
++                return "nan/nan/nan"
++            q10, q50, q90 = np.quantile(values, [0.1, 0.5, 0.9])
++            return f"{q10:.4f}/{q50:.4f}/{q90:.4f}"
++
++        return (
++            "Reliable-view fusion summary | "
++            f"updates={stats['fusion_updates']}, "
++            f"available={stats['views_available']}, "
++            f"selected={stats['views_selected']}, "
++            "weight_q10/q50/q90="
++            f"{quantiles(stats['raw_weights'])}, "
++            "selected_q10/q50/q90="
++            f"{quantiles(stats['selected_weights'])}, "
++            "confidence_q10/q50/q90="
++            f"{quantiles(stats['confidence'])}, "
++            "area_q10/q50/q90="
++            f"{quantiles(stats['area_quality'])}, "
++            "projection_iou_q10/q50/q90="
++            f"{quantiles(stats['projection_iou'])}, "
++            "geometry_q10/q50/q90="
++            f"{quantiles(stats['geometry_consistency'])}, "
++            f"invalid={stats['invalid_views']}"
++        )
++
+     def update_intrinsics(self,size,K):
+         self.H=size[1]
+         self.W=size[0]
+@@ -622,6 +716,19 @@ class BoxFusion(object):
+ 
+         return mean_xyzlwh, mean_rot
+ 
++    def init_opt_params_reliable(
++        self,
++        box_3d,
++        per_boxes_3d_R,
++        view_weights,
++    ):
++        mean_xyzlwh, mean_rot, _ = weighted_box_initialization(
++            box_3d,
++            per_boxes_3d_R,
++            view_weights,
++        )
++        return mean_xyzlwh, mean_rot
++
+     
+     def boxfusion(self, all_pred_box, per_frame_box, box_manager, beta=0.9, verbose=False):
+         N_box = len(all_pred_box)
+@@ -635,15 +742,96 @@ class BoxFusion(object):
+         for i in range(N_box):
+ 
+             
+-            if len(box_manager.fusion_list[i])<3 or box_manager.check_if_fusion(box_manager.fusion_list[i]): 
++            minimum_views = 3
++            if self.reliable_view_cfg["enabled"]:
++                minimum_views = max(
++                    minimum_views,
++                    self.reliable_view_cfg["min_views"],
++                )
++            if (
++                len(box_manager.fusion_list[i]) < minimum_views
++                or box_manager.check_if_fusion(
++                    box_manager.fusion_list[i]
++                )
++            ):
+                 continue
+ 
+             '''
+             prepare the data used for fusion
+             '''
+-            fusion_idx = box_manager.fusion_list[i]
++            source_fusion_idx = list(box_manager.fusion_list[i])
++            fusion_idx = np.asarray(source_fusion_idx, dtype=np.int64)
++
++            if self.reliable_view_cfg["enabled"]:
++                fusion_idx = stable_unique(fusion_idx)
++                source_boxes = per_boxes_3d[fusion_idx]
++                source_rotations = per_boxes_3d_R[fusion_idx]
++                source_scores = per_boxes_3d_scores[fusion_idx]
++                source_detector_boxes = per_boxes_2d[fusion_idx]
++                source_corners = per_boxes_2d_cor[fusion_idx]
++                source_poses = per_cam_pose[fusion_idx]
++                valid_views = valid_reliable_view_mask(
++                    source_boxes,
++                    source_rotations,
++                    source_scores,
++                    source_detector_boxes,
++                    source_corners,
++                    source_poses,
++                )
++                invalid_count = int(
++                    valid_views.shape[0] - np.count_nonzero(valid_views)
++                )
++                self.reliable_view_stats["invalid_views"] += invalid_count
++                if np.count_nonzero(valid_views) < minimum_views:
++                    print(
++                        f"reliable-view fusion {i} skipped: "
++                        f"valid={int(np.count_nonzero(valid_views))}, "
++                        f"required={minimum_views}, "
++                        f"source={source_fusion_idx}"
++                    )
++                    continue
++                fusion_idx = fusion_idx[valid_views]
++                source_boxes = source_boxes[valid_views]
++                source_scores = source_scores[valid_views]
++                source_detector_boxes = source_detector_boxes[valid_views]
++                source_corners = source_corners[valid_views]
++                selection = select_top_k_reliable_views(
++                    source_boxes,
++                    source_scores,
++                    source_detector_boxes,
++                    source_corners,
++                    image_height=self.H,
++                    image_width=self.W,
++                    cfg=self.reliable_view_cfg,
++                )
++                selected_local = selection["selected_indices"]
++                fusion_idx = fusion_idx[selected_local]
++                view_weights = selection["selected_weights"].astype(
++                    np.float32
++                )
++                # Keep the weighted CUDA denominator on the same numerical
++                # scale as the legacy observation count.
++                view_weights = view_weights / max(
++                    float(view_weights.mean()), 1e-6
++                )
++                self.record_reliable_view_selection(selection)
++                print(
++                    f"reliable-view fusion {i}: "
++                    f"source={source_fusion_idx}, "
++                    f"selected={fusion_idx.tolist()}, "
++                    "weights="
++                    f"{np.round(view_weights, 4).tolist()}"
++                )
++            else:
++                view_weights = per_boxes_3d_scores[fusion_idx]
++
+             num_of_boxes = len(fusion_idx)
+-            print(f"fusing {i} box, fusion list is ",fusion_idx, 'len:', num_of_boxes)
++            print(
++                f"fusing {i} box, fusion list is ",
++                fusion_idx.tolist(),
++                "len:",
++                num_of_boxes,
++            )
+ 
+             cam_poses = per_cam_pose[fusion_idx] #[N,4,4]
+            
+@@ -651,10 +839,23 @@ class BoxFusion(object):
+ 
+             corners_2d = per_boxes_2d_cor[fusion_idx] 
+ 
+-           
+-            mean_xyzlwh, mean_rot = self.init_opt_params(box_3d, per_boxes_3d_R[fusion_idx], per_boxes_3d_scores[fusion_idx],verbose=False)
+-
+-            scores_box = per_boxes_3d_scores[fusion_idx] 
++            if self.reliable_view_cfg["enabled"]:
++                mean_xyzlwh, mean_rot = (
++                    self.init_opt_params_reliable(
++                        box_3d,
++                        per_boxes_3d_R[fusion_idx],
++                        view_weights,
++                    )
++                )
++                scores_box = view_weights
++            else:
++                mean_xyzlwh, mean_rot = self.init_opt_params(
++                    box_3d,
++                    per_boxes_3d_R[fusion_idx],
++                    per_boxes_3d_scores[fusion_idx],
++                    verbose=False,
++                )
++                scores_box = per_boxes_3d_scores[fusion_idx]
+             
+             global_xyzlwh = mean_xyzlwh #initialize the parameters to be optimized
+             
+@@ -674,7 +875,8 @@ class BoxFusion(object):
+                                                 cam_poses,
+                                                 self.search_size,
+                                                 num_of_boxes,
+-                                                verbose=verbose)
++                                                verbose=verbose,
++                                                use_view_weights=self.reliable_view_cfg["enabled"])
+ 
+                 success,min_iou,mean_transform = self.cal_transform(search_value, 
+                 self.search_size)
+@@ -723,6 +925,10 @@ class BoxFusion(object):
+                 global_lwh[global_lwh < 0.01] = 0.01
+                 global_xyzlwh[3:] = global_lwh
+                 all_pred_box.pred_boxes_3d.tensor[i] = torch.from_numpy(global_xyzlwh).to(all_pred_box.pred_boxes_3d.tensor[i].device)
++                if self.reliable_view_cfg["enabled"]:
++                    all_pred_box.pred_boxes_3d.R[i] = torch.from_numpy(
++                        mean_rot
++                    ).to(all_pred_box.pred_boxes_3d.R[i].device)
+                 # update fusion flag
+                 box_manager.update_fusion_flag(i)
+-                box_manager.add_fusion_ind(fusion_idx)
++                box_manager.add_fusion_ind(source_fusion_idx)
+diff --git a/boxfusion/reliable_views.py b/boxfusion/reliable_views.py
+new file mode 100644
+index 0000000..ba2c5f8
+--- /dev/null
++++ b/boxfusion/reliable_views.py
+@@ -0,0 +1,506 @@
++"""Reliable-view selection and weighted box initialization.
++
++This module is intentionally NumPy-only so the selection policy can be tested
++without importing PyCUDA or constructing the full BoxFusion model.
++"""
++
++from __future__ import annotations
++
++from typing import Dict, Mapping, Tuple
++
++import numpy as np
++
++
++DEFAULT_RELIABLE_VIEW_CONFIG = {
++    "enabled": False,
++    "top_k": 3,
++    "min_views": 3,
++    "confidence_power": 1.0,
++    "area_power": 0.25,
++    "area_reference_ratio": 0.02,
++    "projection_iou_power": 0.50,
++    "geometry_consistency_power": 0.50,
++    "center_sigma": 0.75,
++    "size_sigma": 0.50,
++    "minimum_box_diagonal": 0.10,
++    "minimum_weight": 0.05,
++}
++
++
++def stable_unique(values: np.ndarray) -> np.ndarray:
++    """Return first-occurrence unique integer values without reordering."""
++
++    values = np.asarray(values, dtype=np.int64).reshape(-1)
++    seen = set()
++    result = []
++    for value in values.tolist():
++        if value not in seen:
++            seen.add(value)
++            result.append(value)
++    return np.asarray(result, dtype=np.int64)
++
++
++def valid_reliable_view_mask(
++    boxes_3d: np.ndarray,
++    rotations: np.ndarray,
++    scores: np.ndarray,
++    detector_boxes_2d: np.ndarray,
++    projected_corners: np.ndarray,
++    camera_poses: np.ndarray,
++) -> np.ndarray:
++    """Hard-filter observations that would make initialization/CUDA unsafe."""
++
++    boxes = np.asarray(boxes_3d)
++    rotations = np.asarray(rotations)
++    scores = np.asarray(scores).reshape(-1)
++    detector_boxes = np.asarray(detector_boxes_2d)
++    corners = np.asarray(projected_corners)
++    camera_poses = np.asarray(camera_poses)
++
++    num_views = boxes.shape[0]
++    expected_shapes = (
++        (boxes.shape, (num_views, 6), "boxes_3d"),
++        (rotations.shape, (num_views, 3, 3), "rotations"),
++        (detector_boxes.shape, (num_views, 4), "detector_boxes_2d"),
++        (corners.shape, (num_views, 8, 2), "projected_corners"),
++        (camera_poses.shape, (num_views, 4, 4), "camera_poses"),
++    )
++    for actual, expected, name in expected_shapes:
++        if actual != expected:
++            raise ValueError(
++                f"{name} must have shape {expected}, received {actual}"
++            )
++    if scores.shape[0] != num_views:
++        raise ValueError("scores must have one value per view")
++
++    valid = np.isfinite(boxes).all(axis=1)
++    valid &= (boxes[:, 3:] > 0.0).all(axis=1)
++    valid &= np.isfinite(rotations).all(axis=(1, 2))
++    valid &= np.isfinite(scores)
++    valid &= scores > 0.0
++    valid &= np.isfinite(detector_boxes).all(axis=1)
++    valid &= np.isfinite(corners).all(axis=(1, 2))
++    valid &= np.isfinite(camera_poses).all(axis=(1, 2))
++    for view_index in np.flatnonzero(valid):
++        try:
++            world_to_camera = np.linalg.inv(camera_poses[view_index])
++        except np.linalg.LinAlgError:
++            valid[view_index] = False
++            continue
++        center_homogeneous = np.concatenate(
++            [boxes[view_index, :3], np.ones(1)]
++        )
++        center_camera = world_to_camera @ center_homogeneous
++        if not np.isfinite(center_camera).all() or center_camera[2] <= 1e-3:
++            valid[view_index] = False
++    return valid
++
++
++def resolve_reliable_view_config(
++    box_fusion_cfg: Mapping,
++) -> Dict[str, float]:
++    """Return a validated reliable-view configuration.
++
++    The caller passes the complete ``box_fusion`` mapping. Missing
++    ``reliable_views`` configuration means disabled, which preserves the
++    released BoxFusion behavior.
++    """
++
++    raw_cfg = box_fusion_cfg.get("reliable_views", {})
++    cfg = dict(DEFAULT_RELIABLE_VIEW_CONFIG)
++    cfg.update(raw_cfg)
++
++    cfg["enabled"] = bool(cfg["enabled"])
++    cfg["top_k"] = int(cfg["top_k"])
++    cfg["min_views"] = int(cfg["min_views"])
++    for key in (
++        "confidence_power",
++        "area_power",
++        "area_reference_ratio",
++        "projection_iou_power",
++        "geometry_consistency_power",
++        "center_sigma",
++        "size_sigma",
++        "minimum_box_diagonal",
++        "minimum_weight",
++    ):
++        cfg[key] = float(cfg[key])
++
++    if cfg["top_k"] < 1:
++        raise ValueError("reliable_views.top_k must be at least 1")
++    if cfg["min_views"] < 1:
++        raise ValueError("reliable_views.min_views must be at least 1")
++    if (
++        cfg["confidence_power"] < 0.0
++        or cfg["area_power"] < 0.0
++        or cfg["projection_iou_power"] < 0.0
++        or cfg["geometry_consistency_power"] < 0.0
++    ):
++        raise ValueError("reliable-view powers must be non-negative")
++    for key in (
++        "area_reference_ratio",
++        "center_sigma",
++        "size_sigma",
++        "minimum_box_diagonal",
++        "minimum_weight",
++    ):
++        if cfg[key] <= 0.0:
++            raise ValueError(f"reliable_views.{key} must be positive")
++    if cfg["minimum_weight"] > 1.0:
++        raise ValueError("reliable_views.minimum_weight must not exceed 1")
++
++    return cfg
++
++
++def _validate_view_arrays(
++    boxes_3d: np.ndarray,
++    scores: np.ndarray,
++    detector_boxes_2d: np.ndarray,
++    projected_corners: np.ndarray,
++) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
++    boxes_3d = np.asarray(boxes_3d, dtype=np.float64)
++    scores = np.asarray(scores, dtype=np.float64).reshape(-1)
++    detector_boxes_2d = np.asarray(
++        detector_boxes_2d, dtype=np.float64
++    )
++    projected_corners = np.asarray(
++        projected_corners, dtype=np.float64
++    )
++
++    if boxes_3d.ndim != 2 or boxes_3d.shape[1] != 6:
++        raise ValueError("boxes_3d must have shape [N, 6]")
++    if projected_corners.ndim != 3 or projected_corners.shape[1:] != (8, 2):
++        raise ValueError("projected_corners must have shape [N, 8, 2]")
++    if detector_boxes_2d.ndim != 2 or detector_boxes_2d.shape[1] != 4:
++        raise ValueError("detector_boxes_2d must have shape [N, 4]")
++    if not (
++        boxes_3d.shape[0]
++        == scores.shape[0]
++        == detector_boxes_2d.shape[0]
++        == projected_corners.shape[0]
++    ):
++        raise ValueError("all reliable-view inputs must have the same length")
++    if boxes_3d.shape[0] == 0:
++        raise ValueError("reliable-view selection requires at least one view")
++
++    boxes_3d = np.nan_to_num(
++        boxes_3d, nan=0.0, posinf=0.0, neginf=0.0
++    )
++    scores = np.nan_to_num(scores, nan=0.0, posinf=1.0, neginf=0.0)
++    detector_boxes_2d = np.nan_to_num(
++        detector_boxes_2d, nan=0.0, posinf=0.0, neginf=0.0
++    )
++    projected_corners = np.nan_to_num(
++        projected_corners, nan=0.0, posinf=0.0, neginf=0.0
++    )
++    return boxes_3d, scores, detector_boxes_2d, projected_corners
++
++
++def projected_area_ratio(
++    projected_corners: np.ndarray,
++    image_height: int,
++    image_width: int,
++) -> np.ndarray:
++    """Compute the clipped 2D bounding-rectangle area of every projection."""
++
++    if image_height <= 0 or image_width <= 0:
++        raise ValueError("image dimensions must be positive")
++
++    corners = np.asarray(projected_corners, dtype=np.float64)
++    x = np.clip(corners[..., 0], 0.0, float(image_width))
++    y = np.clip(corners[..., 1], 0.0, float(image_height))
++    widths = np.maximum(x.max(axis=1) - x.min(axis=1), 0.0)
++    heights = np.maximum(y.max(axis=1) - y.min(axis=1), 0.0)
++    image_area = float(image_height * image_width)
++    return np.clip((widths * heights) / image_area, 0.0, 1.0)
++
++
++def detector_projection_iou(
++    detector_boxes_2d: np.ndarray,
++    projected_corners: np.ndarray,
++    image_height: int,
++    image_width: int,
++) -> np.ndarray:
++    """IoU between Cubify's 2D box and its 3D box projection."""
++
++    detector_boxes = np.asarray(detector_boxes_2d, dtype=np.float64)
++    corners = np.asarray(projected_corners, dtype=np.float64)
++
++    detector_x1 = np.clip(
++        np.minimum(detector_boxes[:, 0], detector_boxes[:, 2]),
++        0.0,
++        float(image_width),
++    )
++    detector_y1 = np.clip(
++        np.minimum(detector_boxes[:, 1], detector_boxes[:, 3]),
++        0.0,
++        float(image_height),
++    )
++    detector_x2 = np.clip(
++        np.maximum(detector_boxes[:, 0], detector_boxes[:, 2]),
++        0.0,
++        float(image_width),
++    )
++    detector_y2 = np.clip(
++        np.maximum(detector_boxes[:, 1], detector_boxes[:, 3]),
++        0.0,
++        float(image_height),
++    )
++
++    projected_x = np.clip(
++        corners[..., 0], 0.0, float(image_width)
++    )
++    projected_y = np.clip(
++        corners[..., 1], 0.0, float(image_height)
++    )
++    projected_x1 = projected_x.min(axis=1)
++    projected_y1 = projected_y.min(axis=1)
++    projected_x2 = projected_x.max(axis=1)
++    projected_y2 = projected_y.max(axis=1)
++
++    intersection_width = np.maximum(
++        np.minimum(detector_x2, projected_x2)
++        - np.maximum(detector_x1, projected_x1),
++        0.0,
++    )
++    intersection_height = np.maximum(
++        np.minimum(detector_y2, projected_y2)
++        - np.maximum(detector_y1, projected_y1),
++        0.0,
++    )
++    intersection = intersection_width * intersection_height
++    detector_area = np.maximum(detector_x2 - detector_x1, 0.0) * np.maximum(
++        detector_y2 - detector_y1, 0.0
++    )
++    projected_area = np.maximum(projected_x2 - projected_x1, 0.0) * np.maximum(
++        projected_y2 - projected_y1, 0.0
++    )
++    union = detector_area + projected_area - intersection
++    return np.divide(
++        intersection,
++        union,
++        out=np.zeros_like(intersection),
++        where=union > 1e-12,
++    )
++
++
++def geometric_consistency(
++    boxes_3d: np.ndarray,
++    center_sigma: float,
++    size_sigma: float,
++    minimum_box_diagonal: float,
++) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
++    """Measure robust center and size agreement with the observation median."""
++
++    boxes = np.asarray(boxes_3d, dtype=np.float64)
++    centers = boxes[:, :3]
++    dimensions = np.maximum(np.abs(boxes[:, 3:]), 1e-6)
++
++    median_center = np.median(centers, axis=0)
++    median_dimensions = np.median(np.sort(dimensions, axis=1), axis=0)
++    reference_diagonal = max(
++        float(np.median(np.linalg.norm(dimensions, axis=1))),
++        minimum_box_diagonal,
++    )
++
++    center_error = (
++        np.linalg.norm(centers - median_center[None, :], axis=1)
++        / reference_diagonal
++    )
++    log_size_ratio = np.log(
++        np.sort(dimensions, axis=1)
++        / np.maximum(median_dimensions[None, :], 1e-6)
++    )
++    size_error = np.linalg.norm(log_size_ratio, axis=1) / np.sqrt(3.0)
++
++    consistency = np.exp(
++        -0.5 * np.square(center_error / center_sigma)
++        -0.5 * np.square(size_error / size_sigma)
++    )
++    return consistency, center_error, size_error
++
++
++def compute_reliable_view_weights(
++    boxes_3d: np.ndarray,
++    scores: np.ndarray,
++    detector_boxes_2d: np.ndarray,
++    projected_corners: np.ndarray,
++    image_height: int,
++    image_width: int,
++    cfg: Mapping,
++) -> Dict[str, np.ndarray]:
++    """Compute confidence, visibility and geometry reliability components."""
++
++    boxes, scores, detector_boxes, corners = _validate_view_arrays(
++        boxes_3d,
++        scores,
++        detector_boxes_2d,
++        projected_corners,
++    )
++
++    confidence = np.power(
++        np.clip(scores, 0.0, 1.0),
++        cfg["confidence_power"],
++    )
++    area_ratio = projected_area_ratio(
++        corners, image_height, image_width
++    )
++    area_quality = np.power(
++        np.clip(
++            area_ratio / cfg["area_reference_ratio"],
++            0.0,
++            1.0,
++        ),
++        cfg["area_power"],
++    )
++    projection_iou = detector_projection_iou(
++        detector_boxes,
++        corners,
++        image_height,
++        image_width,
++    )
++    projection_quality = np.power(
++        np.clip(projection_iou, 0.0, 1.0),
++        cfg["projection_iou_power"],
++    )
++    consistency, center_error, size_error = geometric_consistency(
++        boxes,
++        center_sigma=cfg["center_sigma"],
++        size_sigma=cfg["size_sigma"],
++        minimum_box_diagonal=cfg["minimum_box_diagonal"],
++    )
++    geometry_quality = np.power(
++        np.clip(consistency, 0.0, 1.0),
++        cfg["geometry_consistency_power"],
++    )
++
++    raw_weights = (
++        confidence
++        * area_quality
++        * projection_quality
++        * geometry_quality
++    )
++    weights = np.maximum(raw_weights, cfg["minimum_weight"])
++    weights = np.nan_to_num(
++        weights,
++        nan=cfg["minimum_weight"],
++        posinf=1.0,
++        neginf=cfg["minimum_weight"],
++    )
++
++    return {
++        "weights": weights.astype(np.float32),
++        "confidence": confidence.astype(np.float32),
++        "area_ratio": area_ratio.astype(np.float32),
++        "area_quality": area_quality.astype(np.float32),
++        "projection_iou": projection_iou.astype(np.float32),
++        "projection_quality": projection_quality.astype(np.float32),
++        "geometry_consistency": consistency.astype(np.float32),
++        "geometry_quality": geometry_quality.astype(np.float32),
++        "center_error": center_error.astype(np.float32),
++        "size_error": size_error.astype(np.float32),
++    }
++
++
++def select_top_k_reliable_views(
++    boxes_3d: np.ndarray,
++    scores: np.ndarray,
++    detector_boxes_2d: np.ndarray,
++    projected_corners: np.ndarray,
++    image_height: int,
++    image_width: int,
++    cfg: Mapping,
++) -> Dict[str, np.ndarray]:
++    """Select a stable reliability-ranked Top-K subset."""
++
++    components = compute_reliable_view_weights(
++        boxes_3d,
++        scores,
++        detector_boxes_2d,
++        projected_corners,
++        image_height,
++        image_width,
++        cfg,
++    )
++    num_views = components["weights"].shape[0]
++    keep_count = min(
++        num_views,
++        max(int(cfg["top_k"]), int(cfg["min_views"])),
++    )
++
++    # Reliability is primary, real confidence breaks minimum-weight ties, and
++    # temporal order is the final deterministic tie-break.
++    ranked = np.lexsort(
++        (
++            np.arange(num_views, dtype=np.int64),
++            -components["confidence"],
++            -components["weights"],
++        )
++    ).astype(np.int64)
++    selected = ranked[:keep_count]
++    selected_mask = np.zeros(num_views, dtype=bool)
++    selected_mask[selected] = True
++
++    components.update(
++        {
++            "ranked_indices": ranked,
++            "selected_indices": selected,
++            "selected_mask": selected_mask,
++            "selected_weights": components["weights"][selected],
++        }
++    )
++    return components
++
++
++def weighted_box_initialization(
++    boxes_3d: np.ndarray,
++    rotations: np.ndarray,
++    weights: np.ndarray,
++) -> Tuple[np.ndarray, np.ndarray, int]:
++    """Initialize center/size by reliability and rotation from the best view."""
++
++    boxes = np.asarray(boxes_3d, dtype=np.float64)
++    rotations = np.asarray(rotations, dtype=np.float64)
++    weights = np.asarray(weights, dtype=np.float64).reshape(-1)
++
++    if boxes.ndim != 2 or boxes.shape[1] != 6:
++        raise ValueError("boxes_3d must have shape [N, 6]")
++    if rotations.shape != (boxes.shape[0], 3, 3):
++        raise ValueError("rotations must have shape [N, 3, 3]")
++    if weights.shape[0] != boxes.shape[0]:
++        raise ValueError("weights must have one value per box")
++    if boxes.shape[0] == 0:
++        raise ValueError("weighted initialization requires at least one box")
++    if not np.isfinite(boxes).all():
++        raise ValueError("boxes_3d must contain only finite values")
++    if not np.isfinite(rotations).all():
++        raise ValueError("rotations must contain only finite values")
++    if np.any(boxes[:, 3:] <= 0.0):
++        raise ValueError("box dimensions must be positive")
++
++    weights = np.nan_to_num(weights, nan=0.0, posinf=0.0, neginf=0.0)
++    weights = np.maximum(weights, 0.0)
++    if float(weights.sum()) <= 1e-12:
++        weights = np.ones_like(weights)
++    normalized_weights = weights / weights.sum()
++
++    best_box = int(np.argmax(weights))
++    initial_box = np.zeros(6, dtype=np.float64)
++    initial_box[:3] = np.sum(
++        boxes[:, :3] * normalized_weights[:, None], axis=0
++    )
++
++    best_size = boxes[best_box, 3:]
++    best_axis_order = np.argsort(best_size)
++    restore_best_axes = np.argsort(best_axis_order)
++    canonical_sizes = np.sort(boxes[:, 3:], axis=1)
++    aligned_sizes = canonical_sizes[:, restore_best_axes]
++    initial_box[3:] = np.sum(
++        aligned_sizes * normalized_weights[:, None], axis=0
++    )
++
++    return (
++        initial_box.astype(np.float32),
++        rotations[best_box].astype(np.float32),
++        best_box,
++    )
+diff --git a/config/scannet_clip_gate_topk_fusion_scorefix.yaml b/config/scannet_clip_gate_topk_fusion_scorefix.yaml
+new file mode 100644
+index 0000000..f3bb48e
+--- /dev/null
++++ b/config/scannet_clip_gate_topk_fusion_scorefix.yaml
+@@ -0,0 +1,90 @@
++dataset: scannet
++
++# This is intentionally based on the score-preserving 32.53/27.11/9.46
++# reproduction, including its original README-prepared ScanNet RGB-D frames.
++data:
++  datadir: /data/ZhaoX/BoxFusion/upstream_clean/scannet_readme_frames/scene0169_00/frames
++  start: 0
++  output_dir: /data/ZhaoX/BoxFusion/results/scannet_clip_gate_topk_fusion_scorefix
++  gap: 25
++
++cam:
++  H: 480
++  W: 640
++  fx: 574.540771
++  fy: 577.583740
++  cx: 322.522827
++  cy: 238.558853
++  png_depth_scale: 1000.
++
++detection:
++  score_thresh: 0.5
++  uv_bound: True
++  uv_bound_value: 0.9
++  floor_mask: True
++  floor_ratio: 15
++  scale_box: 1.5
++
++association:
++  small_threshold: 0.1
++  rotation_gap: 30
++  translation_gap: 0.8
++  appearance_gate:
++    enabled: True
++    geometry_min_iou: 0.08
++    hard_geometry_iou: 0.45
++    low_similarity: 0.45
++    high_similarity: 0.75
++    max_iou_penalty: 0.10
++    # First ablation is protection-only: CLIP may prevent a suspicious merge
++    # but cannot create a merge rejected by the original geometry.
++    max_iou_bonus: 0.0
++    confidence_floor: 0.35
++    confidence_full: 0.75
++    spatial:
++      low_similarity: 0.65
++      high_similarity: 0.85
++    correspondence:
++      low_similarity: 0.55
++      high_similarity: 0.75
++
++box_fusion:
++  use: True
++  iters: 20
++  pst_path: ./data/pst_1024_0.tiff
++  pst_size: 1024
++  random_opt:
++    center_init_size: 0.1
++    center_scaling_coefficient: 0.1
++    shape_init_size: 0.5
++    shape_scaling_coefficient: 0.5
++  check_valid: False
++  nms_threshold: 0.1
++  small_size: 0.35
++  reliable_views:
++    enabled: True
++    # BoxManager stores at most five observations. The first conservative
++    # ablation retains the three most reliable views.
++    top_k: 3
++    min_views: 3
++    # Reliability = confidence * visible area * projection agreement *
++    # cross-view 3D consistency.
++    confidence_power: 1.0
++    area_power: 0.25
++    area_reference_ratio: 0.02
++    projection_iou_power: 0.50
++    # Square root keeps the cross-view prior soft so complementary partial
++    # views of large objects are not removed too aggressively.
++    geometry_consistency_power: 0.50
++    center_sigma: 0.75
++    size_sigma: 0.50
++    minimum_box_diagonal: 0.10
++    minimum_weight: 0.05
++
++vis:
++  rerun: False
++  show_class: False
++  show_label: False
++  trajectory: True
++
++eval: True
+diff --git a/demo.py b/demo.py
+index 3ff8d0c..c87d341 100644
+--- a/demo.py
++++ b/demo.py
+@@ -352,6 +352,8 @@ def run(cfg, model, dataset, clip_model, preprocess, tokenized_text, text_featur
+                 'appearance_gate', {}
+             ).get('enabled', False):
+                 print(box_manager.appearance_gate_summary())
++            if Box_Fuser.reliable_view_cfg["enabled"]:
++                print(Box_Fuser.reliable_view_summary())
+             
+             # save global boxes for evaluation
+             if cfg['data']['output_dir'] is not None and cfg["eval"]:
+diff --git a/scripts/run_scannet_clip_gate_topk_fusion_scorefix.sh b/scripts/run_scannet_clip_gate_topk_fusion_scorefix.sh
+new file mode 100755
+index 0000000..4ceaa86
+--- /dev/null
++++ b/scripts/run_scannet_clip_gate_topk_fusion_scorefix.sh
+@@ -0,0 +1,211 @@
++#!/usr/bin/env bash
++set -euo pipefail
++
++# Usage:
++#   Single GPU:
++#     bash scripts/run_scannet_clip_gate_topk_fusion_scorefix.sh 0
++#   Dual GPU:
++#     bash scripts/run_scannet_clip_gate_topk_fusion_scorefix.sh 0,1
++GPU_SPEC="${1:-0}"
++
++ROOT=/data/ZhaoX/BoxFusion
++CODE="$ROOT"
++ENV_ROOT=/home/admin1/miniconda3/envs/boxfusion2
++PYTHON="$ENV_ROOT/bin/python"
++ENV_LD_LIBRARY_PATH="$ENV_ROOT/lib:$ENV_ROOT/opt/rviz_ogre_vendor/lib:/usr/local/cuda-12.1/lib64"
++META="$ROOT/evaluation/data_util/meta_data/scannetv2_val.txt"
++CONFIG="$ROOT/config/scannet_clip_gate_topk_fusion_scorefix.yaml"
++PRED_ROOT="$ROOT/results/scannet_clip_gate_topk_fusion_scorefix"
++LOG_ROOT="$ROOT/logs/scannet_clip_gate_topk_fusion_scorefix"
++SCENE_LOG_ROOT="$LOG_ROOT/scenes"
++GT_ROOT="$ROOT/evaluation/data_util/scannet_train_detection_data"
++STAGE1_LOG="$ROOT/logs/scannet_clip_gate_scorefix/driver.log"
++
++mkdir -p "$PRED_ROOT" "$SCENE_LOG_ROOT" "$LOG_ROOT/mplconfig"
++exec 9>"$LOG_ROOT/run.lock"
++if ! flock -n 9; then
++    echo "Another Top-K fusion driver already holds $LOG_ROOT/run.lock" >&2
++    exit 1
++fi
++exec > >(tee -a "$LOG_ROOT/driver.log") 2>&1
++
++IFS=',' read -r -a GPUS <<< "$GPU_SPEC"
++if [[ "${#GPUS[@]}" -lt 1 ]]; then
++    echo "No GPU was specified" >&2
++    exit 1
++fi
++for gpu in "${GPUS[@]}"; do
++    if [[ ! "$gpu" =~ ^[0-9]+$ ]]; then
++        echo "Invalid GPU index: $gpu" >&2
++        exit 1
++    fi
++done
++
++required_files=(
++    "$PYTHON"
++    "$META"
++    "$CONFIG"
++    "$ROOT/models/cutr_rgbd.pth"
++    "$ROOT/models/open_clip_pytorch_model.bin"
++)
++for path in "${required_files[@]}"; do
++    if [[ ! -e "$path" ]]; then
++        echo "Missing required path: $path" >&2
++        exit 1
++    fi
++done
++if [[ ! -d "$GT_ROOT" ]]; then
++    echo "Missing ScanNet GT: $GT_ROOT" >&2
++    exit 1
++fi
++if [[ ! -d "$ROOT/upstream_clean/scannet_readme_frames" ]]; then
++    echo "Missing 32.53 baseline frames: $ROOT/upstream_clean/scannet_readme_frames" >&2
++    exit 1
++fi
++if ! grep -q "def appearance_gate_decisions" "$ROOT/boxfusion/instances.py"; then
++    echo "Root BoxFusion code does not contain the appearance gate" >&2
++    exit 1
++fi
++if ! grep -q "Saving score-preserving predictions" "$ROOT/demo.py"; then
++    echo "Root BoxFusion code does not contain score-preserving export" >&2
++    exit 1
++fi
++if [[ ! -f "$ROOT/boxfusion/reliable_views.py" ]]; then
++    echo "Root BoxFusion code does not contain reliable-view selection" >&2
++    exit 1
++fi
++if ! grep -q "use_view_weights" "$ROOT/boxfusion/box_fusion.py"; then
++    echo "Root BoxFusion code does not contain weighted fusion" >&2
++    exit 1
++fi
++if ! grep -A2 -q "reliable_views:.*" "$CONFIG"; then
++    echo "Top-K reliable-view configuration is missing" >&2
++    exit 1
++fi
++
++CUDA_VISIBLE_DEVICES="${GPUS[0]}" \
++PYTHONDONTWRITEBYTECODE=1 \
++MPLCONFIGDIR="$LOG_ROOT/mplconfig" \
++LD_LIBRARY_PATH="$ENV_LD_LIBRARY_PATH" \
++"$PYTHON" -c \
++    "import torch, torchvision, open_clip; assert torch.cuda.is_available(); print('Python environment OK:', torch.__version__, torch.version.cuda)"
++
++total=$(awk 'END {print NR}' "$META")
++worker_count="${#GPUS[@]}"
++echo "[$(date '+%F %T')] Starting CLIP-gate + Top-K reliable-view fusion inference"
++echo "[$(date '+%F %T')] GPUs: $GPU_SPEC; workers: $worker_count; scenes: $total"
++echo "[$(date '+%F %T')] Baseline reference: AP15/AP25/AP50 = 32.53/27.11/9.46"
++echo "[$(date '+%F %T')] Stage-1 log: $STAGE1_LOG"
++echo "[$(date '+%F %T')] Input frames: $ROOT/upstream_clean/scannet_readme_frames"
++echo "[$(date '+%F %T')] Prediction root: $PRED_ROOT"
++
++run_worker() {
++    local gpu="$1"
++    local shard="$2"
++    local shards="$3"
++    local index=0
++    local completed=0
++
++    while IFS= read -r scene || [[ -n "$scene" ]]; do
++        if (( index % shards != shard )); then
++            index=$((index + 1))
++            continue
++        fi
++
++        local pred_path="$PRED_ROOT/${scene}_boxes.pkl"
++        local scene_log="$SCENE_LOG_ROOT/${scene}.log"
++        if [[ -s "$pred_path" ]]; then
++            completed=$((completed + 1))
++            echo "[$(date '+%F %T')] [GPU $gpu] $scene already complete"
++            index=$((index + 1))
++            continue
++        fi
++
++        echo "[$(date '+%F %T')] [GPU $gpu] Running $scene (list index $((index + 1))/$total)"
++        (
++            cd "$CODE"
++            CUDA_VISIBLE_DEVICES="$gpu" \
++            PYTHONDONTWRITEBYTECODE=1 \
++            PYTHONUNBUFFERED=1 \
++            MPLCONFIGDIR="$LOG_ROOT/mplconfig" \
++            LD_LIBRARY_PATH="$ENV_LD_LIBRARY_PATH" \
++            "$PYTHON" demo.py scannet \
++                --model-path "$ROOT/models/cutr_rgbd.pth" \
++                --clip_path "$ROOT/models/open_clip_pytorch_model.bin" \
++                --config "$CONFIG" \
++                --device cuda \
++                --seq "$scene"
++        ) >"$scene_log" 2>&1
++
++        if [[ ! -s "$pred_path" ]]; then
++            echo "[$(date '+%F %T')] ERROR: GPU $gpu did not produce $pred_path" >&2
++            return 1
++        fi
++
++        completed=$((completed + 1))
++        local gate_summary
++        local fusion_summary
++        gate_summary=$(grep 'Appearance gate summary' "$scene_log" | tail -n 1 || true)
++        fusion_summary=$(grep 'Reliable-view fusion summary' "$scene_log" | tail -n 1 || true)
++        echo "[$(date '+%F %T')] [GPU $gpu] Completed $scene $gate_summary $fusion_summary"
++        index=$((index + 1))
++    done < "$META"
++    echo "[$(date '+%F %T')] [GPU $gpu] Worker completed $completed scenes in shard $shard/$shards"
++}
++
++child_pids=()
++cleanup() {
++    local pid
++    for pid in "${child_pids[@]}"; do
++        kill "$pid" 2>/dev/null || true
++    done
++    wait 2>/dev/null || true
++}
++trap cleanup INT TERM
++
++for shard in "${!GPUS[@]}"; do
++    run_worker "${GPUS[$shard]}" "$shard" "$worker_count" &
++    child_pids+=("$!")
++done
++
++worker_status=0
++for pid in "${child_pids[@]}"; do
++    if ! wait "$pid"; then
++        worker_status=1
++    fi
++done
++trap - INT TERM
++if [[ "$worker_status" -ne 0 ]]; then
++    echo "At least one inference worker failed; evaluation was not started" >&2
++    exit 1
++fi
++
++prediction_count=$(find "$PRED_ROOT" -maxdepth 1 -type f -name 'scene*_boxes.pkl' | wc -l)
++if [[ "$prediction_count" -ne "$total" ]]; then
++    echo "Expected $total predictions, found $prediction_count; evaluation was not started" >&2
++    exit 1
++fi
++
++echo "[$(date '+%F %T')] Completed all $total scenes; starting score-preserving ScanNet evaluation"
++(
++    cd "$CODE/evaluation"
++    CUDA_VISIBLE_DEVICES="${GPUS[0]}" \
++    PYTHONDONTWRITEBYTECODE=1 \
++    MPLCONFIGDIR="$LOG_ROOT/mplconfig" \
++    LD_LIBRARY_PATH="$ENV_LD_LIBRARY_PATH" \
++    "$PYTHON" eval_scannet.py \
++        --dataset scannet \
++        --data_path /extra/ZhaoX/scannet_data/scans \
++        --dump_dir "$ROOT/evaluation/scannet_clip_gate_topk_fusion_scorefix" \
++        --num_point 40000 \
++        --cluster_sampling seed_fps \
++        --use_3d_nms \
++        --use_cls_nms \
++        --per_class_proposal \
++        --num_workers 0 \
++        --gpu 0 \
++        --pred_root "$PRED_ROOT"
++) >"$LOG_ROOT/eval_stdout.log" 2>&1
++
++grep -E 'eval mAP|eval APrec|eval ARecall' "$LOG_ROOT/eval_stdout.log" || true
++echo "[$(date '+%F %T')] CLIP-gate + Top-K fusion inference and evaluation completed"
+diff --git a/tests/test_clip_appearance_gate.py b/tests/test_clip_appearance_gate.py
+index 725ec5a..2e01f92 100644
+--- a/tests/test_clip_appearance_gate.py
++++ b/tests/test_clip_appearance_gate.py
+@@ -1,12 +1,17 @@
+ import importlib.util
+ import os
++from pathlib import Path
+ 
+ import numpy as np
+ 
+ 
+ SOURCE = os.environ.get(
+     "BOXFUSION_INSTANCES",
+-    "/data/ZhaoX/BoxFusion/boxfusion/instances.py",
++    str(
++        Path(__file__).resolve().parents[1]
++        / "boxfusion"
++        / "instances.py"
++    ),
+ )
+ spec = importlib.util.spec_from_file_location("boxfusion_instances", SOURCE)
+ instances = importlib.util.module_from_spec(spec)
+diff --git a/tests/test_reliable_view_fusion.py b/tests/test_reliable_view_fusion.py
+new file mode 100644
+index 0000000..d686f18
+--- /dev/null
++++ b/tests/test_reliable_view_fusion.py
+@@ -0,0 +1,299 @@
++import importlib.util
++import os
++from pathlib import Path
++
++import numpy as np
++import pytest
++
++
++DEFAULT_SOURCE = (
++    Path(__file__).resolve().parents[1]
++    / "boxfusion"
++    / "reliable_views.py"
++)
++SOURCE = Path(
++    os.environ.get("BOXFUSION_RELIABLE_VIEWS", DEFAULT_SOURCE)
++)
++spec = importlib.util.spec_from_file_location(
++    "boxfusion_reliable_views", SOURCE
++)
++reliable_views = importlib.util.module_from_spec(spec)
++spec.loader.exec_module(reliable_views)
++
++
++def rectangle_corners(x1, y1, x2, y2):
++    return np.asarray(
++        [
++            [x1, y1],
++            [x2, y1],
++            [x2, y2],
++            [x1, y2],
++            [x1, y1],
++            [x2, y1],
++            [x2, y2],
++            [x1, y2],
++        ],
++        dtype=np.float32,
++    )
++
++
++def make_inputs(count):
++    boxes = np.tile(
++        np.asarray([[0.0, 0.0, 2.0, 2.0, 1.0, 1.0]]),
++        (count, 1),
++    )
++    scores = np.full(count, 0.9, dtype=np.float32)
++    detector_boxes = np.tile(
++        np.asarray([[100.0, 100.0, 300.0, 300.0]]),
++        (count, 1),
++    )
++    corners = np.stack(
++        [rectangle_corners(100.0, 100.0, 300.0, 300.0)]
++        * count
++    )
++    return boxes, scores, detector_boxes, corners
++
++
++def enabled_cfg(**overrides):
++    cfg = reliable_views.resolve_reliable_view_config(
++        {"reliable_views": {"enabled": True, **overrides}}
++    )
++    return cfg
++
++
++def select(boxes, scores, detector_boxes, corners, **cfg):
++    return reliable_views.select_top_k_reliable_views(
++        boxes,
++        scores,
++        detector_boxes,
++        corners,
++        image_height=480,
++        image_width=640,
++        cfg=enabled_cfg(**cfg),
++    )
++
++
++def test_missing_config_is_disabled_for_baseline_compatibility():
++    cfg = reliable_views.resolve_reliable_view_config({})
++    assert cfg["enabled"] is False
++    assert cfg["top_k"] == 3
++    assert cfg["min_views"] == 3
++
++
++@pytest.mark.parametrize(
++    "override",
++    [
++        {"top_k": 0},
++        {"min_views": 0},
++        {"area_reference_ratio": 0.0},
++        {"center_sigma": 0.0},
++        {"minimum_weight": 1.1},
++        {"projection_iou_power": -1.0},
++        {"geometry_consistency_power": -1.0},
++    ],
++)
++def test_invalid_config_fails_fast(override):
++    with pytest.raises(ValueError):
++        enabled_cfg(**override)
++
++
++def test_projected_area_and_projection_iou_are_exact():
++    corners = np.stack(
++        [
++            rectangle_corners(0.0, 0.0, 320.0, 240.0),
++            rectangle_corners(100.0, 100.0, 200.0, 200.0),
++        ]
++    )
++    area = reliable_views.projected_area_ratio(
++        corners, image_height=480, image_width=640
++    )
++    np.testing.assert_allclose(
++        area,
++        [0.25, 10000.0 / (480.0 * 640.0)],
++    )
++
++    detector_boxes = np.asarray(
++        [
++            [0.0, 0.0, 320.0, 240.0],
++            [150.0, 100.0, 250.0, 200.0],
++        ]
++    )
++    iou = reliable_views.detector_projection_iou(
++        detector_boxes,
++        corners,
++        image_height=480,
++        image_width=640,
++    )
++    np.testing.assert_allclose(iou, [1.0, 1.0 / 3.0])
++
++
++def test_real_confidence_changes_reliability_ranking():
++    boxes, scores, detector_boxes, corners = make_inputs(4)
++    scores[:] = [0.55, 0.95, 0.80, 0.70]
++    result = select(
++        boxes,
++        scores,
++        detector_boxes,
++        corners,
++        top_k=3,
++    )
++    np.testing.assert_array_equal(
++        result["selected_indices"], [1, 2, 3]
++    )
++
++
++def test_bad_2d_3d_projection_agreement_is_penalized():
++    boxes, scores, detector_boxes, corners = make_inputs(4)
++    detector_boxes[3] = [400.0, 350.0, 500.0, 450.0]
++    result = select(
++        boxes,
++        scores,
++        detector_boxes,
++        corners,
++        top_k=3,
++    )
++    assert result["projection_iou"][3] == 0.0
++    assert result["weights"][3] < result["weights"][0]
++    assert 3 not in result["selected_indices"]
++
++
++def test_geometric_outlier_is_removed_even_with_high_confidence():
++    boxes, scores, detector_boxes, corners = make_inputs(4)
++    boxes[:, 0] = [0.0, 0.05, 0.10, 10.0]
++    scores[:] = [0.85, 0.85, 0.85, 0.99]
++    result = select(
++        boxes,
++        scores,
++        detector_boxes,
++        corners,
++        top_k=3,
++    )
++    assert result["geometry_consistency"][3] < 0.01
++    assert 3 not in result["selected_indices"]
++
++
++def test_equal_reliability_uses_stable_temporal_order():
++    boxes, scores, detector_boxes, corners = make_inputs(5)
++    result = select(
++        boxes,
++        scores,
++        detector_boxes,
++        corners,
++        top_k=3,
++    )
++    np.testing.assert_array_equal(
++        result["selected_indices"], [0, 1, 2]
++    )
++
++
++def test_minimum_weight_ties_use_real_confidence_then_time():
++    boxes, scores, detector_boxes, corners = make_inputs(4)
++    scores[:] = [0.60, 0.90, 0.90, 0.70]
++    detector_boxes[:] = [400.0, 350.0, 500.0, 450.0]
++    result = select(
++        boxes,
++        scores,
++        detector_boxes,
++        corners,
++        top_k=3,
++    )
++    np.testing.assert_allclose(result["weights"], 0.05)
++    np.testing.assert_array_equal(
++        result["selected_indices"], [1, 2, 3]
++    )
++
++
++def test_min_views_prevents_over_aggressive_top_k():
++    boxes, scores, detector_boxes, corners = make_inputs(5)
++    result = select(
++        boxes,
++        scores,
++        detector_boxes,
++        corners,
++        top_k=2,
++        min_views=4,
++    )
++    assert result["selected_indices"].shape[0] == 4
++
++
++def test_nan_inputs_produce_finite_bounded_weights():
++    boxes, scores, detector_boxes, corners = make_inputs(3)
++    scores[0] = np.nan
++    detector_boxes[1, 0] = np.inf
++    corners[2, 0, 0] = np.nan
++    result = select(
++        boxes,
++        scores,
++        detector_boxes,
++        corners,
++    )
++    assert np.isfinite(result["weights"]).all()
++    assert (result["weights"] > 0.0).all()
++
++
++def test_stable_unique_preserves_first_observation_order():
++    unique = reliable_views.stable_unique(
++        np.asarray([7, 3, 7, 5, 3, 9])
++    )
++    np.testing.assert_array_equal(unique, [7, 3, 5, 9])
++
++
++def test_valid_view_mask_rejects_invalid_and_behind_camera_views():
++    boxes, scores, detector_boxes, corners = make_inputs(4)
++    rotations = np.tile(np.eye(3)[None], (4, 1, 1))
++    camera_poses = np.tile(np.eye(4)[None], (4, 1, 1))
++    boxes[:, 2] = 2.0
++    boxes[1, 3] = 0.0
++    rotations[2, 0, 0] = np.nan
++    boxes[3, 2] = -2.0
++    valid = reliable_views.valid_reliable_view_mask(
++        boxes,
++        rotations,
++        scores,
++        detector_boxes,
++        corners,
++        camera_poses,
++    )
++    np.testing.assert_array_equal(valid, [True, False, False, False])
++
++
++def test_weighted_initialization_uses_best_rotation_and_weighted_center():
++    boxes = np.asarray(
++        [
++            [0.0, 0.0, 2.0, 3.0, 2.0, 1.0],
++            [4.0, 0.0, 2.0, 1.0, 3.0, 2.0],
++        ],
++        dtype=np.float32,
++    )
++    rotations = np.stack(
++        [
++            np.eye(3, dtype=np.float32),
++            np.asarray(
++                [[0.0, -1.0, 0.0], [1.0, 0.0, 0.0], [0.0, 0.0, 1.0]],
++                dtype=np.float32,
++            ),
++        ]
++    )
++    initial_box, rotation, best = (
++        reliable_views.weighted_box_initialization(
++            boxes,
++            rotations,
++            np.asarray([3.0, 1.0]),
++        )
++    )
++    np.testing.assert_allclose(
++        initial_box,
++        [1.0, 0.0, 2.0, 3.0, 2.0, 1.0],
++    )
++    np.testing.assert_allclose(rotation, rotations[0])
++    assert best == 0
++
++
++def test_weighted_initialization_rejects_invalid_dimensions():
++    boxes = np.asarray([[0.0, 0.0, 2.0, 1.0, 0.0, 1.0]])
++    with pytest.raises(ValueError):
++        reliable_views.weighted_box_initialization(
++            boxes,
++            np.eye(3)[None],
++            np.ones(1),
++        )
+-- 
+2.25.1
+

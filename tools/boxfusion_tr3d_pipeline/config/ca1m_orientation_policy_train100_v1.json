@@ -1,0 +1,17 @@
+{
+  "default": {
+    "method": "pose_continuity",
+    "min_margin_degrees": 30.0
+  },
+  "scene_overrides": {
+    "47331804": {
+      "apple_tar_sha256": "b0fdf2d97b60d4ac99f794c1cb44317938d94bc012257dbb100e17a0560320ca",
+      "evidence_report": "../manifests/ca1m_native_b6_train100_v1/orientation_evidence/47331804.json",
+      "evidence_report_sha256": "94e9b2648d9247b5da85b110fccc43666619a2244b64a0c0111c6619d6ca21cf",
+      "method": "aspect_clockwise_to_majority",
+      "reason": "A 1.599-second capture discontinuity makes the pose-continuity 0/180 gauge ambiguous; two hashed raw RGB frames provide directly reviewable text-orientation evidence.",
+      "rotation_vector_int8_sha256": "58f69e990b7aa5d37a537ffe511ceeb0467f4237996f13bc46022d6111d5c3a0"
+    }
+  },
+  "schema": "boxfusion.ca1m_orientation_policy.v2"
+}

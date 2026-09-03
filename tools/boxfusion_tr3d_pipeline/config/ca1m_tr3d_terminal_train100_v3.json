@@ -1,0 +1,88 @@
+{
+  "schema": "boxfusion.ca1m_tr3d_terminal_collection_config.v3",
+  "namespace": "ca1m_tr3d_terminal_ca_native_train100_v3",
+  "observer_only": true,
+  "mutation_enabled": false,
+  "ground_truth_access": false,
+  "validation_ground_truth_access": false,
+  "run_authorized": false,
+  "runner_state": "static_contract_only_pending_final_route",
+  "scene_contract": {
+    "path": "/extra/ZhaoX/tr3d_ca1m_train100_v1/splits/train100.txt",
+    "sha256": "35321e9942dc5d512db2952b9ca6228b1291127e0c13fd92aa458f2d7eb7f9fd",
+    "count": 100,
+    "exact": true
+  },
+  "inputs": {
+    "processed_ca1m_root": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1",
+    "upstream_contract": "processed RGB-D only; no prior terminal candidate cache or old anchor/B6 artifact"
+  },
+  "proposal_stage": {
+    "schema": "boxfusion.ca1m_tr3d_proposal_cache.v1",
+    "anchor_access": false,
+    "b6_access": false,
+    "frame_lineage_manifest": null,
+    "frame_lineage_manifest_sha256": null,
+    "status": "pending_final_route_frame_lineage"
+  },
+  "anchor_overlay_stage": {
+    "output_schema": "boxfusion.ca1m_tr3d_terminal_observer.v1",
+    "gpu_required": false,
+    "final_anchor_root": null,
+    "final_anchor_manifest": null,
+    "final_anchor_manifest_sha256": null,
+    "retrained_native_b6_diagnostics_root": null,
+    "retrained_native_b6_checkpoint": null,
+    "retrained_native_b6_manifest": null,
+    "status": "pending_g0_clip_reliable_topk3_and_retrained_b6"
+  },
+  "tr3d": {
+    "binding_schema": "boxfusion.tr3d.ca1m_checkpoint_binding.v1",
+    "binding_environment_variable": "BOXFUSION_CA1M_TR3D_V3_CHECKPOINT_BINDING",
+    "fixed_work_root": "/extra/ZhaoX/tr3d_ca1m_work_dirs/ca1m_fg_scratch_seed0_fp32_gb16_v1",
+    "source_config_path": "/data/ZhaoX/OVM3D-Dett/boxfusion_tr3d_dev/config/tr3d/tr3d_ca1m_foreground.py",
+    "source_config_sha256": "0185b32df0854189d1f5827060810c0ee7056aa1c7c5afbd19b69b255843d567",
+    "worker_python": "/data/ZhaoX/OVM3D-Dett/boxfusion_tr3d_dev/.conda/boxfusion-tr3d/bin/python",
+    "worker_script": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/tools/ca1m_tr3d_terminal_worker.py",
+    "runtime_root": "/data/ZhaoX/OVM3D-Dett/boxfusion_tr3d_r2_verifier_dev",
+    "project_root": "/data/ZhaoX/OVM3D-Dett/boxfusion_tr3d_dev",
+    "vendor_root": "/data/ZhaoX/OVM3D-Dett/boxfusion_tr3d_dev/third_party/mmdetection3d",
+    "raw_checkpoint_argument_allowed": false,
+    "raw_config_argument_allowed": false,
+    "scannet_checkpoint_or_config_allowed": false
+  },
+  "terminal_protocol": {
+    "cache_schema": "boxfusion.ca1m_tr3d_terminal_observer.v1",
+    "prefix_id": "p100_gap20",
+    "pixel_stride": 4,
+    "voxel_size_m": 0.01,
+    "min_depth_m": 0.1,
+    "max_depth_m": 6.0,
+    "near_iou": 0.15,
+    "score_threshold": 0.01,
+    "max_proposals": 256,
+    "adapter_mode": "genuine"
+  },
+  "outputs": {
+    "proposal_cache_root": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_tr3d_terminal_ca_native_train100_v3/proposals",
+    "terminal_cache_root": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_tr3d_terminal_ca_native_train100_v3/terminal",
+    "candidate_evidence_root": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_tr3d_terminal_ca_native_train100_v3/candidate_native_evidence",
+    "report_root": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/reports/ca1m_tr3d_terminal_ca_native_train100_v3",
+    "log_root": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/logs/ca1m_tr3d_terminal_ca_native_train100_v3",
+    "create_only": true,
+    "exact_proposal_cache_count": 100,
+    "exact_terminal_cache_count": 100,
+    "exact_candidate_evidence_count": 100
+  },
+  "forbidden_reuse": {
+    "terminal_cache_roots": [
+      "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_tr3d_benefit_train100_v1/terminal",
+      "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_tr3d_benefit_train100_v2/terminal"
+    ],
+    "benefit_datasets": [
+      "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/datasets/ca1m_tr3d_benefit_fit_dev_v1.npz",
+      "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/datasets/ca1m_tr3d_benefit_fit_dev_v2.npz"
+    ],
+    "reason": "v3 must regenerate all exact100 terminal candidates and evidence with the CA-native checkpoint"
+  }
+}

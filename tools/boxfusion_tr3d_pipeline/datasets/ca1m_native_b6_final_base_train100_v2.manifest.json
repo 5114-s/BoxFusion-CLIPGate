@@ -1,0 +1,2414 @@
+{
+  "activation_authorized": false,
+  "complete": true,
+  "counts": {
+    "positive_iou15": 5578,
+    "positive_iou25": 5111,
+    "positive_iou50": 3273,
+    "rows": 6682,
+    "scenes": 100,
+    "valid_evidence_rows": 6657
+  },
+  "dataset": {
+    "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/datasets/ca1m_native_b6_final_base_train100_v2.npz",
+    "rows": 6682,
+    "sha256": "485668f2e5dfa67b595609965bf290238467c840c588082762f19ae237d72b13"
+  },
+  "feature_names": [
+    "detector_score",
+    "support_given_depth",
+    "occluded_given_depth",
+    "free_given_depth",
+    "invalid_ratio",
+    "view_coverage",
+    "sample_support",
+    "area_quality",
+    "area_stability",
+    "support_view_mean",
+    "support_view_min",
+    "free_view_max",
+    "aspect_balance",
+    "height_balance"
+  ],
+  "frozen_subset_manifest": {
+    "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/manifests/ca1m_native_b6_train100_v1/subset_manifest.json",
+    "scene_count": 100,
+    "scene_ids_sha256": "35321e9942dc5d512db2952b9ca6228b1291127e0c13fd92aa458f2d7eb7f9fd",
+    "sha256": "29a32e92cfece667e9fef4389227eacba2b96c55737569fa6219ca7ab527fd23"
+  },
+  "scene_list": {
+    "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/manifests/ca1m_native_b6_train100_v1/scene_ids.txt",
+    "sha256": "35321e9942dc5d512db2952b9ca6228b1291127e0c13fd92aa458f2d7eb7f9fd"
+  },
+  "scenes": [
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/43649774/derived_train_gt_manifest.json",
+        "sha256": "3a89dd7df4e410e09c3a7f0d1e88204adc3889eded26078ab5beb789c46db625"
+      },
+      "derived_gt_sha256": "0d1fa8496154a3f968302cd7050d3326efa4c4e4034f974425120838fa79fde3",
+      "fold_id": 0,
+      "gt_boxes": 143,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/43649774_ca1m_native_b6.npz",
+        "sha256": "f55197edb7a1554f5df08beaba8b45c39bc16fc1a266160433ac38fa20d66a70"
+      },
+      "positive_iou15": 88,
+      "positive_iou25": 83,
+      "positive_iou50": 58,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/43649774_boxes.pkl",
+        "sha256": "b2d25e3956ef9e3ae48cd7fd86b6f8adc318f8b72993df63836e47ffec0c2f2f"
+      },
+      "rows": 106,
+      "scene_id": "43649774",
+      "source_tar_sha256": "a83e99efc1c6d3dac4cf085a93ed471a5885c6b0794325be5030fcea951aacaa"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/48018894/derived_train_gt_manifest.json",
+        "sha256": "e6db69872ff2a61fe6e34b79c15a7f4e8fe7756c942f8abf8f4055560e36410a"
+      },
+      "derived_gt_sha256": "dbf82abab4e8cb40c9f89e6d75e78c76ac4a36de4e7832211e2bd13612b606e5",
+      "fold_id": 0,
+      "gt_boxes": 143,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/48018894_ca1m_native_b6.npz",
+        "sha256": "c8b5b75bc2affe2ee6d8757b1364b4ced0e8b72c1807a6c55d85b1465cd31c78"
+      },
+      "positive_iou15": 19,
+      "positive_iou25": 18,
+      "positive_iou50": 11,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/48018894_boxes.pkl",
+        "sha256": "7a06a39e65f3adea5d9b7fdf288fa2e2fa5562dc0c3fdd379de4230f8c323fa9"
+      },
+      "rows": 22,
+      "scene_id": "48018894",
+      "source_tar_sha256": "753ed084e98a707b7c7119a1a201a1feb12affaca720c55cc9b5025f2d361a2e"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/42445723/derived_train_gt_manifest.json",
+        "sha256": "4e64b22b3a4dd12d4d344e2880d4d62d7ffd7999fbbd1bd169989182888f054a"
+      },
+      "derived_gt_sha256": "fefc536750b8dfb968260a2428c80894a576dc9fbda9bd8f38f2f04dabd748b2",
+      "fold_id": 3,
+      "gt_boxes": 178,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/42445723_ca1m_native_b6.npz",
+        "sha256": "f7dfe289eebe6fb1dbd7e25539032c53eaed2949031f6fb05a5daae84c06183b"
+      },
+      "positive_iou15": 47,
+      "positive_iou25": 42,
+      "positive_iou50": 24,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/42445723_boxes.pkl",
+        "sha256": "e48520f351e32916bb113cba1f99ab64aca36b1f9f3f408573a14dbf8e077be6"
+      },
+      "rows": 55,
+      "scene_id": "42445723",
+      "source_tar_sha256": "aaf2c266eb538f2c705787047bdaaa6b62c476e2bb8f058ae52dbcfe474e7eed"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/43896550/derived_train_gt_manifest.json",
+        "sha256": "9c97b3847c6b4cb3cfb84b6b752c76a4ff27248915c7c9d576f2c9987439248e"
+      },
+      "derived_gt_sha256": "a32c9c01875982e0d64d1938be4d3d1fd4de2dd0bc48f7edbb3d448d340af4a4",
+      "fold_id": 2,
+      "gt_boxes": 136,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/43896550_ca1m_native_b6.npz",
+        "sha256": "6782ef45a587eb54cd3facc8873807625cb59a2c232a0494490c08d00f9b03c6"
+      },
+      "positive_iou15": 72,
+      "positive_iou25": 65,
+      "positive_iou50": 46,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/43896550_boxes.pkl",
+        "sha256": "1c786a74c9c16aae5e3a2fc9463c9cc15977ac737e3de1c5d8539730cc186863"
+      },
+      "rows": 85,
+      "scene_id": "43896550",
+      "source_tar_sha256": "20cb078ba0b6c8707f97610da93602bdff1209a82fb5781816616ee921071972"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/42445047/derived_train_gt_manifest.json",
+        "sha256": "129a0ac37a4e9b852bcfdabfde1d75fbc40f4a24ff2aea66af976b853e6a19f4"
+      },
+      "derived_gt_sha256": "64abb7eb02163b1b9757d60a4f56850e2e586fb5c127922c2e12cf396c4a2052",
+      "fold_id": 1,
+      "gt_boxes": 239,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/42445047_ca1m_native_b6.npz",
+        "sha256": "7f8f65f296de8678e218e24a7c77587eb960faee2b2905af4687a44ba3f38664"
+      },
+      "positive_iou15": 107,
+      "positive_iou25": 100,
+      "positive_iou50": 62,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/42445047_boxes.pkl",
+        "sha256": "b92e72d609ecf16e209e98f6a48585da4c0dc5fed7240432b1e00890f191c9f5"
+      },
+      "rows": 147,
+      "scene_id": "42445047",
+      "source_tar_sha256": "361ec536e63bcd684b22ef2b144091d78139a21fc023a0be8293e792de2adccc"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/47333635/derived_train_gt_manifest.json",
+        "sha256": "b5542f95321b034018294e750599afb6e5f60e71f230ffcf3be54c93da45abbc"
+      },
+      "derived_gt_sha256": "f01d8456537426b256ed68896012358b3fe8ea500bf88d2c88b9d73138046516",
+      "fold_id": 2,
+      "gt_boxes": 156,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/47333635_ca1m_native_b6.npz",
+        "sha256": "f9d22d1410d67d5a81a4b4b0a267c89cbde6fcd84cbf5874845afbf05068e8f5"
+      },
+      "positive_iou15": 73,
+      "positive_iou25": 69,
+      "positive_iou50": 45,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/47333635_boxes.pkl",
+        "sha256": "7af9c3d970eecd03974e7dfcdb823283c152be557ccfcb56803fdc94ae4b40fe"
+      },
+      "rows": 82,
+      "scene_id": "47333635",
+      "source_tar_sha256": "f22a5dc3d525e2324f8df0cc2154fd7641ed1f118adf867edc65b1403d180d30"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/48018778/derived_train_gt_manifest.json",
+        "sha256": "5ba27f40def82a8cccd5b6d8e5d6f6180a88701f5c839662cb8a263c125d40ab"
+      },
+      "derived_gt_sha256": "f21c82b06529c0f0347401bb2bb82a2ab9732bfa4518e7d2576e56eec1334fa3",
+      "fold_id": 4,
+      "gt_boxes": 93,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/48018778_ca1m_native_b6.npz",
+        "sha256": "8c0f5d63d6be489f49c2263c8924fa306a5c5f1d79d843d6ca5a99d612013f15"
+      },
+      "positive_iou15": 29,
+      "positive_iou25": 28,
+      "positive_iou50": 17,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/48018778_boxes.pkl",
+        "sha256": "88f240a98663d397837074833e1ca685e6960c40aeb4b58c77315d5530462b95"
+      },
+      "rows": 34,
+      "scene_id": "48018778",
+      "source_tar_sha256": "6244b7c629f31cab42195c37b667296988c0f4683d39695e06bc527a19413203"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/48018328/derived_train_gt_manifest.json",
+        "sha256": "0d30a83a2f18728081edc937b75eba1988b101e2dad3db0e6dd604f9dbe531f4"
+      },
+      "derived_gt_sha256": "a7cc316f39957039acdd2f9f4ccf7a07ef78a20ec40ebb9b63a9fdcb1516c1ba",
+      "fold_id": 2,
+      "gt_boxes": 406,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/48018328_ca1m_native_b6.npz",
+        "sha256": "0dd3dd06ff4d95fd8bd02282293cbb98023d2680d5697429ec22f02fe8f34b52"
+      },
+      "positive_iou15": 117,
+      "positive_iou25": 102,
+      "positive_iou50": 38,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/48018328_boxes.pkl",
+        "sha256": "d63517be20c675e4a0fe016e7e5027753ca1ffa72238c07ca64bb643ea83f918"
+      },
+      "rows": 151,
+      "scene_id": "48018328",
+      "source_tar_sha256": "ca7025076cdc6289e52c3e3516068e98cbe95027ad13df705f347cc0e60885c4"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/47331771/derived_train_gt_manifest.json",
+        "sha256": "f3c69a389a3bcf004c52663018a529372b0fef48f8f985621ebf7559aa046ca4"
+      },
+      "derived_gt_sha256": "36004107d4e2f8884aa305dfff0a0ff8ac1a861ef8fac01fa9bb9d3f37590947",
+      "fold_id": 2,
+      "gt_boxes": 254,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/47331771_ca1m_native_b6.npz",
+        "sha256": "b3aa503dfdcfb969ce7fd46b1166d19b74cac0afed70481beda7aa73bf4ed743"
+      },
+      "positive_iou15": 34,
+      "positive_iou25": 32,
+      "positive_iou50": 23,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/47331771_boxes.pkl",
+        "sha256": "d093f82c64d7de6c7d3f055511f57cb6f62fa5735e4b08097f77498a0c94561c"
+      },
+      "rows": 38,
+      "scene_id": "47331771",
+      "source_tar_sha256": "cab61d561d2119de88b275e3b1b664227e8972a79d089d92a798a9c2091941d5"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/42444517/derived_train_gt_manifest.json",
+        "sha256": "33f1c6ba306d4943097567fe93fe7736140e480093c8a26500e982d3b02b0dbc"
+      },
+      "derived_gt_sha256": "23398778849510c98aaed7dfb965c7e248129cf5e95fe59d7cb10b8e75bfef3b",
+      "fold_id": 3,
+      "gt_boxes": 56,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/42444517_ca1m_native_b6.npz",
+        "sha256": "b23b7dd22e8532796d4a583e7ace4938644390d89788e352839f3f2df9830c98"
+      },
+      "positive_iou15": 27,
+      "positive_iou25": 23,
+      "positive_iou50": 15,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/42444517_boxes.pkl",
+        "sha256": "9439f7a1cc439ec13f90ac42855b46d705963c2018cffa38cae9f1de258409ca"
+      },
+      "rows": 32,
+      "scene_id": "42444517",
+      "source_tar_sha256": "ef641f0220b7eb033ba8c2011d9507fe13bafdd543f77b649aeea255820281e8"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/47334659/derived_train_gt_manifest.json",
+        "sha256": "0c76740fcdbb8e084754a167299858ecbe443c44be023ad309ab919665e1b0e1"
+      },
+      "derived_gt_sha256": "c0d1486b7441aafb9b6a674658ee41ee18bc49678a5560ee9295187023de2b81",
+      "fold_id": 0,
+      "gt_boxes": 150,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/47334659_ca1m_native_b6.npz",
+        "sha256": "2f3780f9833a75617bfab5cbd8a48d138b4a2dfd8982ecb60a5ef50dd87fdf1b"
+      },
+      "positive_iou15": 60,
+      "positive_iou25": 57,
+      "positive_iou50": 33,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/47334659_boxes.pkl",
+        "sha256": "c4b794806e68fbdd00f0fa7759c7b4df15abdc31bbd82a269cc901b1e020d405"
+      },
+      "rows": 66,
+      "scene_id": "47334659",
+      "source_tar_sha256": "81ce1a7c34c7136ef062771ace8d0fb3cd760eda727d5de0e01d812e487a5c9b"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/47429678/derived_train_gt_manifest.json",
+        "sha256": "990a058ce3244d48a875bd510fd3be46733e6a26ee1670797f5a546004b0e1ac"
+      },
+      "derived_gt_sha256": "a517fe3a4d0448405e3e21dd4314b488da37136219c3ac63f506b5d8691ce4cf",
+      "fold_id": 4,
+      "gt_boxes": 99,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/47429678_ca1m_native_b6.npz",
+        "sha256": "ca16e4a9de6d21373d75d9f21e71be3eeb03619593b3c73c5cbb805856427f22"
+      },
+      "positive_iou15": 6,
+      "positive_iou25": 6,
+      "positive_iou50": 4,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/47429678_boxes.pkl",
+        "sha256": "77c9eea7c676105916c249f708e09b2df2fb06eefa4dd6f4d86b285b40e73a68"
+      },
+      "rows": 10,
+      "scene_id": "47429678",
+      "source_tar_sha256": "24d6d04f17700f71b2ad2c76f48a4e4b48cf964a7129632141b373a10a9d5171"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/48458610/derived_train_gt_manifest.json",
+        "sha256": "923fdb62f699c25ca50b6d0bc921e7f57664bbf02c68a95c368581525b3f884e"
+      },
+      "derived_gt_sha256": "7678843187de71dd1196aa1d78822a09a0397a8977a5ab0e47c16394978d6c45",
+      "fold_id": 4,
+      "gt_boxes": 6,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/48458610_ca1m_native_b6.npz",
+        "sha256": "c22c715e9705e4b7d0c055b28ad4033bafde041b65dfd926bd33d45c1f804638"
+      },
+      "positive_iou15": 3,
+      "positive_iou25": 1,
+      "positive_iou50": 1,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/48458610_boxes.pkl",
+        "sha256": "539b34263acd73196a098ee0caa06b926447bace30fc491d4475f232b1c1d0fd"
+      },
+      "rows": 5,
+      "scene_id": "48458610",
+      "source_tar_sha256": "ebe1b284a6d29d7a78f43115f9183c69711e334d3d3d283626c193f6a70de2d4"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/47334464/derived_train_gt_manifest.json",
+        "sha256": "576eec2f92f359709ad515faa36a9e3a1ac322fecf7bbe6870561ccde6502fd2"
+      },
+      "derived_gt_sha256": "8bd5434d900a474e2c78726ddf01bff84f5298a7c37757e397c22a295ec90851",
+      "fold_id": 2,
+      "gt_boxes": 134,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/47334464_ca1m_native_b6.npz",
+        "sha256": "03cb407545c8d8cd1e072e10bd6a19fa19a21045767b614874e8f3f184196e83"
+      },
+      "positive_iou15": 64,
+      "positive_iou25": 59,
+      "positive_iou50": 32,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/47334464_boxes.pkl",
+        "sha256": "b547f76e7fad4a983e72ab803ee425d876d535e8e3f9befa72c470b504c73603"
+      },
+      "rows": 73,
+      "scene_id": "47334464",
+      "source_tar_sha256": "f0bcc428f27a3b7b07ddfdb812873f60b66bfb58f179777b858a2e4f0f3ca389"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/47430540/derived_train_gt_manifest.json",
+        "sha256": "4a67c0d5f329aa068a0e239bcfaefbeacd776956ce21d5ff90a30d61642c3d3d"
+      },
+      "derived_gt_sha256": "d324d46d5e5fbe2c76c3640a49485f7d2f0a5f349ba0fc1f4e74d0e83932fd92",
+      "fold_id": 3,
+      "gt_boxes": 103,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/47430540_ca1m_native_b6.npz",
+        "sha256": "53b79e3d5d4a9f142cbbe5d73b7f8e55c148cad172db31efad9669db25f7791f"
+      },
+      "positive_iou15": 5,
+      "positive_iou25": 5,
+      "positive_iou50": 1,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/47430540_boxes.pkl",
+        "sha256": "4211f9cfec383d04273cfc5bca6ce33ac8cf9fa8dd60ca2d6579803609bfd46b"
+      },
+      "rows": 10,
+      "scene_id": "47430540",
+      "source_tar_sha256": "f53370672c8ad862974f7b3c4aca64fbc79b15347b2cd712df6382ae22e0c8c0"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/47331931/derived_train_gt_manifest.json",
+        "sha256": "692d1e0fe06c8ec857188abb1658c29451ef783ca3a8303e0836f268dd9e854b"
+      },
+      "derived_gt_sha256": "542b0708d202701e2b2fa0ba9b924cb335ce015b00e98a8d1f060863ae099d54",
+      "fold_id": 1,
+      "gt_boxes": 18,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/47331931_ca1m_native_b6.npz",
+        "sha256": "9b8baede8f65f95ff40e47e9f0f76d400accb015f0265c95b361ca5a52d772e2"
+      },
+      "positive_iou15": 6,
+      "positive_iou25": 6,
+      "positive_iou50": 4,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/47331931_boxes.pkl",
+        "sha256": "5404572954f9680381b5bbd951ab1cfa3664a76355efbe55a1dcc6f82dbe2b23"
+      },
+      "rows": 7,
+      "scene_id": "47331931",
+      "source_tar_sha256": "86e309db5f0cd023556a8f0f1ae6653a2fce659845c992790447bf130db133df"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/47670195/derived_train_gt_manifest.json",
+        "sha256": "14b7a061a57643374292e319f778f082c2f6659168eeba659b845a5181de1269"
+      },
+      "derived_gt_sha256": "230ab71a149ae24f1870afcc8ab52ce5352c38199296c771959ee3efd1b9e112",
+      "fold_id": 2,
+      "gt_boxes": 104,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/47670195_ca1m_native_b6.npz",
+        "sha256": "baba9f5c92a71146c11882537e7897c94eb8b33b9ba749bb8965f26aba00c4d7"
+      },
+      "positive_iou15": 27,
+      "positive_iou25": 21,
+      "positive_iou50": 12,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/47670195_boxes.pkl",
+        "sha256": "5e1879e5c57c5f1e85cf66d9b94fa9b8665a5f2d110079f33bc46051c4429503"
+      },
+      "rows": 35,
+      "scene_id": "47670195",
+      "source_tar_sha256": "37987fc74c7e0c79e0e2bba59a08725a765d78c47651c4e6588f98c73d541e14"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/48018887/derived_train_gt_manifest.json",
+        "sha256": "806d9b74f2f57e283530f0612ae6e2b3275d493ce6deca48a374679122f86153"
+      },
+      "derived_gt_sha256": "519de980cd0c508c399b7419e8f220457d6c0cfb61c0cdb0e20c64bdb3996c15",
+      "fold_id": 3,
+      "gt_boxes": 178,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/48018887_ca1m_native_b6.npz",
+        "sha256": "36e66b93d2e11b0f3204f6643f09dffff93c81f6f28520c431d7eafec1988364"
+      },
+      "positive_iou15": 16,
+      "positive_iou25": 13,
+      "positive_iou50": 10,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/48018887_boxes.pkl",
+        "sha256": "67089b0d34b39a40949634f7b0fec3df3ac6a787a3d470dad3630f0aa8fbe0d2"
+      },
+      "rows": 21,
+      "scene_id": "48018887",
+      "source_tar_sha256": "340190dccc945f9c0624fa9f8cd2e60e09d6bfd19558022c98cb6906304003c6"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/42897780/derived_train_gt_manifest.json",
+        "sha256": "1ee23d6b4e19afcb124eeb2412a19e267facc4a7e5b8c217dc9b271626ffc2fb"
+      },
+      "derived_gt_sha256": "6296b8382f6d8c1df531110b6919aa9e02f1d2f89583b0a851303d3e3fd7b3b3",
+      "fold_id": 2,
+      "gt_boxes": 102,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/42897780_ca1m_native_b6.npz",
+        "sha256": "5309b2fde94974dc8cd54c5487c4f0cfbd00dceff24761a50255894e6a5267fc"
+      },
+      "positive_iou15": 29,
+      "positive_iou25": 25,
+      "positive_iou50": 16,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/42897780_boxes.pkl",
+        "sha256": "4a39f647b98dfa7bc6a7f3428cad94e138d03988fe15c0974a85a4fa2b2a9f5e"
+      },
+      "rows": 37,
+      "scene_id": "42897780",
+      "source_tar_sha256": "4b85bcdc7560515e8c2a26a6399054c615df214254f2cef10e580b7bfe2969ef"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/47332937/derived_train_gt_manifest.json",
+        "sha256": "f44f91e59184e4a84d08f8751e8792e9a81604d18015cdcdb24dc166094ef9db"
+      },
+      "derived_gt_sha256": "44b3b1e37180f7838c86e48f6d585cda7573eb8287fcdfb46249283f6f991b8c",
+      "fold_id": 1,
+      "gt_boxes": 143,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/47332937_ca1m_native_b6.npz",
+        "sha256": "2ce6f52b82c9f0ba839bc6fdaefe68c5e74579300c457f0c4c13ce30faa6a18d"
+      },
+      "positive_iou15": 57,
+      "positive_iou25": 54,
+      "positive_iou50": 33,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/47332937_boxes.pkl",
+        "sha256": "a198a330087005f8cc96e994d4728a302bf13d2bcd04ab4225997eb702483a43"
+      },
+      "rows": 61,
+      "scene_id": "47332937",
+      "source_tar_sha256": "37404d98f40485757e9773854b2c46c84c4c00ec5d98665febf86cf798ac237c"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/47333468/derived_train_gt_manifest.json",
+        "sha256": "41713727085ca2211f6a78095de82b8728684a3e1c9aa5b75c4ef7e578cbc160"
+      },
+      "derived_gt_sha256": "0b67825ae11f9d85442e0c5ca2d886b5dc2a43c7f36da575fe2c71f315d9ea62",
+      "fold_id": 2,
+      "gt_boxes": 114,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/47333468_ca1m_native_b6.npz",
+        "sha256": "5710153ff7f04538f26a8f0a01f7b32d07fe07f3f1c03c700d1eaf6a2278c09e"
+      },
+      "positive_iou15": 54,
+      "positive_iou25": 51,
+      "positive_iou50": 37,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/47333468_boxes.pkl",
+        "sha256": "9f325c1d0d7ffe7a6663588bdf899f805aaca81d22724af07ba0b699a3ae8b4d"
+      },
+      "rows": 58,
+      "scene_id": "47333468",
+      "source_tar_sha256": "218cb2bef14caec9d87279ab0dc9de892ef5363c2a5667ee4d3e3b5ce3fd7ad7"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/48458455/derived_train_gt_manifest.json",
+        "sha256": "60ade175e6da6f342a584423211c1b6ebe075d0d119904bc67ea0327dfa7e8a6"
+      },
+      "derived_gt_sha256": "dc336442c86cf89025305f91e34a9e544cb6bf4c69fb3641697ea02cdc570bfd",
+      "fold_id": 3,
+      "gt_boxes": 119,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/48458455_ca1m_native_b6.npz",
+        "sha256": "c39a84b3638f3a007b5dd4a05993b0dab9a851ca43ac29301f62b5392a2a2f19"
+      },
+      "positive_iou15": 34,
+      "positive_iou25": 33,
+      "positive_iou50": 24,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/48458455_boxes.pkl",
+        "sha256": "dfce59e2f9d0921b9efd41b1c951671b1fcb0cdbdfa1fed59753bb8d114b9e81"
+      },
+      "rows": 38,
+      "scene_id": "48458455",
+      "source_tar_sha256": "493c9f1e161d3e21c771710ae6952f754b3076fed8293f12427774978b1b376d"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/44358274/derived_train_gt_manifest.json",
+        "sha256": "8a318e7491065e171742d0a6c1ef8e1a988759928406c31fb0cfd831558e6591"
+      },
+      "derived_gt_sha256": "305d06ffc0d8a35e4f02d1d16be036ff00202ffeddb80abd82b079fe15cd9e4b",
+      "fold_id": 1,
+      "gt_boxes": 124,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/44358274_ca1m_native_b6.npz",
+        "sha256": "d278964c38a46481ee8d456e3e88752a565bd1d1a84c2be112cff4dd2fc04fd5"
+      },
+      "positive_iou15": 61,
+      "positive_iou25": 57,
+      "positive_iou50": 44,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/44358274_boxes.pkl",
+        "sha256": "2e8d6fb53659a36b323eb466864b3cbcac4f2ef06789412005849a04c115581e"
+      },
+      "rows": 66,
+      "scene_id": "44358274",
+      "source_tar_sha256": "00f1e394d40f95c80f2f1a708fa127e19422f38a1293fa36224bd5a541765d03"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/42445670/derived_train_gt_manifest.json",
+        "sha256": "d23c42ade5a8f9ff37c643ec1eeb84c351c66ca06580f32e6d4284ab7c906863"
+      },
+      "derived_gt_sha256": "9893bc709bc762b0daf82bcf5eb897a9080a12a601ca7f7456a2530dbb5008fe",
+      "fold_id": 4,
+      "gt_boxes": 138,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/42445670_ca1m_native_b6.npz",
+        "sha256": "90ae51b87e5f7a320a69a63bee4cc58c1cda08b9d4ddc70774fe0d8daf81a8ad"
+      },
+      "positive_iou15": 65,
+      "positive_iou25": 59,
+      "positive_iou50": 42,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/42445670_boxes.pkl",
+        "sha256": "d739f93508ce6ccb8d6c2cbf933a6d115ea00852c1593b2717e0451a88b2e744"
+      },
+      "rows": 78,
+      "scene_id": "42445670",
+      "source_tar_sha256": "7753b12f87f9ccb5bd416727666f48864c715b2f5e547bcfc563f6ccf129d7d5"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/47331938/derived_train_gt_manifest.json",
+        "sha256": "4cc0f6280ec09ebe9ba0089f3f4e23a5927cb4d3353d4831154b4bfd826486ba"
+      },
+      "derived_gt_sha256": "2c1bf59a3e6fae744a28326810b10ab087ce22c0864d1929ed6f6ddef1eb26b4",
+      "fold_id": 0,
+      "gt_boxes": 70,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/47331938_ca1m_native_b6.npz",
+        "sha256": "cb2f6fe7b9498bb6421d03324062fa08a3e291bfb349605d1a8b48fccc7022f8"
+      },
+      "positive_iou15": 42,
+      "positive_iou25": 38,
+      "positive_iou50": 22,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/47331938_boxes.pkl",
+        "sha256": "26fca35d44129c8fe56162916dd2eb7d58c054b26010689e60d760596aff5560"
+      },
+      "rows": 53,
+      "scene_id": "47331938",
+      "source_tar_sha256": "dcbabc1e4fc46abc983c6612e28bbcf2990048a1d4bf2e122a6268ff6613320f"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/47430395/derived_train_gt_manifest.json",
+        "sha256": "d2c09077672442138f0e5f56416dffc4c0a975b242655581f5b473fefb31a258"
+      },
+      "derived_gt_sha256": "d1d7dd491869eee98afb2bed61b375c1de3dbf4161b95f9d800ddcdb5ff23f46",
+      "fold_id": 3,
+      "gt_boxes": 96,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/47430395_ca1m_native_b6.npz",
+        "sha256": "c92c8c07400294e968a26d3c9d736464487e5d963d7d5010d86a3d131f7aafee"
+      },
+      "positive_iou15": 17,
+      "positive_iou25": 16,
+      "positive_iou50": 11,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/47430395_boxes.pkl",
+        "sha256": "ed95c8890aef2ef684f464acb6f211e9ea043ce74f8b379b274ccbff844a78a6"
+      },
+      "rows": 26,
+      "scene_id": "47430395",
+      "source_tar_sha256": "e98be61e11c1873be4809bdce2533ed03e59fd6a070709c9efc7b6d98d801a49"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/47430221/derived_train_gt_manifest.json",
+        "sha256": "002372d72380e5c71101fc276805204f1b8707aeba937bfa5eb8926fc6256c37"
+      },
+      "derived_gt_sha256": "f87cc9e676ea73afe7967ee484ecedbbca12a4b3d8db9d4540e84b1db7f44ee7",
+      "fold_id": 4,
+      "gt_boxes": 217,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/47430221_ca1m_native_b6.npz",
+        "sha256": "55d591fac99bfbb9fb89e14e7a29a147002e4be9c8b1e93e2e8061653fa05254"
+      },
+      "positive_iou15": 91,
+      "positive_iou25": 87,
+      "positive_iou50": 58,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/47430221_boxes.pkl",
+        "sha256": "a1985e73f2c217e822498ca50403e86f5fab47ba905a711920d578e794f81aa7"
+      },
+      "rows": 112,
+      "scene_id": "47430221",
+      "source_tar_sha256": "57780783c913c5acb3b8737c7ae2c480249b3187fd2d86e63dad552079a70b50"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/45261201/derived_train_gt_manifest.json",
+        "sha256": "0cc285355877adb898f13307293417d579bb1ffdcba2d99c7a356163a6a0fd65"
+      },
+      "derived_gt_sha256": "8ca74cdea6fb2ff2d7b0a015cae3f0cc670326825351b6b207d5a1bc9377ebc1",
+      "fold_id": 1,
+      "gt_boxes": 109,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/45261201_ca1m_native_b6.npz",
+        "sha256": "48ca93fa7b536feb96a6c16b9889dcd2543eb5e75ba7f2b7fd6ebad819cc8a38"
+      },
+      "positive_iou15": 44,
+      "positive_iou25": 41,
+      "positive_iou50": 27,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/45261201_boxes.pkl",
+        "sha256": "c761ea9ff4a0e647de7492e5879d499c0aa05b10bdc6c17f87c853f76d839bd9"
+      },
+      "rows": 58,
+      "scene_id": "45261201",
+      "source_tar_sha256": "cd7f4fe747cb328c4f40f24910f3368fe31df0f4c62ac4d7338887d14c60a393"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/44796230/derived_train_gt_manifest.json",
+        "sha256": "7e8c8b496b5923dcbba3c24a3288c0b5fee50aa6d1c7ccc433ab18366c7eeb4f"
+      },
+      "derived_gt_sha256": "3fffeacb51ef5481bdf267d0daf3f843d4e14eef7545541139811be9023359f6",
+      "fold_id": 4,
+      "gt_boxes": 48,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/44796230_ca1m_native_b6.npz",
+        "sha256": "47eda3bb2e94a8b51645a463ccb7919a09c020445ad62444a120fd36476ae265"
+      },
+      "positive_iou15": 20,
+      "positive_iou25": 16,
+      "positive_iou50": 9,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/44796230_boxes.pkl",
+        "sha256": "f906b3def907c7210f0e63fab9fc5932c468666df117a51293fbca712724a312"
+      },
+      "rows": 27,
+      "scene_id": "44796230",
+      "source_tar_sha256": "0922e081b41380b8a30a3f5ef6733a705b4d99fbf4ff973ea6f3b8e1a3a1715f"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/45261257/derived_train_gt_manifest.json",
+        "sha256": "fed5dcb5d11b04dac23a92c945c34e9c8f8f47b9d68bb031e0ce364fe33905da"
+      },
+      "derived_gt_sha256": "0d4457032a4337e3cfe5fa44323e851bf8e6e13841c6d905e1a6735ebc30a784",
+      "fold_id": 3,
+      "gt_boxes": 184,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/45261257_ca1m_native_b6.npz",
+        "sha256": "4eaff2dc8010279344df082a88aab4f07c8bab665ca92527226f103741c29797"
+      },
+      "positive_iou15": 89,
+      "positive_iou25": 80,
+      "positive_iou50": 58,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/45261257_boxes.pkl",
+        "sha256": "9039623a37286d40d36b35a5f985f866dd5eb74e785ebff6e61b84fc0e39788e"
+      },
+      "rows": 110,
+      "scene_id": "45261257",
+      "source_tar_sha256": "e320c37656c859507051ad4a0b561e67080c63e6a1fa135b3656a1dc4db453c0"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/48018188/derived_train_gt_manifest.json",
+        "sha256": "6d3757846b3f3f321932d03eb6129dcf21213d57d8bf662747fe75a5163edf0d"
+      },
+      "derived_gt_sha256": "e64dd27e31b8019aaa73fa8b53c8b112fb683783a644c9bed78996174823043a",
+      "fold_id": 0,
+      "gt_boxes": 140,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/48018188_ca1m_native_b6.npz",
+        "sha256": "4003fc27f55e4d5531b637f0bfefc25d8ec54bfb2d83245db00677f091cab642"
+      },
+      "positive_iou15": 22,
+      "positive_iou25": 19,
+      "positive_iou50": 11,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/48018188_boxes.pkl",
+        "sha256": "19c0ac3c34e05239d5ded80c5a9cd2577e2ecec2132efc8acf5d1259c5cd3524"
+      },
+      "rows": 29,
+      "scene_id": "48018188",
+      "source_tar_sha256": "4225c58a32d3efaaef17cde196421cfbfc1e0e3933fd0a65a9695ea91c2fe8dc"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/47115445/derived_train_gt_manifest.json",
+        "sha256": "3d879f6a890a33fe3b6e3c9741af5075759b0d90f4881fc9e7420ae1d2e072e8"
+      },
+      "derived_gt_sha256": "4de24faeae89f9b2bd8b31ac573bf0ad1ea573d73989248b8c4d6260bedf4ab0",
+      "fold_id": 3,
+      "gt_boxes": 170,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/47115445_ca1m_native_b6.npz",
+        "sha256": "1781c715afb26086f84a11a79a2db618e599c94dbd3a1727f128aaa5e5ead84b"
+      },
+      "positive_iou15": 94,
+      "positive_iou25": 86,
+      "positive_iou50": 56,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/47115445_boxes.pkl",
+        "sha256": "f1c9e33fdd6c6f1c8a7928d410b4a1611493796072323216cdcebb66ce728a98"
+      },
+      "rows": 113,
+      "scene_id": "47115445",
+      "source_tar_sha256": "6201f4c704a3a6b9dc38243b49ee33728a4fd9ac0f9b106f5eb1ce1594371787"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/47895971/derived_train_gt_manifest.json",
+        "sha256": "60c22649af3559fa8e9a152936958e8f5eba05b62947103c09154fedbcba13fc"
+      },
+      "derived_gt_sha256": "8e9f624767f5a6914f8dea9d5750197bd62b0ada5283e12581cf8ea577e4fb06",
+      "fold_id": 2,
+      "gt_boxes": 181,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/47895971_ca1m_native_b6.npz",
+        "sha256": "f1c6b34bf0a18a0982245f78df696b26514ebf9de4928f2274625bcaef3a4787"
+      },
+      "positive_iou15": 33,
+      "positive_iou25": 30,
+      "positive_iou50": 15,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/47895971_boxes.pkl",
+        "sha256": "9367ba047872c646114fce9975781a4cf3efb73bae966082df19f3247f6d9a68"
+      },
+      "rows": 36,
+      "scene_id": "47895971",
+      "source_tar_sha256": "50e81c658b2a2b3932a0de9b948de4d307cc591ad1c97b84e0adf3c948d764d5"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/42445100/derived_train_gt_manifest.json",
+        "sha256": "dda248a40bfb40b309ab794ac077d4433bff9c6d715e9695aa98de0cca941a9d"
+      },
+      "derived_gt_sha256": "d0e0449fbc863211d0ad07eef494bafe04242d4daa7ef9c9ea0fc022b3053f03",
+      "fold_id": 2,
+      "gt_boxes": 54,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/42445100_ca1m_native_b6.npz",
+        "sha256": "626f48f6e930a869092b6af920188f14abcbbcb219c68bcc778874fe7eeacd28"
+      },
+      "positive_iou15": 26,
+      "positive_iou25": 24,
+      "positive_iou50": 16,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/42445100_boxes.pkl",
+        "sha256": "772c059e50492aa4e02ab1261a96abbf26718bfe97c1a8078cf342ac55ffef43"
+      },
+      "rows": 36,
+      "scene_id": "42445100",
+      "source_tar_sha256": "36940d71e5632142c587af0b04a354ef8a70146ac9d64bb110a5d49891ad0a2d"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/47429954/derived_train_gt_manifest.json",
+        "sha256": "424bd672a7d531c8fd07a401729576520e57434797c60a2bf924988c78a59fc2"
+      },
+      "derived_gt_sha256": "a831c0597bb72de7bb98e7e313389b8268bf15c316a0cc27691d38ae03ff06c9",
+      "fold_id": 2,
+      "gt_boxes": 143,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/47429954_ca1m_native_b6.npz",
+        "sha256": "ba37bcf85b456c97ace839b85c653aea35bcd1786fd8e61c2bceec575dcedc8b"
+      },
+      "positive_iou15": 14,
+      "positive_iou25": 14,
+      "positive_iou50": 12,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/47429954_boxes.pkl",
+        "sha256": "2a01bca0ff6258b25642aede85a99e62486bd1750d3a892e36ffb5814f3f78e7"
+      },
+      "rows": 14,
+      "scene_id": "47429954",
+      "source_tar_sha256": "60692950d149fc984949469e57b558be8ed5b6fb22efd213b4dfbdf4a141f05c"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/47204499/derived_train_gt_manifest.json",
+        "sha256": "fd4a86d1397a8a2da44368bac8b4e13b9514cabe075f89f839197ff80ccaf62f"
+      },
+      "derived_gt_sha256": "d01eccafcb832b8fd55afe4d26aa450aa8bfb99918d26b7d4debe52770278faf",
+      "fold_id": 3,
+      "gt_boxes": 66,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/47204499_ca1m_native_b6.npz",
+        "sha256": "03e1f602afc0ee4cf20677e20ca55f478f5f76a009d46d83a37e734794f028df"
+      },
+      "positive_iou15": 31,
+      "positive_iou25": 30,
+      "positive_iou50": 20,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/47204499_boxes.pkl",
+        "sha256": "dfd62d2d662bf65361a22dac9e81d580d7ee7234a2ba020d478aa437f06674e8"
+      },
+      "rows": 36,
+      "scene_id": "47204499",
+      "source_tar_sha256": "6231e4edb4dddef79beaba815168d613c3f17dccda6c867501c8c369ebbe0eff"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/47331089/derived_train_gt_manifest.json",
+        "sha256": "95ddbe5e8cc67678fe72e81327d4a85bed8f8dac1d2fa9fe7ac698344a72089e"
+      },
+      "derived_gt_sha256": "5fcaa9435a048478be9e688dd402f88e2ccfea4358163a8a9a89e9cf07d3a841",
+      "fold_id": 2,
+      "gt_boxes": 126,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/47331089_ca1m_native_b6.npz",
+        "sha256": "850d517199f8bf401ee1890f1fc894f48dd7a9b0bccd7671ad3df90778fcdb98"
+      },
+      "positive_iou15": 52,
+      "positive_iou25": 51,
+      "positive_iou50": 26,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/47331089_boxes.pkl",
+        "sha256": "dd189451f56d8311681298ca84c218c759fc741ad3a3733f0191698982a634b4"
+      },
+      "rows": 60,
+      "scene_id": "47331089",
+      "source_tar_sha256": "149316daade4cef53a3b70c0f441c96792e776b2a10bb2866897ddf635bfc689"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/42899041/derived_train_gt_manifest.json",
+        "sha256": "c836dc578fc2a6adf0ae4c5c9e45e8b73638813f98d2df2068a58c434da0cb9c"
+      },
+      "derived_gt_sha256": "ef928abdbfeedb63c4c9a0c37165545c2ded22619f9f8cd05c3ed99b91219d3f",
+      "fold_id": 4,
+      "gt_boxes": 131,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/42899041_ca1m_native_b6.npz",
+        "sha256": "c3eb4bf2e6e7a16d439ceacad1cd42a794197db8fbf8b239a9e5506b77fe8a8d"
+      },
+      "positive_iou15": 45,
+      "positive_iou25": 35,
+      "positive_iou50": 19,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/42899041_boxes.pkl",
+        "sha256": "d929025fcc6269287800ec9962497e088ebb6dc7cbd7a590d669ea3f74199345"
+      },
+      "rows": 66,
+      "scene_id": "42899041",
+      "source_tar_sha256": "e4c7478c5be06605bdfb2ce258efb8e183e246f6c358749fb4561393442796c4"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/49739821/derived_train_gt_manifest.json",
+        "sha256": "7c77581f61ba277e844cf9fced165b19e5670b7022c9aa63673a00bf55a49fb6"
+      },
+      "derived_gt_sha256": "4f381908ac38e2aefbcffe8f84395109b51b1515b50cefbc0e9a9bb6b7408afa",
+      "fold_id": 4,
+      "gt_boxes": 82,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/49739821_ca1m_native_b6.npz",
+        "sha256": "0c8ea8b3cdc129a7a597a5f0a0fbb23af9160e45a42da583f1c0a1679d09f7a6"
+      },
+      "positive_iou15": 34,
+      "positive_iou25": 32,
+      "positive_iou50": 26,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/49739821_boxes.pkl",
+        "sha256": "95070782239eb289f7995c6de55bd4c8be28bb9b7f13eef81d6d69f8d943959d"
+      },
+      "rows": 43,
+      "scene_id": "49739821",
+      "source_tar_sha256": "e72a1d8068e136f5a9943864003200e28c5b5536ecb956eb3385666912d81128"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/47334948/derived_train_gt_manifest.json",
+        "sha256": "f1903ce473945bfe37693a6cd82f98e3f49252208b24dac812bb640ae872c915"
+      },
+      "derived_gt_sha256": "12b1641e3c2a995733dae5ef4ab40243f2968aeff639b6a64c334647dd8a2720",
+      "fold_id": 3,
+      "gt_boxes": 139,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/47334948_ca1m_native_b6.npz",
+        "sha256": "6886e4f5699acbd574843eb33ed0e0aedc96061f40097980f55a0642fc06fe51"
+      },
+      "positive_iou15": 63,
+      "positive_iou25": 57,
+      "positive_iou50": 35,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/47334948_boxes.pkl",
+        "sha256": "beff6d57ad3f222e4857e977f122346c4fb0a51fedc1ed45ed8cc2054640444a"
+      },
+      "rows": 80,
+      "scene_id": "47334948",
+      "source_tar_sha256": "0a6effc37c6e6c87208ac96444808c8b34863d13b9d11f2d0202a8d839a0bec9"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/44358243/derived_train_gt_manifest.json",
+        "sha256": "7f8e07cbbf186f5ac152fae6326dba8aab23c3abbe5d65c2abe9d9293893e3fb"
+      },
+      "derived_gt_sha256": "9d6c54d28fc5c1d3544c1dafd2f86ac9c95bfb23976b7ea29bbfd1e04afcc8ef",
+      "fold_id": 1,
+      "gt_boxes": 55,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/44358243_ca1m_native_b6.npz",
+        "sha256": "dfb0ffadb9f0ef4025043de11ff72e4d89960c4121a83bfa6ba9a478634e2f39"
+      },
+      "positive_iou15": 23,
+      "positive_iou25": 21,
+      "positive_iou50": 14,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/44358243_boxes.pkl",
+        "sha256": "be2319d729ae04258cd9fdb1885525c5c92d52657b7c61e78732d7bb8714caa5"
+      },
+      "rows": 29,
+      "scene_id": "44358243",
+      "source_tar_sha256": "cf21cbc574dc320d8291bd5d817542379422edd133953749235c55cde1e9d0c5"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/47333665/derived_train_gt_manifest.json",
+        "sha256": "0e24681a5bfb73e18c81ce94595d86d3095f6df40d57360d96a7fb26ad8d1a59"
+      },
+      "derived_gt_sha256": "372f828165cd8d12a16eae66014c0a76ee3b6bf1e32f14f5388832b7c648a07a",
+      "fold_id": 0,
+      "gt_boxes": 304,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/47333665_ca1m_native_b6.npz",
+        "sha256": "17a33797e1459a1aed4178c3d943b0a9aa8a8cfc3c75145aafb4a8089804cf6a"
+      },
+      "positive_iou15": 174,
+      "positive_iou25": 155,
+      "positive_iou50": 89,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/47333665_boxes.pkl",
+        "sha256": "b9cf2a33bcca3e0146f967d0b3fc9dba48d2f17836c00b315bef071e3425657e"
+      },
+      "rows": 198,
+      "scene_id": "47333665",
+      "source_tar_sha256": "d85ef1f393fbb745dd8d3903ec7ce178945c7a524a73c70517bc4e6764e13831"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/43649597/derived_train_gt_manifest.json",
+        "sha256": "eaaa03ac57d91dc605c022e307c6416e79ddf796672327a6908df4190edd9c42"
+      },
+      "derived_gt_sha256": "86fcdd4dd30324ae319344a2c78cc70122903819d915a4af4b0b574d5ad3aa28",
+      "fold_id": 0,
+      "gt_boxes": 130,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/43649597_ca1m_native_b6.npz",
+        "sha256": "06bd4ec7aa7f023a2c625eee7fcdfe4d952a17cc27cf4f61258f7285b3e9da9e"
+      },
+      "positive_iou15": 76,
+      "positive_iou25": 72,
+      "positive_iou50": 62,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/43649597_boxes.pkl",
+        "sha256": "5420f893ff315f5a66d6f084fd5ef51d2561f911d0a3e19dcf72296bef2ee240"
+      },
+      "rows": 82,
+      "scene_id": "43649597",
+      "source_tar_sha256": "a129f73f91f9027d75c411c39570bd7192ecda50731b8553ab0a1111060d8983"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/42899300/derived_train_gt_manifest.json",
+        "sha256": "cb0f393b9c65f2f1be07e06eca302b6f15bab7362b157bfd54acf03451a155aa"
+      },
+      "derived_gt_sha256": "82f9e7442e4baabea8e181aef63b3ed2e8e5a305c7962fb11de9461fea88f29e",
+      "fold_id": 1,
+      "gt_boxes": 101,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/42899300_ca1m_native_b6.npz",
+        "sha256": "765d6f80f3243f8e8c4c4fcfad4dca898f4120e5e0278824ac16e516935eccef"
+      },
+      "positive_iou15": 53,
+      "positive_iou25": 50,
+      "positive_iou50": 31,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/42899300_boxes.pkl",
+        "sha256": "8c68a7138ddefd52cc65f7c18e920fb77617b19bacc8aec4d0f42bacef56327e"
+      },
+      "rows": 56,
+      "scene_id": "42899300",
+      "source_tar_sha256": "2f465371d10da1621a2b08a116987f03b39c1414f2de342c3171e637c2542fdf"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/45662831/derived_train_gt_manifest.json",
+        "sha256": "d69f6ca813a364959f163c5fb9723752d8b92116faf328d2f7e82c18887f6ad3"
+      },
+      "derived_gt_sha256": "42fec364f11f8ab8364a91bedf95fe51dbb332a2498ba1d82b723287eeeb7acb",
+      "fold_id": 1,
+      "gt_boxes": 157,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/45662831_ca1m_native_b6.npz",
+        "sha256": "9d9be71a2d09ad8239da791533a4983fd49b2dc1285b1517c374bdab8ec661e7"
+      },
+      "positive_iou15": 35,
+      "positive_iou25": 27,
+      "positive_iou50": 12,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/45662831_boxes.pkl",
+        "sha256": "8c87dfc0c802b6bda48fa8250592dd60ce99d0492a5189cc97573e3043d23189"
+      },
+      "rows": 57,
+      "scene_id": "45662831",
+      "source_tar_sha256": "27eac1373523913d324ce3d473fa3ad8203013c8b4d33b4c024de264c7b8bca6"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/42899569/derived_train_gt_manifest.json",
+        "sha256": "9f4b1409db8e4e6fca7455448962251c03ba619d97abb83b4f681ac16b95383a"
+      },
+      "derived_gt_sha256": "d5ab536e1ab1659b233aabc9cbb42d8dc20d97938c532807b8833705ad902f88",
+      "fold_id": 0,
+      "gt_boxes": 135,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/42899569_ca1m_native_b6.npz",
+        "sha256": "24feed4a40c7d9763ffa18d58dbb7db1e80e23f635d6a0139a6bf2b7debf30ac"
+      },
+      "positive_iou15": 60,
+      "positive_iou25": 59,
+      "positive_iou50": 42,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/42899569_boxes.pkl",
+        "sha256": "8ac288aa3faa698310d789e6f0adfbb84ecb585d43135da4a8dc9618850098b3"
+      },
+      "rows": 76,
+      "scene_id": "42899569",
+      "source_tar_sha256": "975616ca3c1b9f92bc90da1318320147181a89b8f651559dc13bce338c4192d9"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/47429830/derived_train_gt_manifest.json",
+        "sha256": "7b76214530eb1655e7f0764963f1cc0c09e2ae117c609bbe335e01f197d0af9b"
+      },
+      "derived_gt_sha256": "5a4ea3940d0b3b2caa2800ce9c25f8a4c1cade8f26784575f11aebfd200bb1f1",
+      "fold_id": 3,
+      "gt_boxes": 244,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/47429830_ca1m_native_b6.npz",
+        "sha256": "6ed8ce214306eec1b3441cc05ed703866107736041d0d4222fad0dc6362fb266"
+      },
+      "positive_iou15": 115,
+      "positive_iou25": 110,
+      "positive_iou50": 84,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/47429830_boxes.pkl",
+        "sha256": "f224cf8f3eb4ee879d1443bcf48987e6c9134d48d726862eb8dfd8b27c2f8c28"
+      },
+      "rows": 124,
+      "scene_id": "47429830",
+      "source_tar_sha256": "b0901efc402738652c5aa34a452a8fc64723c86d6b01cc888e9341a0d1df0689"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/47333965/derived_train_gt_manifest.json",
+        "sha256": "bd5b1ab039abf97c3f2cf8dd38fb912bce4019c05a2039bce54a34a41c08fae6"
+      },
+      "derived_gt_sha256": "d2206da87f41a473ef5e7ee661a78b3c8e12420939151e05fbeb41939f714d5a",
+      "fold_id": 4,
+      "gt_boxes": 63,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/47333965_ca1m_native_b6.npz",
+        "sha256": "97e590551a5ac3db41c312a5f057837faabfcdfd66123a295aa181d93c67d742"
+      },
+      "positive_iou15": 24,
+      "positive_iou25": 22,
+      "positive_iou50": 19,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/47333965_boxes.pkl",
+        "sha256": "925885ad24fe8e75ea755559772efca54ed8d3111cb6eab7e0d101d342e99ebb"
+      },
+      "rows": 29,
+      "scene_id": "47333965",
+      "source_tar_sha256": "6ed181b155069dc2ab9d8ee25cf396623261fd8e30e956c0276048d2d244b3d9"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/48018785/derived_train_gt_manifest.json",
+        "sha256": "660cb04a9d91e166a7575a81658bb5e2b4894b43f290635dfce9e846503eae26"
+      },
+      "derived_gt_sha256": "d85c3d43afdc37df0a6029a40a261df3196bfb2f52e6b4c3ab8057589d1b98ad",
+      "fold_id": 2,
+      "gt_boxes": 133,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/48018785_ca1m_native_b6.npz",
+        "sha256": "3e483f546a35e63d006f332d8c8bf20f7f38864885fe26c26016d9252c2d3151"
+      },
+      "positive_iou15": 58,
+      "positive_iou25": 52,
+      "positive_iou50": 35,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/48018785_boxes.pkl",
+        "sha256": "e2de6f5dbb0a9afded6a76c7ecc23364774d92c1190715d32aa908ce4a6a2bdf"
+      },
+      "rows": 60,
+      "scene_id": "48018785",
+      "source_tar_sha256": "4ecb5d8de21ee015de83936dd760bcbc4d082ea48bad73efbd36faf0ae8dabb0"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/42899031/derived_train_gt_manifest.json",
+        "sha256": "07c56ee04cd9de9224ff96550b599e4573ac95af1be22e51483bad4a20d815c6"
+      },
+      "derived_gt_sha256": "4ea6b0cd01baad15a88f43e20a75827e3dd34451fbf61734cb53ccadbfab0da2",
+      "fold_id": 3,
+      "gt_boxes": 230,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/42899031_ca1m_native_b6.npz",
+        "sha256": "55b411d02e81923e98d3840f07d1e97a3ae3c4bda17b3649d5175f7a5ee1bb13"
+      },
+      "positive_iou15": 102,
+      "positive_iou25": 94,
+      "positive_iou50": 55,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/42899031_boxes.pkl",
+        "sha256": "d8f4cb478d42268169ee65f8696656d6baac47c8f81442c0edff1cb6934ed6fc"
+      },
+      "rows": 126,
+      "scene_id": "42899031",
+      "source_tar_sha256": "b4301097178313ff811cf4973a0fa48914d3e9fe13e423b4ce61c95de0f39508"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/47430715/derived_train_gt_manifest.json",
+        "sha256": "e0c0006a49e12d2b2ab665af425cfd25203f506df22c77fea9674ff8950217e0"
+      },
+      "derived_gt_sha256": "e3e19116157dae6f3fa3ab2b71717e16ec0ae766c763d6226ebb26645af1daea",
+      "fold_id": 0,
+      "gt_boxes": 211,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/47430715_ca1m_native_b6.npz",
+        "sha256": "837fa71573bfcd41662a0cddbdd31871f125f9f2dbd466cbb8b69a28f6f8e311"
+      },
+      "positive_iou15": 44,
+      "positive_iou25": 40,
+      "positive_iou50": 15,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/47430715_boxes.pkl",
+        "sha256": "fdced40e7779e278e712d6000eebf348e28e69b5b865ac600578f514f88a9d47"
+      },
+      "rows": 65,
+      "scene_id": "47430715",
+      "source_tar_sha256": "7be326710baadb94e8af86ddcfc61add7439824774b79203a697ef0385f54879"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/47331804/derived_train_gt_manifest.json",
+        "sha256": "702ecdd55aad5eaec2270d27b364b7fef2656ebd44aa329ac35f9d92fcb9160f"
+      },
+      "derived_gt_sha256": "5344aab04b17ea037bed6d49b397f778e618ad07a96f74425547d6507b0d83c2",
+      "fold_id": 3,
+      "gt_boxes": 215,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/47331804_ca1m_native_b6.npz",
+        "sha256": "d7bfe5b658829998b2369ad5cf2243b6ea8cb3a4d772d02b7c4872eaa175f99e"
+      },
+      "positive_iou15": 90,
+      "positive_iou25": 85,
+      "positive_iou50": 54,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/47331804_boxes.pkl",
+        "sha256": "21becb4f45b1f76b3560d3e7357801c04e91e7b6b9364c9c724ced5699600e6d"
+      },
+      "rows": 105,
+      "scene_id": "47331804",
+      "source_tar_sha256": "b0fdf2d97b60d4ac99f794c1cb44317938d94bc012257dbb100e17a0560320ca"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/47430077/derived_train_gt_manifest.json",
+        "sha256": "0d161c351449d39a4ab987e6cda536d50fb23d499f427c7912bcfa7f089d917d"
+      },
+      "derived_gt_sha256": "48c6c61fdc2d9d14f46d20fe804e370d9f59f79363d0595ca4d3abc20e90fc1f",
+      "fold_id": 3,
+      "gt_boxes": 90,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/47430077_ca1m_native_b6.npz",
+        "sha256": "e68b76846bc10dfa86e145553473e0e2a034f131570096c62ef655b00ad59e03"
+      },
+      "positive_iou15": 20,
+      "positive_iou25": 18,
+      "positive_iou50": 11,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/47430077_boxes.pkl",
+        "sha256": "d190ad273d6c26540c297362a26b18ef02243e952f0f3caf66f2ddfaf8513e88"
+      },
+      "rows": 39,
+      "scene_id": "47430077",
+      "source_tar_sha256": "6acad22d353daa18de00ef6b7d1328ab70c67c432ab35a8d5d210c2d9ee125bc"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/48017890/derived_train_gt_manifest.json",
+        "sha256": "72283aaa5e76c132bf426659dfdab613774aee00c9ff0dfab3e5787e50e4eaf9"
+      },
+      "derived_gt_sha256": "ca217ddc9986e5ac050ae48785cf221440cffffd221cee083bc59cf0ae213353",
+      "fold_id": 3,
+      "gt_boxes": 106,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/48017890_ca1m_native_b6.npz",
+        "sha256": "6489b589a95bc9e14976c9902a81dd28eeaef7e7958fe759f9f7ae0844adf8df"
+      },
+      "positive_iou15": 54,
+      "positive_iou25": 53,
+      "positive_iou50": 38,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/48017890_boxes.pkl",
+        "sha256": "d888ca3b87358d04b44aae7a3938d0d79714f95557034ec4551f1760017d11ce"
+      },
+      "rows": 69,
+      "scene_id": "48017890",
+      "source_tar_sha256": "b53b060f3751f24eb8cef4e34d93ac979234a202a488ef95b7b9c69dcec8370e"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/47332817/derived_train_gt_manifest.json",
+        "sha256": "876d8f4d089ff811f57a9eb2dca790365f54c2baaee10e6390141815c599c1f3"
+      },
+      "derived_gt_sha256": "506464c40a5418bb625162087ff473ac7174c035ad8be0d1f58565af3305df9e",
+      "fold_id": 4,
+      "gt_boxes": 295,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/47332817_ca1m_native_b6.npz",
+        "sha256": "7ce5cae2f3d6db096968afac716b7cf8e737304aa0e60da950a59068f4e22007"
+      },
+      "positive_iou15": 83,
+      "positive_iou25": 75,
+      "positive_iou50": 48,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/47332817_boxes.pkl",
+        "sha256": "e8d3e2d7000e0fc1b7e25dc336a529c4d6f785908d59f61caae6c767c77a86fa"
+      },
+      "rows": 109,
+      "scene_id": "47332817",
+      "source_tar_sha256": "fdce8ab7ca990f2933efbe5fa1765c1c72469ef509fd73704635cfffb0673476"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/47332642/derived_train_gt_manifest.json",
+        "sha256": "28224f356867de8e43aa893d0746f9769028d16dfb0862060f9e3203402e9711"
+      },
+      "derived_gt_sha256": "4c9b785c46adc544331be6624fbd8988a55744c8aadb3bcc323fd1fdbdec871e",
+      "fold_id": 2,
+      "gt_boxes": 129,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/47332642_ca1m_native_b6.npz",
+        "sha256": "21f820a969e685f6bf78119d035cd29bae2dbbac05958b8aa3e319686b410963"
+      },
+      "positive_iou15": 42,
+      "positive_iou25": 38,
+      "positive_iou50": 26,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/47332642_boxes.pkl",
+        "sha256": "f6359b6c91888325363b74cc2d07150e7374095e5182c10af84b9f26e9762c01"
+      },
+      "rows": 47,
+      "scene_id": "47332642",
+      "source_tar_sha256": "5eabf7437a32859e0c00ddbdb7809ca0d837fdb7155c39900c0e18445a38a31e"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/47333949/derived_train_gt_manifest.json",
+        "sha256": "1886d63942e9b806e11ef059bbabaf1c43ba8ff15502e4052ce927eb8f10e307"
+      },
+      "derived_gt_sha256": "5010803f492ae37f4f5daa7602ac12cfe8f5a97f949c92a4dab6d9df2f11732d",
+      "fold_id": 1,
+      "gt_boxes": 88,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/47333949_ca1m_native_b6.npz",
+        "sha256": "790545cdfbe9dc10234fdd87a659d957134cdf46109c524ab518518b82273ebb"
+      },
+      "positive_iou15": 15,
+      "positive_iou25": 12,
+      "positive_iou50": 9,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/47333949_boxes.pkl",
+        "sha256": "b9543bb4dfa99923443c33f0560e1ac1ded3a35e46dd77dc623e7385b0591870"
+      },
+      "rows": 17,
+      "scene_id": "47333949",
+      "source_tar_sha256": "1b4c76c5f3d15257694dd63146763893c0d495142fcaf322fefafec262ba7f5b"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/42445769/derived_train_gt_manifest.json",
+        "sha256": "01f7c6fec24ccb860bb1aa91a5cc432184f658a9c02728816416d55233e28bb2"
+      },
+      "derived_gt_sha256": "b724613ab7509338be0749cc99b5b90334332240d7895adbdb7853df1c103d81",
+      "fold_id": 3,
+      "gt_boxes": 34,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/42445769_ca1m_native_b6.npz",
+        "sha256": "3523ed713c6aeca6981b63cf1ba7981aeca010a91d6ecede9463da5e21aadc81"
+      },
+      "positive_iou15": 16,
+      "positive_iou25": 16,
+      "positive_iou50": 12,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/42445769_boxes.pkl",
+        "sha256": "0c6999f2ecd767d2b71d4c527db2b1b82eb67a61832860750f392281602c5ad1"
+      },
+      "rows": 20,
+      "scene_id": "42445769",
+      "source_tar_sha256": "02f9f075dea2275a9e1ad2d9d3bdd6877fa9d92575de176084a63371717c4d26"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/47895796/derived_train_gt_manifest.json",
+        "sha256": "ffcfd7f63dcc1784386ffd6d0d0752df6f91959fc0c3b86165cb3ecee2982127"
+      },
+      "derived_gt_sha256": "1cf46059af56c609b52ca3be0fe6c2aa26bb84dcb1c424aa8781025e2b5166cc",
+      "fold_id": 2,
+      "gt_boxes": 199,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/47895796_ca1m_native_b6.npz",
+        "sha256": "b12b2728cb41f943ed8a86d2dec21790482defd83218419f76ea4dc3ae535b1f"
+      },
+      "positive_iou15": 131,
+      "positive_iou25": 123,
+      "positive_iou50": 91,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/47895796_boxes.pkl",
+        "sha256": "9f7cb2bdf096049a95164aa365995a3fe2a3b63150d9d5cbd07fc7fb78d432f2"
+      },
+      "rows": 141,
+      "scene_id": "47895796",
+      "source_tar_sha256": "c0c738f719d0f9f9529f3bf0e8026aca76608c7ad3bb3051e89c1cc363436662"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/47430544/derived_train_gt_manifest.json",
+        "sha256": "09e84035c619ddab794fa02ba1a0f9b7b20742ca59893123930f08d3a4e96913"
+      },
+      "derived_gt_sha256": "a07d14028779ef3bf2fbcedc7d0cdba920c80baed4c4fe7d664f32619a49e37d",
+      "fold_id": 4,
+      "gt_boxes": 106,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/47430544_ca1m_native_b6.npz",
+        "sha256": "81896e612bc60d00a297e3498c261254adfac0411e6b0525bd33c48cb638516b"
+      },
+      "positive_iou15": 29,
+      "positive_iou25": 24,
+      "positive_iou50": 13,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/47430544_boxes.pkl",
+        "sha256": "bd0899eef8ed7088bd387e0fe761f8152f1bfb3a8b465dfb8257761d933b303d"
+      },
+      "rows": 45,
+      "scene_id": "47430544",
+      "source_tar_sha256": "9f5a961d1b2959ae64c2f2e81bfca3c5d1111a38e9f76fe46cdd63faed453602"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/45261728/derived_train_gt_manifest.json",
+        "sha256": "89b06a5f62527b06114cca0fb1f6c92c86e7f8b81e75cdf63cde0649ed8ffc2b"
+      },
+      "derived_gt_sha256": "d82b5e8386d33c361d0447ce5587a16aebbd93fc5764e5d36fafe1543b62a7b2",
+      "fold_id": 0,
+      "gt_boxes": 273,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/45261728_ca1m_native_b6.npz",
+        "sha256": "dadbe184e8a8a35af058b138db10f46dbb6e0e8b7661c2f75342f2102b73173d"
+      },
+      "positive_iou15": 127,
+      "positive_iou25": 117,
+      "positive_iou50": 80,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/45261728_boxes.pkl",
+        "sha256": "214d4894b6602ee89af8e6c86214d3143d804625a0dd6f4fae8b96a32fbc454c"
+      },
+      "rows": 147,
+      "scene_id": "45261728",
+      "source_tar_sha256": "e78308483d6a1e8c3b8db007597229735421aee1895cb04084a4c38025a602bc"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/42898236/derived_train_gt_manifest.json",
+        "sha256": "46398dfa568160e62a4d003a2e15a92d14cce057f203c2d942a95f8337bbf246"
+      },
+      "derived_gt_sha256": "ab633f0dad10036525958b6711f30262b0396e496944ce5446e0c3cce06fa966",
+      "fold_id": 1,
+      "gt_boxes": 177,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/42898236_ca1m_native_b6.npz",
+        "sha256": "7fbc6b6e0d756ee627f8557e2de30513cc170d30a9c46c5e28cea1cb31faddf1"
+      },
+      "positive_iou15": 98,
+      "positive_iou25": 84,
+      "positive_iou50": 46,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/42898236_boxes.pkl",
+        "sha256": "d8597d4572da6a0ced33c449d1b02309ae43c0e1809f6ed5f5300c7c86bf3899"
+      },
+      "rows": 124,
+      "scene_id": "42898236",
+      "source_tar_sha256": "55001a19d204143c67045776c371869a379c30b07a5a52df5bff9ae840fa1662"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/42898055/derived_train_gt_manifest.json",
+        "sha256": "bd9968f588453cef9ddd91ad4eadb695c9ad778cfd08abc81554e8f947840f4f"
+      },
+      "derived_gt_sha256": "f101d01479b9422c40cc487c90d9a66880641e7104caa164d29e963de2f9c385",
+      "fold_id": 0,
+      "gt_boxes": 46,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/42898055_ca1m_native_b6.npz",
+        "sha256": "795aa1309d612883e87b557bcac830820911b77efb2b1e06c5caaa3440f27693"
+      },
+      "positive_iou15": 20,
+      "positive_iou25": 17,
+      "positive_iou50": 16,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/42898055_boxes.pkl",
+        "sha256": "71202b2905e87565491542e8535881cb6c46d59c1ffea360c48f14fcf541bfcb"
+      },
+      "rows": 28,
+      "scene_id": "42898055",
+      "source_tar_sha256": "1773382db748e7689f730715c1c2814a221a837c3575ae4374f93af9bac9ac03"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/43896371/derived_train_gt_manifest.json",
+        "sha256": "6e2e9efab2c184316e4fe90b20eada23568f001150c49ae466e197f494dae8da"
+      },
+      "derived_gt_sha256": "f3bdd8ab95155ef9a8cd5d26c239a7e86f58ba42a842e3a95ea7db6bed0f9d9e",
+      "fold_id": 3,
+      "gt_boxes": 101,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/43896371_ca1m_native_b6.npz",
+        "sha256": "190bbd7f998839742e8684c997948eee3c42c51a577ab153ce865bcc02237f72"
+      },
+      "positive_iou15": 47,
+      "positive_iou25": 46,
+      "positive_iou50": 34,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/43896371_boxes.pkl",
+        "sha256": "be0c25a0f6a04208f151a7e578652c86732a048ef201c6fa41ab38d12d2fb4f4"
+      },
+      "rows": 57,
+      "scene_id": "43896371",
+      "source_tar_sha256": "46676f443d48fb12c824cb3f4a1cb039ca62c0aeeee5483a58605e0542c09428"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/45261709/derived_train_gt_manifest.json",
+        "sha256": "a57d7c538da7f587ea40fbe412533a0abcdfbee4ec97d167dc1bab2aa4c87d64"
+      },
+      "derived_gt_sha256": "c3ce86b20cecb5909e945a164896ea7ee233b25e1724c1d1d18b63293de745ab",
+      "fold_id": 4,
+      "gt_boxes": 80,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/45261709_ca1m_native_b6.npz",
+        "sha256": "cdadcab0610cf62addc5dbb0a4ea8fded05bc2a8278ec76fe5b5c459566d2b6b"
+      },
+      "positive_iou15": 37,
+      "positive_iou25": 34,
+      "positive_iou50": 22,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/45261709_boxes.pkl",
+        "sha256": "141d39d430ad94abb0b73988619695c1cce1cf5a298dbe04c261b50f2002fa36"
+      },
+      "rows": 45,
+      "scene_id": "45261709",
+      "source_tar_sha256": "d4ad40d41b13c168ede993cf70201fa4cf57e874aedc51b19b3e44357937bf79"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/48018780/derived_train_gt_manifest.json",
+        "sha256": "8cfc22a7e95298d0398f0d5e6a049d017694eb027a8f72d559da4880d3f0ca07"
+      },
+      "derived_gt_sha256": "c50a8d8bf0845b572fab071261a37a9ff161182637338e31fcd11fc29c02268b",
+      "fold_id": 0,
+      "gt_boxes": 95,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/48018780_ca1m_native_b6.npz",
+        "sha256": "ae21055444c2228fd648222d9fb9b7939ea9a2eb6270493f7c8408154c434e42"
+      },
+      "positive_iou15": 25,
+      "positive_iou25": 24,
+      "positive_iou50": 12,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/48018780_boxes.pkl",
+        "sha256": "afb9f0f6fc06136fea9b203a03da88c0bdcbacada4fb67f2778cfeec411a559a"
+      },
+      "rows": 26,
+      "scene_id": "48018780",
+      "source_tar_sha256": "9d307568d6c0416a876dfdb74fc7cf4bb8602e401c497993dbb622046427731d"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/42897745/derived_train_gt_manifest.json",
+        "sha256": "502afc174ccd7cbf57e6dae7adb2700aab4b0256c6466ef630ee4524c477e41b"
+      },
+      "derived_gt_sha256": "3a8f6f8428477bc9d365528ed3f2b17e735dd7df3cbe7b923336928f2b43b808",
+      "fold_id": 3,
+      "gt_boxes": 57,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/42897745_ca1m_native_b6.npz",
+        "sha256": "7b62e425e54974e708cb692e42c081a3e3ac009cf954a3e5ec545330bc59aad5"
+      },
+      "positive_iou15": 26,
+      "positive_iou25": 22,
+      "positive_iou50": 16,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/42897745_boxes.pkl",
+        "sha256": "ba2cf455d3afc83161e523a34616b84bf91a45c67353e8d3aac496e2bbd064ef"
+      },
+      "rows": 33,
+      "scene_id": "42897745",
+      "source_tar_sha256": "bf21dbbae2a9696f10ed13b0ae8f8044a7eca327fe8ec61441853ea6304c9c27"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/47204658/derived_train_gt_manifest.json",
+        "sha256": "49dcce6f365501ce2b42670516583d1fe49b8d1c15af0dd7dd9ccd04f6ff955d"
+      },
+      "derived_gt_sha256": "1fdf3bb117c086f2850f2447f971c8b823635995ce4d6947824908dae3f1a7fe",
+      "fold_id": 2,
+      "gt_boxes": 159,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/47204658_ca1m_native_b6.npz",
+        "sha256": "2c0a98f6000ec4769dbf5870d1053fed0da352bafb3758e0140b6a8fd495e7fc"
+      },
+      "positive_iou15": 54,
+      "positive_iou25": 49,
+      "positive_iou50": 38,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/47204658_boxes.pkl",
+        "sha256": "837798bbc004f50ce9441b29105e35e0ada16b27a40d8307dc12fc7c2a05dc9a"
+      },
+      "rows": 62,
+      "scene_id": "47204658",
+      "source_tar_sha256": "945be1695475ac0cba30e307a89293c9d86c139d14d5528c64adf7fa4cb03fa2"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/42446607/derived_train_gt_manifest.json",
+        "sha256": "7dae6f4f13bd1129cf58dda0ff0400ed6097d19f1eac16b591f19751c9773dd1"
+      },
+      "derived_gt_sha256": "5e0201ce0466f3ab3e2f9aa7fb04045a2b6a5e01e7ad4522fe171769e9e96280",
+      "fold_id": 4,
+      "gt_boxes": 234,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/42446607_ca1m_native_b6.npz",
+        "sha256": "041cf2dccec6755368c4f9604047deb6136de73d052369419378286b6f7019d0"
+      },
+      "positive_iou15": 121,
+      "positive_iou25": 106,
+      "positive_iou50": 69,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/42446607_boxes.pkl",
+        "sha256": "9880c18a48c9631f3968f95f59c12e020c7040ff5e55d1140fd45ba75b2f96e6"
+      },
+      "rows": 148,
+      "scene_id": "42446607",
+      "source_tar_sha256": "fefd63e22d2f1c8376f38c558d9a326994fad829cb532d8c4853ae271a29b3f0"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/48018514/derived_train_gt_manifest.json",
+        "sha256": "76c92cc1a35764153e0d756682759664fe329e9d922723bb332231cbfdd2505d"
+      },
+      "derived_gt_sha256": "f4eb84cb8f05567d2b4a87639cb16b7c05284a1172479d823c6d37324fcf9b22",
+      "fold_id": 1,
+      "gt_boxes": 17,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/48018514_ca1m_native_b6.npz",
+        "sha256": "5bdfd945eda0254bf148c244dce3d92e25726f4919af54ba9480055e92d4264c"
+      },
+      "positive_iou15": 8,
+      "positive_iou25": 8,
+      "positive_iou50": 5,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/48018514_boxes.pkl",
+        "sha256": "05f4727fac0329b22d9be508647cb146b4e03a425dc2260e9d0b7a9ee5390fec"
+      },
+      "rows": 15,
+      "scene_id": "48018514",
+      "source_tar_sha256": "9c0a4279c287d24411dd02ba8599cad7c0285280cb11786edda8f72056ad7fb6"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/42898427/derived_train_gt_manifest.json",
+        "sha256": "b16d4df203a5cfcc5278dcca3cdf6f1dbd9e1dba2445f9a1fb316063e1766089"
+      },
+      "derived_gt_sha256": "58c5d5f785cb4171d173b384336df4719d6dddefafa448d7372761ddf61fd02e",
+      "fold_id": 0,
+      "gt_boxes": 82,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/42898427_ca1m_native_b6.npz",
+        "sha256": "2ce4ca1ed1dfa397c89a31707fabea393508d392ed15236db692e3a2ec355e81"
+      },
+      "positive_iou15": 38,
+      "positive_iou25": 33,
+      "positive_iou50": 25,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/42898427_boxes.pkl",
+        "sha256": "84e0138aa61122ba72c3179254bc4c37ddb01472e4f23dd9fd464fa3c8f561ec"
+      },
+      "rows": 46,
+      "scene_id": "42898427",
+      "source_tar_sha256": "555c9fddc033167771c89d9043c40579ea3a191df6052bd07ea4dec1a8d29f61"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/42899474/derived_train_gt_manifest.json",
+        "sha256": "2262a64208c7e98c19caedf2542261c6ec61c2546f2d0d6875ae2b052dcb2a88"
+      },
+      "derived_gt_sha256": "8d4746e65f40ec32c2c06d7450d9c1dfb91e69fde92a0c260d0cec441f710d53",
+      "fold_id": 4,
+      "gt_boxes": 157,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/42899474_ca1m_native_b6.npz",
+        "sha256": "56a7020e95bbc0aa96e6e748d7083aea9c304e69c0eaca86213ce4cc46cf006b"
+      },
+      "positive_iou15": 64,
+      "positive_iou25": 63,
+      "positive_iou50": 36,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/42899474_boxes.pkl",
+        "sha256": "015e8e27f2d61086f23ab8a5e9e729fa1991dd4e35c2da29f8cb93ae8b7057a1"
+      },
+      "rows": 76,
+      "scene_id": "42899474",
+      "source_tar_sha256": "ab0b19488bd9b0886fb0e689031e1c9fd9b1666db4533c22ea5634aba4d45dd0"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/48018069/derived_train_gt_manifest.json",
+        "sha256": "29840af5ca25b22004de1055c53200aefe9e9da8f677781a36696e4fe47c7772"
+      },
+      "derived_gt_sha256": "8d3c4f7ec9478195878ab1c6e983f5940d7d1bad846806a28399d9189d224d18",
+      "fold_id": 3,
+      "gt_boxes": 71,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/48018069_ca1m_native_b6.npz",
+        "sha256": "0a749c94b6c9bce39a15421affef2253cda620c69b7e806cac702f4defce5ca3"
+      },
+      "positive_iou15": 34,
+      "positive_iou25": 30,
+      "positive_iou50": 23,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/48018069_boxes.pkl",
+        "sha256": "edc91ab4f9cb2b3b64a987064ba5d02023fc54f853eb983ea84aab7e171578f3"
+      },
+      "rows": 39,
+      "scene_id": "48018069",
+      "source_tar_sha256": "c40c05006494dabcabf6b4e2ad748119ef0b6f88f696c5a7908ef32a9a838fb7"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/48018334/derived_train_gt_manifest.json",
+        "sha256": "c9281fdf94fc4b2587f66c232f9cdb14b7347d5716b8c949d645b01b052d72cd"
+      },
+      "derived_gt_sha256": "9dd54f56f1530a8d4352bfa1c3b41c4638e992dcb3a41f6041c4c90f6f20531b",
+      "fold_id": 4,
+      "gt_boxes": 399,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/48018334_ca1m_native_b6.npz",
+        "sha256": "724433135c8b359bc0f1c8d12e16ae742d069cac88b8f027f426a3d7b338aedb"
+      },
+      "positive_iou15": 168,
+      "positive_iou25": 142,
+      "positive_iou50": 54,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/48018334_boxes.pkl",
+        "sha256": "4c79f808c72795bea0bbd2e4d2896f070e99268ecbb7d8045d5157e6fa7d6891"
+      },
+      "rows": 199,
+      "scene_id": "48018334",
+      "source_tar_sha256": "50e2a221d1d200ea0da280d381ad0b3b06a8e13b151755fe2bccfb4c988f8fa2"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/47431170/derived_train_gt_manifest.json",
+        "sha256": "63a0d22d30ae19ad8646f8f40f5a377f2e2d2e4bfd93fc4c1542550c66671e59"
+      },
+      "derived_gt_sha256": "01156887cfbdbc350b5b7cbc8e7d80166888ac824b5c751c7bd0735f46f02ca2",
+      "fold_id": 1,
+      "gt_boxes": 24,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/47431170_ca1m_native_b6.npz",
+        "sha256": "c43a5146ba9f305ce1f6f8897d5ed49db41ec31775180c66080d4ab2e6be3fc5"
+      },
+      "positive_iou15": 6,
+      "positive_iou25": 5,
+      "positive_iou50": 3,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/47431170_boxes.pkl",
+        "sha256": "6814f9855bb69bea15556cd6064bf4039b759924a94e7b048ca7e2d09483ea30"
+      },
+      "rows": 12,
+      "scene_id": "47431170",
+      "source_tar_sha256": "74f00ceb821b54d3aa7beadecf5fe31cb099aed4652128ebd63eecaa52a367d6"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/47895507/derived_train_gt_manifest.json",
+        "sha256": "f036373aa4871f7f445fb104a56068018314987e7920bcc4fd8430ed08d9ba96"
+      },
+      "derived_gt_sha256": "9fa6fe577855c131bac55d3c53b23bafdcde49d71374056c129a0542133c404f",
+      "fold_id": 0,
+      "gt_boxes": 102,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/47895507_ca1m_native_b6.npz",
+        "sha256": "e93238d3b4b7003b816aa71a8e6ca10749c5e47f549d7bf636b4ce23915e8299"
+      },
+      "positive_iou15": 43,
+      "positive_iou25": 39,
+      "positive_iou50": 21,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/47895507_boxes.pkl",
+        "sha256": "649f320f5d1187cbdbf6fdd7f78ddf6ec5210a6e85fe6f5a05f096d326c9ba81"
+      },
+      "rows": 50,
+      "scene_id": "47895507",
+      "source_tar_sha256": "e891caf36b13b680d13723a446646122410203f40c53b54e06f7a34e8a299a96"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/47334849/derived_train_gt_manifest.json",
+        "sha256": "4d05041bf4b13ba7946618e0b6f16277919f672c6582f1d5fc2c5257f96e7629"
+      },
+      "derived_gt_sha256": "3d6042e79e52bcc7582478da4a74767337cd2dc321e69878aad9390ef1bd292e",
+      "fold_id": 1,
+      "gt_boxes": 97,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/47334849_ca1m_native_b6.npz",
+        "sha256": "8183e8d158892146faf82dc33fa752d024be3768c9612beafaf29b7882ce0577"
+      },
+      "positive_iou15": 39,
+      "positive_iou25": 36,
+      "positive_iou50": 22,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/47334849_boxes.pkl",
+        "sha256": "b93b47b7a40f1aa81ed7d0434c2f83868cd19c796e3e86aa66ce68f1f755385c"
+      },
+      "rows": 50,
+      "scene_id": "47334849",
+      "source_tar_sha256": "bbab88986d898ff7dd6afcadc7c916d8de372c1734f62bffeb35356674a03366"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/47333462/derived_train_gt_manifest.json",
+        "sha256": "aa6fd8e963165513b93a6d3a15f716ba25f5eb6471e604e5b2a5bf003dd405d2"
+      },
+      "derived_gt_sha256": "59de36daed755e6bc48786ac2326e0599ea52ecb8a218ec29081f59549e9799a",
+      "fold_id": 2,
+      "gt_boxes": 111,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/47333462_ca1m_native_b6.npz",
+        "sha256": "f395151407aa12e208d04b009eb91d41f7295d90824491de5bd8a8fdd33ab265"
+      },
+      "positive_iou15": 39,
+      "positive_iou25": 38,
+      "positive_iou50": 30,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/47333462_boxes.pkl",
+        "sha256": "b72663768ce53cbae523febeb8922e18180dafb07a888d12b0a262c623d0353f"
+      },
+      "rows": 46,
+      "scene_id": "47333462",
+      "source_tar_sha256": "cce05534b49321783eb8f6512174b737e4f639b1a3b3bfe965e22cca0d991238"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/42899975/derived_train_gt_manifest.json",
+        "sha256": "5425312942e31a00ea87624e8e755489141dc44511873a462165315af2c66c75"
+      },
+      "derived_gt_sha256": "88836603a87115d25ff19e64a4e3a5a0759f82454333b96b2658c76121055c9a",
+      "fold_id": 1,
+      "gt_boxes": 250,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/42899975_ca1m_native_b6.npz",
+        "sha256": "1add9458929fd4ced8ff9968b03265fffd55c1e1f505a76140a24e3526677553"
+      },
+      "positive_iou15": 129,
+      "positive_iou25": 123,
+      "positive_iou50": 73,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/42899975_boxes.pkl",
+        "sha256": "f875b30ad9086ebad4167860b5a027b92dc95bf698a5a02d01a639925385ad49"
+      },
+      "rows": 149,
+      "scene_id": "42899975",
+      "source_tar_sha256": "c5ae45e736d44caf3ae088d99175726b1c2bec061ada3d5c195657e83a5171da"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/44796514/derived_train_gt_manifest.json",
+        "sha256": "4182e259e992bcfa8f62e5698fb1fe36bcc220e1ebd97c5421f5d5387afafa90"
+      },
+      "derived_gt_sha256": "66745aec55df38db47eac169446f5185f236179186b6835c2d247a1d1d83c528",
+      "fold_id": 3,
+      "gt_boxes": 200,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/44796514_ca1m_native_b6.npz",
+        "sha256": "c2b632f5c7af7d9ba2799245da40fe69f3a6f1ad4f40f30d66ca502e6314216e"
+      },
+      "positive_iou15": 91,
+      "positive_iou25": 89,
+      "positive_iou50": 55,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/44796514_boxes.pkl",
+        "sha256": "f6be66207f8e63365c4028a7834d75a6d3deb4e99ca14a1b9fadfa8d32c385e3"
+      },
+      "rows": 101,
+      "scene_id": "44796514",
+      "source_tar_sha256": "c2c7ca74963c1dd079e65793847e0ae0f4b940e6e30dc7840e4192de104b7969"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/42445718/derived_train_gt_manifest.json",
+        "sha256": "77c91b136791995d8465493849e413816dea86da4cd37ed2ed1b53a491f74f43"
+      },
+      "derived_gt_sha256": "8c645645ef2b54dadd674c887bb7f4f6340132822b38e098e9b8a95199219337",
+      "fold_id": 0,
+      "gt_boxes": 171,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/42445718_ca1m_native_b6.npz",
+        "sha256": "3dfb2ea06f99b7a7aca807b7d670b2d9a57a6eb6730c8eaaffd495aec038c98f"
+      },
+      "positive_iou15": 49,
+      "positive_iou25": 46,
+      "positive_iou50": 24,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/42445718_boxes.pkl",
+        "sha256": "3bab6ba1c8585393374b6515ab94e1609c8e2ee5eeb66b445778819f24e3b3df"
+      },
+      "rows": 52,
+      "scene_id": "42445718",
+      "source_tar_sha256": "9d5746ab9dfd95242953c44de28315d3088135d7cea48ef958072099f4e3c6b4"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/47331173/derived_train_gt_manifest.json",
+        "sha256": "a2615f22b927930f5899826cfc547ea801bb5652e1d1f89a78680cb6f2651a52"
+      },
+      "derived_gt_sha256": "3d9da474f0ba87e908676b9ff031c5fa5e1802a8254ff23c011508ff4a6e5dbb",
+      "fold_id": 1,
+      "gt_boxes": 58,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/47331173_ca1m_native_b6.npz",
+        "sha256": "f75b677d14c40c1deb54acae115f3b330f4ef79f1ae5e379733be9d54a25d361"
+      },
+      "positive_iou15": 24,
+      "positive_iou25": 20,
+      "positive_iou50": 14,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/47331173_boxes.pkl",
+        "sha256": "99a100cbbbcc8d415114c28bc67ece16546c6941c867e9a26081b99ee3e07a10"
+      },
+      "rows": 27,
+      "scene_id": "47331173",
+      "source_tar_sha256": "c0ed7ab0b3276fe14eb331e123b7b67c392ea138bc0a8f14719e13851d56f72e"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/47332320/derived_train_gt_manifest.json",
+        "sha256": "6ee915d0454fb1318329a105c8bf88c31d23bb97c56eba867a5f1c154803bfb9"
+      },
+      "derived_gt_sha256": "2398131a8285540235421772bf63e2ab0436d1ae0e5b10951d31e53efbde2fc7",
+      "fold_id": 4,
+      "gt_boxes": 206,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/47332320_ca1m_native_b6.npz",
+        "sha256": "af6ade495983f19ae43af478b62bc45eee261b540f8b8c855d76bda46dff2727"
+      },
+      "positive_iou15": 92,
+      "positive_iou25": 90,
+      "positive_iou50": 61,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/47332320_boxes.pkl",
+        "sha256": "a552d6228913e7a871dd038b4e3d31d23923f231c1a2fdaa83b7d978793067e9"
+      },
+      "rows": 102,
+      "scene_id": "47332320",
+      "source_tar_sha256": "fd49459f1400ca482817e4ce76a1df9722616c4d51594f391705d5d785d9b6cf"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/48018090/derived_train_gt_manifest.json",
+        "sha256": "0edac62e9c1616820fdab50da4cbc8efbbd45df721af7d0027be13afde7f75c4"
+      },
+      "derived_gt_sha256": "3c5b78b78401983ae017adce1bbe19be0da577842a50aded87683754d7ba0424",
+      "fold_id": 0,
+      "gt_boxes": 103,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/48018090_ca1m_native_b6.npz",
+        "sha256": "41089ab94df525a2e2680385a717f9e2d81fad86bb7a10cf51d6e78491432672"
+      },
+      "positive_iou15": 50,
+      "positive_iou25": 46,
+      "positive_iou50": 35,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/48018090_boxes.pkl",
+        "sha256": "04c7b7ef8dac7f2520172fe7f8f7cc42a58f20cec13d2bda66162333ed06e7e7"
+      },
+      "rows": 57,
+      "scene_id": "48018090",
+      "source_tar_sha256": "64e0ec41fd5d249774f5568584a54036cfc0e070d415a5d36bd1fb0b1733e447"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/47204474/derived_train_gt_manifest.json",
+        "sha256": "7b4f7b3f1e1824dedd6f233b4a30a30d5fac35df2950633ce2416504b91d4030"
+      },
+      "derived_gt_sha256": "fac49ff7e9570038d5f663cf9c09c0da7d3495898885ee51cf69258c0974cdde",
+      "fold_id": 2,
+      "gt_boxes": 251,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/47204474_ca1m_native_b6.npz",
+        "sha256": "92d496c00ca3ab2c6d60639401ee6c2039e0d25523b15a8245d63816adb6e280"
+      },
+      "positive_iou15": 127,
+      "positive_iou25": 122,
+      "positive_iou50": 90,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/47204474_boxes.pkl",
+        "sha256": "567b0c9b51cc1de550c21543d800a07a26589a6f5423223f5b4d6965755369bc"
+      },
+      "rows": 148,
+      "scene_id": "47204474",
+      "source_tar_sha256": "81b9a7db45465bd944fee77386ea50582424506a507d3b3d44ac042c5a912c0f"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/42897709/derived_train_gt_manifest.json",
+        "sha256": "2487a88dd8feffa2a2c2191827ac94c4548f477620ebc007990a511b55d98432"
+      },
+      "derived_gt_sha256": "0aa4aa5d191527d7912a2979b7039fcc8168849a2305030eab292304f092596e",
+      "fold_id": 4,
+      "gt_boxes": 174,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/42897709_ca1m_native_b6.npz",
+        "sha256": "b90e7e625c716daaaabfc7020cd79cbd28ac99950bb54f0521d4958b853e4eec"
+      },
+      "positive_iou15": 88,
+      "positive_iou25": 83,
+      "positive_iou50": 54,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/42897709_boxes.pkl",
+        "sha256": "1c4c6a0176c0c15b1eafe295ddaf00c64cbfccbeeafcadf5a1da9b86d153358d"
+      },
+      "rows": 103,
+      "scene_id": "42897709",
+      "source_tar_sha256": "1c6514fe6fd4ac9126650a8a26369b3221d67e1028fd24638203b0e5bd5a01e6"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/42898684/derived_train_gt_manifest.json",
+        "sha256": "ecbc0bb4dd3a7b3ab68434b05bc15809a76e449108961ca46cb6b73a2412efb2"
+      },
+      "derived_gt_sha256": "640c54ff319cd1e201926694b3c23713872f8ee983fb0b84f45f393f4d7872cc",
+      "fold_id": 4,
+      "gt_boxes": 50,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/42898684_ca1m_native_b6.npz",
+        "sha256": "e44371e590fccfc0a6dab404f3e154451b3516178c1cb7d148fccca6daa3d85e"
+      },
+      "positive_iou15": 23,
+      "positive_iou25": 19,
+      "positive_iou50": 11,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/42898684_boxes.pkl",
+        "sha256": "958260c929088a0e4a6909b0b0567058fe24be708e1bec5bd95b45ed7006bc55"
+      },
+      "rows": 29,
+      "scene_id": "42898684",
+      "source_tar_sha256": "99bd6bc5e2f1d56b6bb2e8427a5f3e37444328338bec78479ceb3228dcc26747"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/42898917/derived_train_gt_manifest.json",
+        "sha256": "d3345a2e4601a78e15081d43363f3071a05ffbbd49e20a0e0e3ecb7f2fe2d5cb"
+      },
+      "derived_gt_sha256": "d22e99bbf7a0a3cc7e0b160c055da588b6f0b9323f49082261c5e4b3af8f6c07",
+      "fold_id": 0,
+      "gt_boxes": 127,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/42898917_ca1m_native_b6.npz",
+        "sha256": "9c3ee1aed7bf489ca64d405dc5aa77a7f5ef4887cb8633ce6750f822d312ac55"
+      },
+      "positive_iou15": 71,
+      "positive_iou25": 60,
+      "positive_iou50": 42,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/42898917_boxes.pkl",
+        "sha256": "1e27ffb3938236474e35158c99d1a8134590f4350546bec9793f1194a5182255"
+      },
+      "rows": 82,
+      "scene_id": "42898917",
+      "source_tar_sha256": "b25dbcf041fb362414a45342d9da6f45934cac100eaacc40df6ef72e6c97ee91"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/47430831/derived_train_gt_manifest.json",
+        "sha256": "8438255dc49e12767011fddd784072ea8f8b4a065a16deb657590fc24038612b"
+      },
+      "derived_gt_sha256": "32dc8d287e1b825fd699b3e5306ded797f9219f29131bfa95a0b57efb291042f",
+      "fold_id": 1,
+      "gt_boxes": 71,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/47430831_ca1m_native_b6.npz",
+        "sha256": "d4369c5dd1f5bf48993841b8ecb8f278052987f42f2318c1701b6348e11dcb25"
+      },
+      "positive_iou15": 32,
+      "positive_iou25": 31,
+      "positive_iou50": 14,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/47430831_boxes.pkl",
+        "sha256": "235369c2403162b7358321914507a8939f734ee0cbbda41718a5f0ccd702a2c6"
+      },
+      "rows": 34,
+      "scene_id": "47430831",
+      "source_tar_sha256": "80045ee788209f38dc2581b932e8c2a544eba92823b0911f686db3f2a8c923aa"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/47670197/derived_train_gt_manifest.json",
+        "sha256": "816b0fee4f83a0fc0b3167bee9d840986404bd4d71681d441847feb4cf32be91"
+      },
+      "derived_gt_sha256": "778514033f2dfc126592aac0f05d7f99d4388ba8ddf3ff9d592d470f56962666",
+      "fold_id": 1,
+      "gt_boxes": 156,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/47670197_ca1m_native_b6.npz",
+        "sha256": "7cf610ba3f662a05ea5e3fa15f0dbd1e3fe5fbe97b88ffb64f83324435f7724a"
+      },
+      "positive_iou15": 80,
+      "positive_iou25": 74,
+      "positive_iou50": 43,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/47670197_boxes.pkl",
+        "sha256": "64f242b21b63b5ec521c2cfb18c536756ed391bb9249d32b941b9b0a136f62c9"
+      },
+      "rows": 95,
+      "scene_id": "47670197",
+      "source_tar_sha256": "f011f22d355a246dab472ec67009bf51087ffb5603f5c15c8b633acd93fb71eb"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/43895904/derived_train_gt_manifest.json",
+        "sha256": "f72cb984365c17fa0abae51afc9b6ffe17d5d4acf50b67e3f977433043d7837b"
+      },
+      "derived_gt_sha256": "7250bbe79971818b68573ad6f763c87d146411c6a7842baa645fa657b57dc4d3",
+      "fold_id": 0,
+      "gt_boxes": 176,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/43895904_ca1m_native_b6.npz",
+        "sha256": "6f36334fb810aea7df55fef40d8ce46c5718ca9b6904716f99d1b0b85875088e"
+      },
+      "positive_iou15": 85,
+      "positive_iou25": 81,
+      "positive_iou50": 57,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/43895904_boxes.pkl",
+        "sha256": "5c014a4ca52e0287e963c160f44cb9500af53d6eeff2b61046dc591e7cade475"
+      },
+      "rows": 94,
+      "scene_id": "43895904",
+      "source_tar_sha256": "93ea50e549c24b2a93a4ca19da05a3f3e15deb6b2cf6411bcca67ceb866e6721"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/47429833/derived_train_gt_manifest.json",
+        "sha256": "d67cb956cc08407560505d36f0f09576cf98797e76f77a6a984177d51ae5312e"
+      },
+      "derived_gt_sha256": "5b21d32f5eb6cef7316ff17e171e6dfe2d336b061dc4b8064029bcc7b4260a6b",
+      "fold_id": 1,
+      "gt_boxes": 243,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/47429833_ca1m_native_b6.npz",
+        "sha256": "fd43a89c606c61b523094348b87e6777184810419a5a78d911c704b382230ffa"
+      },
+      "positive_iou15": 117,
+      "positive_iou25": 104,
+      "positive_iou50": 64,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/47429833_boxes.pkl",
+        "sha256": "9e931f690e00b30ac303c9ae5c6c10d62e6769830d1a976a26b2d843b3ceffd7"
+      },
+      "rows": 128,
+      "scene_id": "47429833",
+      "source_tar_sha256": "fbfa9b0c5bb342e527c6a5a8eaf1c5d6a42f74a164bb27cc62def7076f7f5d43"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/43896358/derived_train_gt_manifest.json",
+        "sha256": "a2689cca6c76c6c9204f56b9f15aa63d2d87b76a9e9511fbe18987c5b27a75e1"
+      },
+      "derived_gt_sha256": "dcef1fee4e13ecef773ddfd08736f67b8d5cd48c21ad16546dff01e35b3ebbe1",
+      "fold_id": 4,
+      "gt_boxes": 129,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/43896358_ca1m_native_b6.npz",
+        "sha256": "e0872a5fbe620fba81e85a5a889954d41652eeccfec9ffa5c3e88f4e5d53d9af"
+      },
+      "positive_iou15": 58,
+      "positive_iou25": 54,
+      "positive_iou50": 40,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/43896358_boxes.pkl",
+        "sha256": "6768112b0add2a6b1fa9235194aa74b0e2d9c3a87163d4d4bf8d7beb2fd964f0"
+      },
+      "rows": 65,
+      "scene_id": "43896358",
+      "source_tar_sha256": "63ec031466be9da7b8e3b871d9ec93d310aaf5ccba049091b477457ee16fc8dc"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/47333590/derived_train_gt_manifest.json",
+        "sha256": "05e72c5e09e101c3ab4e2c97b356aba6dee6432633ed91017b8436cd2c1b6f8b"
+      },
+      "derived_gt_sha256": "51320487adb46cd6efad7793da94629631f4c3974d30ad1301ba166ee084c4b8",
+      "fold_id": 2,
+      "gt_boxes": 64,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/47333590_ca1m_native_b6.npz",
+        "sha256": "a7d5f970871c90a7820155fac27b740a5617e45ec2278320b399a6a8b924cd93"
+      },
+      "positive_iou15": 36,
+      "positive_iou25": 32,
+      "positive_iou50": 17,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/47333590_boxes.pkl",
+        "sha256": "a55257553e1fbe9697e714c4cce78ed65055a0ffea9c79e11df7351e6b85c661"
+      },
+      "rows": 43,
+      "scene_id": "47333590",
+      "source_tar_sha256": "dddb155a9d67b04dbaf37675f9f88369f882ff96ba386438ffc16bea27f9b8c6"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/49739912/derived_train_gt_manifest.json",
+        "sha256": "3e0039586889586c4e46bf8b3edb4e1464d0e5a7b1e727a4af6ad1d2c440527f"
+      },
+      "derived_gt_sha256": "bb089ed8892f16ac31d71ec0357ab11156052c6b9752a614c7403718d2a8beb3",
+      "fold_id": 1,
+      "gt_boxes": 93,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/49739912_ca1m_native_b6.npz",
+        "sha256": "6acc3bd4b1afdcd06c4ae0a17393d8b08b765aed3d6fd30712fdac48588c3824"
+      },
+      "positive_iou15": 45,
+      "positive_iou25": 40,
+      "positive_iou50": 31,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/49739912_boxes.pkl",
+        "sha256": "465978a6925d34268b83b4c52fc6aa6d6045b04983383f1eee35154a9afdc6d7"
+      },
+      "rows": 47,
+      "scene_id": "49739912",
+      "source_tar_sha256": "2eddc94d5fb0303e3931422ffca74d2bfc263457a43b0ae3d4e88b3386f1cdbd"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/47669856/derived_train_gt_manifest.json",
+        "sha256": "335d1b10b7f9d17b2c264895b0c688441d45309dd3f1fe84b69fe4b4124b24a2"
+      },
+      "derived_gt_sha256": "fe095e8c315acc26dafe61b72cc9743b3c5e1549e4da765c432640cf2be8453a",
+      "fold_id": 0,
+      "gt_boxes": 389,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/47669856_ca1m_native_b6.npz",
+        "sha256": "c948c82c6c831c50ab73bfa3cb4d8c005a2a35c5e96d6f392424dda77b8b0f00"
+      },
+      "positive_iou15": 145,
+      "positive_iou25": 122,
+      "positive_iou50": 69,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/47669856_boxes.pkl",
+        "sha256": "8f4532b261b2116ac2ea541cab44a8a45ff5e3ffa3f91a874441c16375840806"
+      },
+      "rows": 192,
+      "scene_id": "47669856",
+      "source_tar_sha256": "9dd08f9959833e60289a51e3743b0cbe6ef332c8e3505a4cc4b184dccbe6dcca"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/45261681/derived_train_gt_manifest.json",
+        "sha256": "5eb5ff10ee8be5d1d1735e0f2c7858fa143d3a65cbb7f71e85c442be02df262f"
+      },
+      "derived_gt_sha256": "859ee62a1f4eb1847f249e1046dab92936299dd748bb5f37b221340ddfe8e965",
+      "fold_id": 4,
+      "gt_boxes": 138,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/45261681_ca1m_native_b6.npz",
+        "sha256": "1115c1af07b82bddd7dd95c3947073cce67087043968bbf8402449ca3b090c98"
+      },
+      "positive_iou15": 67,
+      "positive_iou25": 65,
+      "positive_iou50": 45,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/45261681_boxes.pkl",
+        "sha256": "3522e7f8fb17eea2fa3d53aef5522f435371f9651fd45f77d1b1ab746068a950"
+      },
+      "rows": 73,
+      "scene_id": "45261681",
+      "source_tar_sha256": "3630bb5b811faf464838e50bf9efd90112147c85998fff5598d0be539006ddf9"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/47334489/derived_train_gt_manifest.json",
+        "sha256": "34ba35a4f2778a5a38042138e1777b95ca838a26e03c45a00b349344f3351927"
+      },
+      "derived_gt_sha256": "fb016c15c121427903c803cbb56b4baf0c0e373e6f808a126ec7eb9d30913cfd",
+      "fold_id": 0,
+      "gt_boxes": 83,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/47334489_ca1m_native_b6.npz",
+        "sha256": "e6d5cacbe78bd3e3c31c84a9972b7f28d9db114bb7247183938da6fe56584d6b"
+      },
+      "positive_iou15": 28,
+      "positive_iou25": 25,
+      "positive_iou50": 17,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/47334489_boxes.pkl",
+        "sha256": "37ae91f8f7661c1d8e2541039e5f16003ce5144a176994eae4e347f4207a1693"
+      },
+      "rows": 34,
+      "scene_id": "47334489",
+      "source_tar_sha256": "2616d013709baeb9cc4efd0b3c18b1b099e00577491606e0c39838cbd160c3ab"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/42897509/derived_train_gt_manifest.json",
+        "sha256": "f906419460480c2ac74ce4ae3e438d7c96203089df030989b08ad69bd9063e28"
+      },
+      "derived_gt_sha256": "417f5e290b9b92ddd5bb081d485f0f7cdbf551ad1b5b1fc1d6a3d9d6d47fb7bf",
+      "fold_id": 1,
+      "gt_boxes": 175,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/42897509_ca1m_native_b6.npz",
+        "sha256": "d7896908795b0e35f4d5d6fb4f1b6dac4e93a2a0ecc4ef88e991037ff93c8228"
+      },
+      "positive_iou15": 84,
+      "positive_iou25": 79,
+      "positive_iou50": 51,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/42897509_boxes.pkl",
+        "sha256": "13223257f302c5b6c51adc4f6dec2124644c555ac5eedb8ba3c345cdbb93a7db"
+      },
+      "rows": 94,
+      "scene_id": "42897509",
+      "source_tar_sha256": "6d1fa1fe8e8f0023fbdab1a7b35eee96893ecc19353e5030902c36cb7d1913c1"
+    },
+    {
+      "derived_gt_manifest": {
+        "path": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/48018512/derived_train_gt_manifest.json",
+        "sha256": "56e4ac6f35bfc8f975a7ac3dc93eed4e1d852635d14393c69601f48bad14a7b6"
+      },
+      "derived_gt_sha256": "551a86f12cbaf0c1e1ac9f27dabbf310c1bfcae970d004150f1d6519ca5a64ed",
+      "fold_id": 2,
+      "gt_boxes": 16,
+      "observer": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_native_b6_final_base_train100_v2/native_b6/48018512_ca1m_native_b6.npz",
+        "sha256": "26b787fcb5532632ac618c50b083adaca0aea6aa45ffe4efa5825372fcc3dbd9"
+      },
+      "positive_iou15": 2,
+      "positive_iou25": 2,
+      "positive_iou50": 1,
+      "prediction": {
+        "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base/48018512_boxes.pkl",
+        "sha256": "cbe2e3e03760415b38e090fa2ef58f4a5460de97a24ad17f2be502edb18b9fea"
+      },
+      "rows": 20,
+      "scene_id": "48018512",
+      "source_tar_sha256": "657a741ccf95fd9f7782f314107ca180d4a802a06020af1c02fe54ab69641e81"
+    }
+  ],
+  "schema": "boxfusion.ca1m_native_b6_quality_dataset_manifest.v1",
+  "split": {
+    "dev_fold": 0,
+    "fold_count": 5,
+    "kind": "deterministic_scene_grouped_5fold",
+    "namespace": "boxfusion.ca1m-native-b6.scene-folds.v1",
+    "scene_counts": {
+      "0": 20,
+      "1": 20,
+      "2": 20,
+      "3": 20,
+      "4": 20
+    },
+    "train_folds": [
+      1,
+      2,
+      3,
+      4
+    ]
+  },
+  "target": {
+    "definition": "maximum pairwise world-axis enclosing-AABB IoU",
+    "ground_truth_provenance": "derived from official CA-1M train tar instances",
+    "matches_evaluation": "evaluation/eval_ca1m.py -> box3d_iou_v2",
+    "official_validation_comparable": false,
+    "schema": "ca1m_evaluator_box3d_iou_v2_world_enclosing_aabb.v1",
+    "yaw_obb_iou_is_primary": false
+  },
+  "train_collection": {
+    "cross_run_boxfusion_replay_invoked": false,
+    "cross_run_exact_identity_required": false,
+    "evaluation_invoked": false,
+    "fixed10_paired_report": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/reports/ca1m_port/ca1m_c4_final_base_g0_clip_topk3_fixed10_v1/paired_eval_report.json",
+      "role": "authoritative_fixed10_train100_and_retraining_gate",
+      "schema": "boxfusion.ca1m_final_base_paired_eval.v1",
+      "sha256": "39791a4c1dab1fb3d0e02bf19c804d7c094ab8d44f1a57dc33fcdc65de181f80"
+    },
+    "geometry_authority": "sealed_final_base_prediction",
+    "observer_completion_root": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/reports/ca1m_native_b6_final_base_train100_v2/completion/offline_native_b6",
+    "offline_direct_observer": true,
+    "old_native_b6_checkpoint_reused": false,
+    "old_native_b6_diagnostics_reused": false,
+    "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/reports/ca1m_native_b6_final_base_train100_v2/collection_manifest.json",
+    "schema": "boxfusion.ca1m_native_b6_final_base_train_collection.v2",
+    "sha256": "1f9ad7ff70ff5cb532cf4faa1b9c9dbd331cff92436015e8cc5f13968e92df2e",
+    "source_final_base_collection": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/reports/ca1m_native_final_base_train100_v1/collection_manifest.json",
+      "schema": "boxfusion.ca1m_final_base_identity_audit.v1",
+      "sha256": "110dac18eb436eb6735299141d77fa00d4fed6042f93de81e5288e6b5d0e2f52"
+    },
+    "source_final_base_root": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_final_base_train100_v1/final_base",
+    "source_modules": {
+      "b6_evidence_top_k": 5,
+      "clip_appearance_gate": true,
+      "reliable_view_top_k": 3,
+      "selective_boxer_g0": true
+    }
+  },
+  "train_only": true,
+  "training_started": false,
+  "validation_ground_truth_access": false,
+  "validation_prediction_access": false,
+  "validation_scene_overlap_count": 0,
+  "validation_url_list": {
+    "ids_only": true,
+    "path": "/data/ZhaoX/BoxFusion/data/val.txt",
+    "sha256": "895580c85ac12aa7f8a907fe898e5cf8e7249976f39c41202c2670b97ab60d97"
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "excluded_top_level": [
+    ".pytest_cache",
+    "__pycache__",
+    "artifacts",
+    "data",
+    "diagnostics",
+    "eval_outputs",
+    "logs",
+    "models",
+    "reports",
+    "results"
+  ],
+  "policy": {
+    "excluded_names": [
+      ".conda",
+      ".dist_test",
+      ".git",
+      ".pytest_cache",
+      ".runtime",
+      "__pycache__",
+      "artifacts",
+      "backups",
+      "cache",
+      "ckpts",
+      "data",
+      "datasets",
+      "diagnostics",
+      "dist",
+      "eval_outputs",
+      "logs",
+      "models",
+      "official_downloads",
+      "reports",
+      "results",
+      "scannet_sens_rgb",
+      "third_party",
+      "wheels",
+      "work_dirs"
+    ],
+    "large_binary_suffixes_excluded": [
+      ".ckpt",
+      ".npy",
+      ".npz (except scannet_means.npz)",
+      ".pkl",
+      ".pt",
+      ".pth",
+      ".safetensors"
+    ],
+    "max_source_bytes": 5242880,
+    "never_follow_symlinks": true
+  },
+  "recorded_symlinks_not_copied": [
+    {
+      "path": "models",
+      "target": "/data/ZhaoX/OVM3D-Dett/boxfusion_b6_selective_boxer_dev/models"
+    }
+  ],
+  "route": "boxfusion_tr3d_residual_track_dev",
+  "schema": "boxfusion.experiment_source_exclusions.v1"
+}

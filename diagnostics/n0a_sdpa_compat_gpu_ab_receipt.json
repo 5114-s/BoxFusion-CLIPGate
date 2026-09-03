@@ -1,0 +1,97 @@
+{
+  "schema": "boxfusion.n0a_sdpa_compatibility_gpu_ab.v1",
+  "date_asia_shanghai": "2026-08-29",
+  "no_gt_or_evaluator_access": true,
+  "third_party_source_mutation": false,
+  "device": {
+    "cuda_visible_devices": "0",
+    "gpu_uuid": "GPU-97755ff7-98ad-196d-1250-21eb5c95149d",
+    "name": "NVIDIA GeForce RTX 3090",
+    "compute_capability": [8, 6]
+  },
+  "environment": {
+    "conda_environment": "gsam2_env",
+    "torch_version": "2.5.1+cu121",
+    "deterministic_algorithms": true,
+    "deterministic_algorithms_warn_only": true,
+    "cudnn_benchmark": false,
+    "cudnn_deterministic": true,
+    "cuda_matmul_tf32": false,
+    "cudnn_tf32": false
+  },
+  "sources": {
+    "provider_sha256": "f90a9791943bdceabf22d00198c13f10dd2121e6a37bd5ff455aaaee49e1227c",
+    "sam2_transformer_sha256": "17aac13abc8f73023f6be4b78af708df9f9f254964729421b1ba60e72a9011c1",
+    "torch_nn_attention_sha256": "32f2d016ba9292c182ef4e3ffa1c8b4143d16e99f9d01ffc4999366a5a342374"
+  },
+  "input": {
+    "scene_id": "scene0568_00",
+    "frame_id": 0,
+    "box_count": 7,
+    "image_path_from_sealed_f0_sidecar": true,
+    "tight_boxes_from_sealed_f0_sidecar": true
+  },
+  "policy": {
+    "policy_id": "N0A-TORCH251-SDPA-KERNEL-COMPAT-OLD-FLAGS-EXACT-V1",
+    "old_gpu": false,
+    "use_flash_attention": true,
+    "math_kernel_on": false,
+    "allow_all_kernels": false,
+    "old_api_flags": {
+      "enable_flash": true,
+      "enable_math": false,
+      "enable_mem_efficient": false,
+      "enable_cudnn_default": true
+    },
+    "new_api_backends": ["FLASH_ATTENTION", "CUDNN_ATTENTION"],
+    "future_warning_admitted_to_authenticated_policy": false
+  },
+  "deprecated_api_observation": {
+    "fresh_process_consecutive_warning_counts": [2, 9, 9, 9, 9],
+    "warm_forward_future_warning_count": 7,
+    "future_warning_category": "builtins.FutureWarning",
+    "future_warning_source": "/home/admin1/miniconda3/envs/gsam2_env/lib/python3.10/contextlib.py",
+    "future_warning_line": 103,
+    "future_warning_message": "`torch.backends.cuda.sdp_kernel()` is deprecated. In the future, this context manager will be removed. Please see `torch.nn.attention.sdpa_kernel()` for the new context manager, with updated signature.",
+    "future_warning_message_sha256": "dc7a7787a7ceaeee3483d810ae92ebd1de33c2208122b5e1785843fdbca4cae4",
+    "trigger_count_explanation": "TwoWayTransformer depth 2 times three Attention.forward calls, plus one final token-to-image Attention.forward"
+  },
+  "deprecated_old_api_baseline": {
+    "mask_packbits_sha256": "379780b06d390f7bc55c5447ba42b63f70a8075afff3ef1f19620dd400058501",
+    "selected_indices_sha256": "2c64af56ac921965a14ff17a333e386cb5a0ea1614eae52ed9aa1cb548170e3f",
+    "all_ious_f32_sha256": "64aa12092d1f1ff0c9c0f9cf8dcdb5f9114cbd53101279a5a040d6da3f0b5bee"
+  },
+  "patched_runs": [
+    {
+      "index": 0,
+      "authenticated_warning_count": 2,
+      "ordered_warning_lines": [143, 144],
+      "warning_message_sha256": "ed71c50715686ffdf28200dc9deb5f46c8d1f641a112c5050777b9401be90fd8",
+      "mask_packbits_sha256": "379780b06d390f7bc55c5447ba42b63f70a8075afff3ef1f19620dd400058501",
+      "selected_indices_sha256": "2c64af56ac921965a14ff17a333e386cb5a0ea1614eae52ed9aa1cb548170e3f",
+      "all_ious_f32_sha256": "64aa12092d1f1ff0c9c0f9cf8dcdb5f9114cbd53101279a5a040d6da3f0b5bee",
+      "bitwise_equal_to_deprecated_old_api_baseline": true
+    },
+    {
+      "index": 1,
+      "authenticated_warning_count": 2,
+      "ordered_warning_lines": [143, 144],
+      "warning_message_sha256": "ed71c50715686ffdf28200dc9deb5f46c8d1f641a112c5050777b9401be90fd8",
+      "mask_packbits_sha256": "379780b06d390f7bc55c5447ba42b63f70a8075afff3ef1f19620dd400058501",
+      "selected_indices_sha256": "2c64af56ac921965a14ff17a333e386cb5a0ea1614eae52ed9aa1cb548170e3f",
+      "all_ious_f32_sha256": "64aa12092d1f1ff0c9c0f9cf8dcdb5f9114cbd53101279a5a040d6da3f0b5bee",
+      "bitwise_equal_to_deprecated_old_api_baseline": true
+    },
+    {
+      "index": 2,
+      "authenticated_warning_count": 2,
+      "ordered_warning_lines": [143, 144],
+      "warning_message_sha256": "ed71c50715686ffdf28200dc9deb5f46c8d1f641a112c5050777b9401be90fd8",
+      "mask_packbits_sha256": "379780b06d390f7bc55c5447ba42b63f70a8075afff3ef1f19620dd400058501",
+      "selected_indices_sha256": "2c64af56ac921965a14ff17a333e386cb5a0ea1614eae52ed9aa1cb548170e3f",
+      "all_ious_f32_sha256": "64aa12092d1f1ff0c9c0f9cf8dcdb5f9114cbd53101279a5a040d6da3f0b5bee",
+      "bitwise_equal_to_deprecated_old_api_baseline": true
+    }
+  ],
+  "overall_pass": true
+}

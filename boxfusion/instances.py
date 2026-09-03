@@ -590,6 +590,17 @@ class Instances3D:
         if len(instance_lists) == 1:
             return instance_lists
 
+        if box_manager.causal_hungarian.enabled:
+            result = box_manager.causal_hungarian.associate(
+                instance_lists,
+                box_manager,
+                cam_poses,
+            )
+            return (
+                result.keep_indices.tolist(),
+                result.correspondence_skip_indices.tolist(),
+            )
+
         boxes_now = instance_lists.get('pred_boxes_3d')
 
         boxes_corners = boxes_now.corners.cpu().numpy() #[N,8,3]

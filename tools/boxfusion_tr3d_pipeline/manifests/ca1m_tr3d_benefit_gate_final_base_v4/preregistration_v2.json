@@ -1,0 +1,219 @@
+{
+  "anchor_score_source": "ca1m_native_b6_final_base_all_fold_oof_row_scores_v2",
+  "benefit_target": "same_best_gt_and_same_gt_iou_gain_ge_0.05",
+  "code": {
+    "dataset_builder": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/tools/build_ca1m_tr3d_benefit_dataset_v4.py",
+      "sha256": "244edb22ee22262c99d89c44f39a43a09a11457b8aaeed6df6417654f6ec98d9"
+    },
+    "gate_module": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/boxfusion/ca1m_tr3d_terminal_gate_v4.py",
+      "sha256": "5ee4c2d69aec1ee7d8038649febca8ab7b5deaa27e80f5569014ebf492d3b0ce"
+    },
+    "trainer": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/tools/train_ca1m_tr3d_benefit_gate_v4.py",
+      "sha256": "a14e8769c06840d304a28826d72275878750627841b7a128a2c6b687272a7416"
+    }
+  },
+  "complete": true,
+  "deploy_b6_scores_used_for_stacked_training": false,
+  "feature_names": [
+    "anchor_detector_score",
+    "anchor_support_given_depth",
+    "anchor_occluded_given_depth",
+    "anchor_free_given_depth",
+    "anchor_invalid_ratio",
+    "anchor_view_coverage",
+    "anchor_sample_support",
+    "anchor_area_quality",
+    "anchor_area_stability",
+    "anchor_support_view_mean",
+    "anchor_support_view_min",
+    "anchor_free_view_max",
+    "anchor_aspect_balance",
+    "anchor_height_balance",
+    "candidate_detector_score",
+    "candidate_support_given_depth",
+    "candidate_occluded_given_depth",
+    "candidate_free_given_depth",
+    "candidate_invalid_ratio",
+    "candidate_view_coverage",
+    "candidate_sample_support",
+    "candidate_area_quality",
+    "candidate_area_stability",
+    "candidate_support_view_mean",
+    "candidate_support_view_min",
+    "candidate_free_view_max",
+    "candidate_aspect_balance",
+    "candidate_height_balance",
+    "candidate_minus_anchor_score",
+    "candidate_anchor_iou",
+    "center_distance_over_anchor_diagonal",
+    "log_candidate_over_anchor_volume",
+    "extent_log_ratio_l2",
+    "log1p_candidate_point_support",
+    "log1p_candidate_point_density",
+    "candidate_point_support_fraction",
+    "candidate_global_rank_fraction",
+    "candidate_anchor_group_rank_fraction",
+    "log1p_anchor_group_size",
+    "candidate_score_minus_best_sibling"
+  ],
+  "feature_schema": "boxfusion.ca1m_tr3d_terminal_gate_features.v4",
+  "fit_fold_ids": [
+    2,
+    3,
+    4
+  ],
+  "ground_truth_access": false,
+  "locked_internal_fold1_gt_access": false,
+  "locked_internal_fold_ids": [
+    1
+  ],
+  "official_validation_comparable": false,
+  "quality_target": "candidate_max_gt_iou_strict_gt_0.25",
+  "schema": "boxfusion.ca1m_tr3d_benefit_gate_preregistration.v4",
+  "science": {
+    "ap_protocol": {
+      "box_geometry": "world_enclosing_axis_aligned_bounding_box",
+      "iou_comparison": "strict_greater_than",
+      "iou_thresholds": [
+        0.15,
+        0.25,
+        0.5
+      ],
+      "matching": "per_scene_per_gt_duplicate_aware_first_detection",
+      "ranking": "global_score_numpy_default_argsort",
+      "recall_denominator_epsilon": 1e-06,
+      "single_class": true,
+      "voc_ap_2009_continuous": true
+    },
+    "dev_gate": {
+      "max_severe_harm_fraction": 0.1,
+      "max_target_switch_fraction": 0.1,
+      "min_delta_ap15": 0.0,
+      "min_delta_ap25": 0.0,
+      "min_delta_ap50": 0.0025,
+      "min_positive_gain_fraction": 0.6,
+      "min_replacements": 10,
+      "min_scenes": 5
+    },
+    "failure_action": "stop_without_opening_fold1_or_canonical103",
+    "fit_protocol": {
+      "algorithm": "dual_class_balanced_logistic_v2_pure_math",
+      "class_balanced_fit_weights": true,
+      "decay_steps": 200.0,
+      "iterations": 2000,
+      "l2": 0.002,
+      "learning_rate": 0.05,
+      "standardization_fit_rows_only": true
+    },
+    "max_replacements_per_scene": 16,
+    "objective_fields": [
+      "delta_ap50_desc",
+      "delta_ap25_desc",
+      "delta_ap15_desc",
+      "positive_gain_fraction_desc",
+      "replacement_count_asc",
+      "quality_threshold_desc",
+      "benefit_threshold_desc"
+    ],
+    "score_tie_protocol": {
+      "anchor_scores_preserved_by_geometry_only_materialization": true,
+      "default_and_stable_order_must_match": true,
+      "fold0_oof_scores_must_be_unique": true,
+      "numpy_default_argsort_required": true
+    },
+    "threshold_grid": [
+      0.05,
+      0.1,
+      0.15,
+      0.2,
+      0.25,
+      0.3,
+      0.35,
+      0.4,
+      0.45,
+      0.5,
+      0.55,
+      0.6,
+      0.65,
+      0.7,
+      0.75,
+      0.8,
+      0.85,
+      0.9,
+      0.95,
+      0.99
+    ]
+  },
+  "sealed_before_first_gt_join": true,
+  "selection_rule": "benefit_quality_candidate_score_row_v1",
+  "threshold_dev_fold_ids": [
+    0
+  ],
+  "train_only": true,
+  "upstream": {
+    "candidate_evidence_manifest": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/reports/ca1m_tr3d_benefit_gate_final_base_v4/candidate_evidence_manifest.json",
+      "schema": "boxfusion.ca1m_tr3d_candidate_evidence_collection.v4",
+      "sha256": "5671f5d42a788f106623c0c3ecd8559d905cc56ba1611da8a2db7cde192c1834"
+    },
+    "candidate_evidence_root": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_tr3d_benefit_gate_final_base_v4/candidate_evidence",
+    "derived_train_gt_inventory_receipt": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/manifests/ca1m_tr3d_benefit_gate_final_base_v4/derived_train_gt_shadow_inventory_v1.json",
+      "schema": "boxfusion.ca1m_tr3d_benefit_gate_gt_shadow_inventory.v1",
+      "sha256": "6c3bdfd666ca49558ac390197abeec588949f05e33d9c8a18d1b5c8326d9e9a7"
+    },
+    "derived_train_gt_root": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/inputs/ca1m_tr3d_benefit_gate_final_base_v4/derived_train_gt_fitdev80",
+    "final_base_manifest": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/reports/ca1m_native_final_base_train100_v1/collection_manifest.json",
+      "schema": "boxfusion.ca1m_final_base_identity_audit.v1",
+      "sha256": "110dac18eb436eb6735299141d77fa00d4fed6042f93de81e5288e6b5d0e2f52"
+    },
+    "native_b6_v2_checkpoint": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/models/ca1m_native_b6_final_base_iou_mlp_v2.npz",
+      "schema": "boxfusion.ca1m_native_b6_iou_mlp.v1",
+      "sha256": "72890c1d88259c5727fd6edd18f36ce3bb8a27e20cceba97f1f4267c042a7fa7"
+    },
+    "native_b6_v2_checkpoint_manifest": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/models/ca1m_native_b6_final_base_iou_mlp_v2.manifest.json",
+      "schema": "boxfusion.ca1m_native_b6_checkpoint_manifest.v1",
+      "sha256": "8c6ac8a128f6cfd3247c81bfd9cd10499cab0f5a565b12ba181fed2509a2e97b"
+    },
+    "native_b6_v2_collection_manifest": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/reports/ca1m_native_b6_final_base_train100_v2/collection_manifest.json",
+      "schema": "boxfusion.ca1m_native_b6_final_base_train_collection.v2",
+      "sha256": "1f9ad7ff70ff5cb532cf4faa1b9c9dbd331cff92436015e8cc5f13968e92df2e"
+    },
+    "native_b6_v2_oof_row_scores": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/models/ca1m_native_b6_final_base_oof_row_scores_v2.npz",
+      "schema": "boxfusion.ca1m_native_b6_oof_row_scores.v2",
+      "sha256": "82b5e70c635958398c04b0e3ba5dbf25203b61bcabd725330bd68812d156e5ed"
+    },
+    "native_b6_v2_oof_row_scores_manifest": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/models/ca1m_native_b6_final_base_oof_row_scores_v2.manifest.json",
+      "schema": "boxfusion.ca1m_native_b6_oof_row_scores_manifest.v2",
+      "sha256": "b1d00bcdc205ab806d705c61ee2abdaeac7e634e999fbf742cb9aaad0adbd23f"
+    },
+    "overlay_collection_manifest": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/reports/ca1m_tr3d_terminal_ca_native_train100_v4/overlay_collection_manifest_v2.json",
+      "schema": "boxfusion.ca1m_tr3d_terminal_overlay_collection.v2",
+      "sha256": "a34c820f8338c80fa974933fe53435e28f87936fce3efad5630f0f3afc18cd1d"
+    },
+    "overlay_root": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_tr3d_terminal_ca_native_train100_v4/overlays",
+    "proposal_collection_manifest": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/reports/ca1m_tr3d_terminal_ca_native_train100_v4/proposal_collection_manifest_v5.json",
+      "schema": "boxfusion.ca1m_tr3d_proposal_collection.v4",
+      "sha256": "a8a9bcbccb8212e6a346b60e3657859f06751b1d2309204919b0de725babc349"
+    },
+    "proposal_root": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_tr3d_terminal_ca_native_train100_v4/proposals",
+    "scene_contract": {
+      "count": 100,
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/manifests/ca1m_native_b6_train100_v1/scene_ids.txt",
+      "sha256": "35321e9942dc5d512db2952b9ca6228b1291127e0c13fd92aa458f2d7eb7f9fd"
+    }
+  },
+  "validation_ground_truth_access": false,
+  "validation_prediction_access": false
+}

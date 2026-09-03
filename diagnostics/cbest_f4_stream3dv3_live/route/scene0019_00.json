@@ -1,0 +1,171 @@
+{
+  "addon_deadline_ms": 285.0,
+  "annotation_access": false,
+  "bounded": {
+    "max_accepted_tracks": 128,
+    "max_births_per_scene": 2,
+    "max_f4_attempts_observed": 2,
+    "max_f4_sources_per_batch": 6,
+    "max_f4_views_per_track": 2,
+    "max_track_views": 6,
+    "prelift_top_k": 6
+  },
+  "complete": true,
+  "counts": {
+    "accepted_track_pool": 0,
+    "addon_deadline_misses": 1,
+    "births": 0,
+    "box_shortlisted": 152,
+    "discovery_keyframes": 13,
+    "f0_candidates": 50,
+    "f4_attempts": 5,
+    "f4_batches": 4,
+    "f4_valid": 5,
+    "fastsam_masks": 354,
+    "keyframes": 23,
+    "keyframes_skipped": 10,
+    "masks_prelift": 59,
+    "native": 13,
+    "output": 13,
+    "overlays": 0,
+    "tracks_retired": 29
+  },
+  "evaluator_access": false,
+  "f3": {
+    "audit_complete": true,
+    "keyframes": 23,
+    "max_logical_accessed_ordinal": 22
+  },
+  "f4_per_track": {
+    "27": 1,
+    "39": 1
+  },
+  "fresh_inference": true,
+  "future_access_count": 0,
+  "gate_rejections": {},
+  "geometry_audit": {
+    "dtype": "float32",
+    "native_prefix_sha256": "c5b61af2bd1fd9f73abeb1edc2fb1ce954162a27dc27ebc0d7099c8d97703f48",
+    "output_prefix_sha256": "c5b61af2bd1fd9f73abeb1edc2fb1ce954162a27dc27ebc0d7099c8d97703f48"
+  },
+  "ground_truth_access": false,
+  "native_scores_preserved": true,
+  "past_only": true,
+  "peak_cuda_allocated_bytes": 5919467520,
+  "peak_cuda_reserved_bytes": 6306136064,
+  "pipeline_seconds": 50.47993950708769,
+  "pose_source": "scannet_provided_pose",
+  "proposal_cache_access": false,
+  "query_before_commit": true,
+  "raw_frame_count": 554,
+  "run_fingerprint": "4ca697a6fb3fbed1ec1381a69c767e25e802af7e7600f4c72f9f633a0a7bdb33",
+  "runtime": {
+    "clock_scope": "pre-iteration V3 clock (first-poll fallback) through terminal V3 decision and F3 finalization; includes frame loading, native BoxFusion, and synchronous V3 work; excludes process/model construction and diagnostic serialization",
+    "end_to_end_fps": 10.974656574662001,
+    "pipeline_seconds": 50.47993950708769,
+    "raw_frame_count": 554
+  },
+  "sam3": {
+    "enabled": false
+  },
+  "scene_id": "scene0019_00",
+  "schedule": {
+    "dataset_frame_count": 579,
+    "expected_keyframe_count": 23,
+    "expected_raw_frame_count": 554,
+    "keyframe_gap": 25
+  },
+  "schema": "boxfusion.stream3dv3_live.v1",
+  "score_audit": {
+    "append_scores": [],
+    "dtype": "float32",
+    "native_min": 0.5024293661117554,
+    "native_prefix_sha256": "4a48f68d9dffc7201b3901f47bc2a25e17f520a4bd415c4811f438c359386533",
+    "output_prefix_sha256": "4a48f68d9dffc7201b3901f47bc2a25e17f520a4bd415c4811f438c359386533"
+  },
+  "selection_and_acceptance_held_out": true,
+  "target_end_to_end_fps": 20.0,
+  "teacher_cache_access": false,
+  "terminal_cache_access": false,
+  "timing_ms": {
+    "depth_trigger": {
+      "count": 23,
+      "max": 3.030434949323535,
+      "mean": 1.7359683938000514,
+      "p50": 1.5262339729815722,
+      "p95": 2.633359027095139
+    },
+    "f0_residual_lift": {
+      "count": 13,
+      "max": 69.66949603520334,
+      "mean": 32.29397046379745,
+      "p50": 26.607384905219078,
+      "p95": 61.5474989172071
+    },
+    "f2_refine": {
+      "count": 13,
+      "max": 15.025111846625805,
+      "mean": 8.438711036713077,
+      "p50": 9.260234888643026,
+      "p95": 13.077700976282353
+    },
+    "f3_and_state": {
+      "count": 23,
+      "max": 6.154923001304269,
+      "mean": 0.4260651463561732,
+      "p50": 0.17302902415394783,
+      "p95": 0.31738472171127796
+    },
+    "f4_boxer": {
+      "count": 13,
+      "max": 42.70920413546264,
+      "mean": 12.761407478067737,
+      "p50": 0.0,
+      "p95": 42.60235610418022
+    },
+    "fastsam": {
+      "count": 13,
+      "max": 360.11261492967606,
+      "mean": 80.98989567504479,
+      "p50": 49.75743987597525,
+      "p95": 231.1452957801518
+    },
+    "keyframe_total": {
+      "count": 23,
+      "max": 403.851964045316,
+      "mean": 89.52658096044932,
+      "p50": 80.65112098120153,
+      "p95": 196.3562483899295
+    },
+    "mask_preselection": {
+      "count": 13,
+      "max": 3.481675172224641,
+      "mean": 3.2438845731891117,
+      "p50": 3.2773350831121206,
+      "p95": 3.4548053052276373
+    },
+    "track_fusion_and_gate": {
+      "count": 13,
+      "max": 0.01346995122730732,
+      "mean": 0.008282663587194223,
+      "p50": 0.007674796506762505,
+      "p95": 0.012261560186743733
+    }
+  },
+  "training_free": true,
+  "trigger": {
+    "burst_remaining": 2,
+    "confirmed_voxels": 1631,
+    "last_run_ordinal": 22,
+    "memory_version": 23,
+    "queries": 23,
+    "reason_bootstrap": 1,
+    "reason_bounded_burst": 10,
+    "reason_cooldown": 6,
+    "reason_insufficient_persistence": 4,
+    "reason_persistent_novel_depth": 2,
+    "runs": 13,
+    "skips": 10,
+    "tentative_voxels": 552
+  }
+}

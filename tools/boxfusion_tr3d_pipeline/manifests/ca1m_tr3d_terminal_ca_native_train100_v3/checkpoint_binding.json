@@ -1,0 +1,74 @@
+{
+  "checkpoint": {
+    "bytes": 176258120,
+    "epoch": 12,
+    "filename": "epoch_12.pth",
+    "path": "/extra/ZhaoX/tr3d_ca1m_work_dirs/ca1m_fg_scratch_seed0_fp32_gb16_v1/epoch_12.pth",
+    "sha256": "d3ba6cc22f0a1a11ab47e55ccdd21c2ef4a84efaf3c6359b7e8231a6c8d3b4a7"
+  },
+  "complete": true,
+  "config": {
+    "bytes": 8290,
+    "path": "/extra/ZhaoX/tr3d_ca1m_work_dirs/ca1m_fg_scratch_seed0_fp32_gb16_v1/tr3d_ca1m_foreground.py",
+    "sha256": "38368fb5eb692ae2452d098bd4bb0814bbbb83feae780cf83446121bd9e7b88b",
+    "source_bytes": 5471,
+    "source_path": "/data/ZhaoX/OVM3D-Dett/boxfusion_tr3d_dev/config/tr3d/tr3d_ca1m_foreground.py",
+    "source_sha256": "0185b32df0854189d1f5827060810c0ee7056aa1c7c5afbd19b69b255843d567"
+  },
+  "create_only": true,
+  "dataset": "ca1m_train100",
+  "effective_protocol": {
+    "fixed_epochs": 12,
+    "initialization": "random_scratch",
+    "per_process_batch": 8,
+    "precision": "fp32",
+    "repeat": 15,
+    "workers_per_process": 4
+  },
+  "initialization": {
+    "kind": "random_scratch",
+    "load_from": null,
+    "pretrained_or_init_cfg": false,
+    "scannet_trained_module_access": false
+  },
+  "isolation": {
+    "locked_fold1_gt_access": false,
+    "locked_internal_check": "fold_1",
+    "official_validation_gt_access": false,
+    "split_sha256": {
+      "locked_internal_check": "d6238bae873c98737858ac3a84c0706091fa9a91113321ac9736a8d64de6d6b6",
+      "threshold_dev": "9c886ca85ba599881797b25a49d2fc72dd136d255a245a09fe1cf17cbce735a7",
+      "train100": "35321e9942dc5d512db2952b9ca6228b1291127e0c13fd92aa458f2d7eb7f9fd",
+      "weights_train": "7f0a22c660f7f9bd44137f5049c694393e038f5ab97ec55053443bfc00967478"
+    },
+    "threshold_development": "fold_0",
+    "weights_train": "folds_2_3_4"
+  },
+  "metric_protocol": {
+    "ca_official_evaluator": "evaluation/eval_ca1m.py -> evaluation/utils/eval_det.py:get_iou_obb_v2 -> box_util.py:box3d_iou_v2",
+    "ca_official_metric_run_during_training": false,
+    "checkpoint_selected_by_dev_metric": false,
+    "metrics_are_not_interchangeable": true,
+    "training_dev_evaluator": "mmdet3d.IndoorMetric",
+    "training_dev_metric_role": "diagnostic_only"
+  },
+  "model_family": "ca1m_native_class_agnostic_tr3d",
+  "schema": "boxfusion.tr3d.ca1m_checkpoint_binding.v1",
+  "training": {
+    "checkpoint_selection": false,
+    "complete": true,
+    "cublas_workspace_config": ":4096:8",
+    "exit_marker": "TRAIN_EXIT=0",
+    "final_epoch": 12,
+    "fixed_epochs": 12,
+    "global_batch": 16,
+    "log_bytes": 39542,
+    "log_path": "/extra/ZhaoX/tr3d_ca1m_logs/train_ca1m_fg_scratch_seed0_fp32_gb16_v1.log",
+    "log_sha256": "6a8c7d9eb03110b5553572bd786579799bd4f1c6638ffc3861dfebbd8277ccbf",
+    "per_process_batch": 8,
+    "precision": "fp32",
+    "workers_per_process": 4,
+    "world_size": 2
+  },
+  "work_root": "/extra/ZhaoX/tr3d_ca1m_work_dirs/ca1m_fg_scratch_seed0_fp32_gb16_v1"
+}

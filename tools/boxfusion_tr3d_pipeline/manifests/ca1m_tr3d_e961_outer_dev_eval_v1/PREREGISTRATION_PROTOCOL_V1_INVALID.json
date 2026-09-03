@@ -1,0 +1,34 @@
+{
+  "schema": "boxfusion.ca1m_tr3d_e961_outer_dev_protocol_preregistration_invalid.v1",
+  "complete": true,
+  "create_only": true,
+  "namespace": "ca1m_tr3d_e961_outer_dev_eval_v1",
+  "invalid": true,
+  "superseded": true,
+  "formal_evaluation_authorized": false,
+  "predecessor": {
+    "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/manifests/ca1m_tr3d_e961_outer_dev_eval_v1/PREREGISTRATION_PROTOCOL.json",
+    "sha256": "9c8fdc2689636584fd55bcc536a51ccc8f208e3e077d1f9b8f1479858b8dc05f",
+    "schema": "boxfusion.ca1m_tr3d_e961_outer_dev_protocol_preregistration.v1"
+  },
+  "invalidated_binding": {
+    "outer_train_contract_sha256": "89a61f908813730c7cfa16232cbc216ab3fa946479ee100a926fa8bb2f8cf406",
+    "outer_train_driver_sha256": "2554e79e97d453600e98c9b8309e88fb8709efb2f48a357a8ae48988336af538",
+    "reason": "independent_review_blocked_outer_train_v1_implementation"
+  },
+  "access_before_invalidation": {
+    "expanded_training_receipt_access": false,
+    "expanded_checkpoint_access": false,
+    "anchor_array_access": false,
+    "formal_fold0_gt_access": false,
+    "fold1_access": false,
+    "official_validation_access": false,
+    "gpu_started": false
+  },
+  "replacement_requirement": {
+    "required_schema": "boxfusion.ca1m_tr3d_e961_outer_dev_protocol_preregistration.v2",
+    "must_bind_independently_reviewed_outer_train_r2": true,
+    "runtime_preregistration_must_bind_v2": true,
+    "v1_must_be_rejected": true
+  }
+}

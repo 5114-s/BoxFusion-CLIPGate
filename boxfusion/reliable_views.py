@@ -24,6 +24,12 @@ DEFAULT_RELIABLE_VIEW_CONFIG = {
     "size_sigma": 0.50,
     "minimum_box_diagonal": 0.10,
     "minimum_weight": 0.05,
+    # Opt-in greedy pose diversity.  Disabled by default so existing Top-K
+    # experiments retain their exact ranking policy.
+    "diversity_enabled": False,
+    "diversity_weight": 0.15,
+    "diversity_translation_reference_m": 0.50,
+    "diversity_rotation_reference_deg": 20.0,
 }
 
 
@@ -111,6 +117,7 @@ def resolve_reliable_view_config(
     cfg.update(raw_cfg)
 
     cfg["enabled"] = bool(cfg["enabled"])
+    cfg["diversity_enabled"] = bool(cfg["diversity_enabled"])
     cfg["top_k"] = int(cfg["top_k"])
     cfg["min_views"] = int(cfg["min_views"])
     for key in (
@@ -123,6 +130,9 @@ def resolve_reliable_view_config(
         "size_sigma",
         "minimum_box_diagonal",
         "minimum_weight",
+        "diversity_weight",
+        "diversity_translation_reference_m",
+        "diversity_rotation_reference_deg",
     ):
         cfg[key] = float(cfg[key])
 
@@ -148,6 +158,14 @@ def resolve_reliable_view_config(
             raise ValueError(f"reliable_views.{key} must be positive")
     if cfg["minimum_weight"] > 1.0:
         raise ValueError("reliable_views.minimum_weight must not exceed 1")
+    if not 0.0 <= cfg["diversity_weight"] <= 1.0:
+        raise ValueError("reliable_views.diversity_weight must be in [0,1]")
+    for key in (
+        "diversity_translation_reference_m",
+        "diversity_rotation_reference_deg",
+    ):
+        if cfg[key] <= 0.0:
+            raise ValueError(f"reliable_views.{key} must be positive")
 
     return cfg
 
@@ -410,8 +428,9 @@ def select_top_k_reliable_views(
     image_height: int,
     image_width: int,
     cfg: Mapping,
+    camera_poses: np.ndarray | None = None,
 ) -> Dict[str, np.ndarray]:
-    """Select a stable reliability-ranked Top-K subset."""
+    """Select a stable reliability-ranked Top-K or pose-diverse subset."""
 
     components = compute_reliable_view_weights(
         boxes_3d,
@@ -437,7 +456,68 @@ def select_top_k_reliable_views(
             -components["weights"],
         )
     ).astype(np.int64)
-    selected = ranked[:keep_count]
+    diversity = np.zeros(num_views, dtype=np.float32)
+    if cfg.get("diversity_enabled", False) and keep_count > 1:
+        poses = np.asarray(camera_poses, dtype=np.float64)
+        if poses.shape != (num_views, 4, 4) or not np.isfinite(poses).all():
+            raise ValueError(
+                "camera_poses must have shape [N,4,4] for diverse Top-K"
+            )
+
+        centers = poses[:, :3, 3]
+        forward = poses[:, :3, 2]
+        forward /= np.maximum(
+            np.linalg.norm(forward, axis=1, keepdims=True), 1.0e-12
+        )
+        translation_reference = float(
+            cfg["diversity_translation_reference_m"]
+        )
+        rotation_reference = np.deg2rad(
+            float(cfg["diversity_rotation_reference_deg"])
+        )
+        reliability = components["weights"].astype(np.float64)
+        reliability /= max(float(reliability.max(initial=0.0)), 1.0e-12)
+        diversity_weight = float(cfg["diversity_weight"])
+
+        selected_list = [int(ranked[0])]
+        remaining = set(range(num_views)) - set(selected_list)
+        while len(selected_list) < keep_count:
+            best_index = None
+            best_key = None
+            for candidate in sorted(remaining):
+                selected_array = np.asarray(selected_list, dtype=np.int64)
+                translation = np.linalg.norm(
+                    centers[selected_array] - centers[candidate], axis=1
+                )
+                dots = np.clip(
+                    forward[selected_array] @ forward[candidate], -1.0, 1.0
+                )
+                angle = np.arccos(dots)
+                pair_novelty = 0.5 * np.clip(
+                    translation / translation_reference, 0.0, 1.0
+                ) + 0.5 * np.clip(angle / rotation_reference, 0.0, 1.0)
+                novelty = float(pair_novelty.min())
+                score = (
+                    (1.0 - diversity_weight) * reliability[candidate]
+                    + diversity_weight * novelty
+                )
+                # Higher combined score, reliability and confidence win; the
+                # negative index keeps the final tie break temporal/stable.
+                key = (
+                    score,
+                    reliability[candidate],
+                    float(components["confidence"][candidate]),
+                    -candidate,
+                )
+                if best_key is None or key > best_key:
+                    best_key = key
+                    best_index = candidate
+                    diversity[candidate] = novelty
+            selected_list.append(int(best_index))
+            remaining.remove(int(best_index))
+        selected = np.asarray(selected_list, dtype=np.int64)
+    else:
+        selected = ranked[:keep_count]
     selected_mask = np.zeros(num_views, dtype=bool)
     selected_mask[selected] = True
 
@@ -447,6 +527,8 @@ def select_top_k_reliable_views(
             "selected_indices": selected,
             "selected_mask": selected_mask,
             "selected_weights": components["weights"][selected],
+            "diversity": diversity,
+            "selected_diversity": diversity[selected],
         }
     )
     return components

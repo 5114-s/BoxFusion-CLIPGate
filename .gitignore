@@ -13,6 +13,12 @@ data/
 models/
 official_downloads/
 
+# The migrated pipeline carries one tiny hash-frozen quality calibrator so its
+# regression tests remain self-contained. All other model directories/weights
+# stay ignored.
+!tools/boxfusion_tr3d_pipeline/models/
+!tools/boxfusion_tr3d_pipeline/models/scannet_b6_iou_mlp.npz
+
 # Outputs
 logs/
 results/

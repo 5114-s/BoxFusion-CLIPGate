@@ -1,0 +1,110 @@
+{
+  "apple_tar_sha256": "b0fdf2d97b60d4ac99f794c1cb44317938d94bc012257dbb100e17a0560320ca",
+  "approved_for_train_only_conversion": true,
+  "checked_raw_rgb_frames": [
+    {
+      "correct_rot90_ccw": 0,
+      "frame_id": "227859372045625",
+      "frame_index": 749,
+      "member": "47331804/227859372045625.wide/image.png",
+      "member_sha256": "c3499e73edca1e7eeee0a830a5a068d571e0f60537da942a8740319e6b1a7d02",
+      "observation": "The BLACKMAIL poster title and credits are upright at k=0 and inverted at k=2.",
+      "rejected_rot90_ccw": 2
+    },
+    {
+      "correct_rot90_ccw": 3,
+      "frame_id": "227859472005416",
+      "frame_index": 750,
+      "member": "47331804/227859472005416.wide/image.png",
+      "member_sha256": "9d2ce9f5d4108f5e365b7c5d6b57cf68810fb574036fed44fe1dd8dd5a5bb980",
+      "observation": "The adjacent portrait encoding preserves the upright BLACKMAIL poster only after clockwise rotation (k=3); k=1 inverts it.",
+      "rejected_rot90_ccw": 1
+    }
+  ],
+  "failure_analysis": {
+    "choice_cost_degrees": {
+      "k0": 128.91235915532172,
+      "k2": 128.21737467236613
+    },
+    "failure_frame_id": "227857872652875",
+    "failure_frame_index": 734,
+    "minimum_choice_margin_degrees": 0.6949844829555701,
+    "previous_frame_id": "227856273300750",
+    "temporal_gap_seconds": 1.599352125,
+    "temporal_gap_vs_nominal_ratio": 15.999987965135869,
+    "minimum_margin_degrees_outside_failure_edge": 57.06133611632113
+  },
+  "frame_count": 758,
+  "frame_ids_newline_sha256": "a6e197a4dd7bc1a1ce8e03c5bc9d3aa96c35f4e94ed7794d85cfeeb6fdcaeb49",
+  "method": "aspect_clockwise_to_majority",
+  "notes": [
+    "The low-margin edge crosses a capture discontinuity, so the preceding pose cannot safely determine the following segment's 0/180-degree gauge.",
+    "The override is train-only and does not change the global 30-degree pose-continuity threshold.",
+    "The selected rule is independently auditable from the hashed raw RGB members and preserves one output aspect for the full sequence."
+  ],
+  "depth_reprojection_cross_check": {
+    "evidence_pairs": 16,
+    "greedy_pose_chain": {
+      "points": 261125,
+      "residual_lt_2cm_fraction": 0.8964,
+      "residual_lt_5cm_fraction": 0.9430,
+      "residual_median_m": 0.002843,
+      "residual_q90_m": 0.020774
+    },
+    "selected_schedule": {
+      "points": 272842,
+      "residual_lt_2cm_fraction": 0.9598,
+      "residual_lt_5cm_fraction": 0.9758,
+      "residual_median_m": 0.002408,
+      "residual_q90_m": 0.009634
+    }
+  },
+  "raw_aspect_counts": {
+    "landscape": 747,
+    "portrait": 11
+  },
+  "rotation_counts": {
+    "0": 747,
+    "1": 0,
+    "2": 0,
+    "3": 11
+  },
+  "rotation_runs": [
+    {
+      "end": 742,
+      "k_ccw": 0,
+      "start": 0
+    },
+    {
+      "end": 745,
+      "k_ccw": 3,
+      "start": 743
+    },
+    {
+      "end": 749,
+      "k_ccw": 0,
+      "start": 746
+    },
+    {
+      "end": 757,
+      "k_ccw": 3,
+      "start": 750
+    }
+  ],
+  "rotation_vector_int8_sha256": "58f69e990b7aa5d37a537ffe511ceeb0467f4237996f13bc46022d6111d5c3a0",
+  "scene_id": "47331804",
+  "schema": "boxfusion.ca1m_orientation_evidence.v1",
+  "t_gravity_reconstruction_cross_check": {
+    "frames_checked": 758,
+    "matched_orientation": 0,
+    "minimum_winner_runner_up_separation_ratio": 126134.0,
+    "public_transform_implementations_compared": 3,
+    "unique_match_frames": 758,
+    "winner_max_abs_error_max": 0.00001116,
+    "winner_max_abs_error_q50": 0.000000737,
+    "winner_max_abs_error_q90": 0.00000169,
+    "winner_max_abs_error_q99": 0.00000331,
+    "runner_up_minimum_max_abs_error": 1.00018
+  },
+  "target_orientation": "landscape"
+}

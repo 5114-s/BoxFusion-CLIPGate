@@ -12,6 +12,12 @@ from boxfusion.reliable_views import (
     valid_reliable_view_mask,
     weighted_box_initialization,
 )
+from boxfusion.maskdepth_pfo import (
+    optimize_maskdepth_pfo,
+    resolve_maskdepth_pfo_config,
+)
+from boxfusion.vapf_lite import VAPFLite
+from boxfusion.capf import CAPF
 
 try:
   import pycuda.driver as cuda
@@ -72,6 +78,44 @@ class BoxFusion(object):
         self.reliable_view_cfg = resolve_reliable_view_config(
             cfg["box_fusion"]
         )
+        self.maskdepth_pfo_cfg = resolve_maskdepth_pfo_config(
+            cfg["box_fusion"]
+        )
+        self.vapf_lite = VAPFLite(cfg["box_fusion"])
+        self.capf = CAPF(cfg["box_fusion"])
+        if self.vapf_lite.enabled and self.reliable_view_cfg["enabled"]:
+            raise ValueError(
+                "VAPF-lite requires reliable_views.enabled=false for an "
+                "isolated continuous-fusion ablation"
+            )
+        if self.vapf_lite.enabled and self.maskdepth_pfo_cfg["enabled"]:
+            raise ValueError(
+                "VAPF-lite and MaskDepth-PFO cannot be active together"
+            )
+        if self.capf.enabled:
+            if not self.reliable_view_cfg["enabled"]:
+                raise ValueError("CAPF requires Reliable-view Top-K3")
+            if (
+                self.reliable_view_cfg["top_k"] != 3
+                or self.reliable_view_cfg["min_views"] != 3
+                or self.capf.cfg["min_views"] != 3
+            ):
+                raise ValueError(
+                    "CAPF route requires reliable_views.top_k=min_views=3 "
+                    "and capf.min_views=3"
+                )
+            if self.vapf_lite.enabled or self.maskdepth_pfo_cfg["enabled"]:
+                raise ValueError(
+                    "CAPF cannot be combined with VAPF-lite or MaskDepth-PFO"
+                )
+        self.maskdepth_pfo_stats = {
+            "attempted": 0,
+            "accepted": 0,
+            "skipped_insufficient_views": 0,
+            "reasons": {},
+            "baseline_loss": [],
+            "candidate_loss": [],
+        }
         self.reliable_view_stats = {
             "fusion_updates": 0,
             "views_available": 0,
@@ -558,6 +602,25 @@ class BoxFusion(object):
             f"invalid={stats['invalid_views']}"
         )
 
+    def maskdepth_pfo_summary(self):
+        stats = self.maskdepth_pfo_stats
+        attempted = int(stats["attempted"])
+        accepted = int(stats["accepted"])
+        baseline = np.asarray(stats["baseline_loss"], dtype=np.float64)
+        candidate = np.asarray(stats["candidate_loss"], dtype=np.float64)
+        mean_delta = (
+            float(np.mean(baseline - candidate)) if baseline.size else float("nan")
+        )
+        return (
+            "MaskDepth-PFO summary | "
+            f"attempted={attempted}, accepted={accepted}, "
+            f"accept_rate={accepted / max(attempted, 1):.4f}, "
+            "skipped_insufficient_views="
+            f"{stats['skipped_insufficient_views']}, "
+            f"mean_loss_improvement={mean_delta:.6f}, "
+            f"reasons={stats['reasons']}"
+        )
+
     def update_intrinsics(self,size,K):
         self.H=size[1]
         self.W=size[0]
@@ -739,6 +802,34 @@ class BoxFusion(object):
 
         per_boxes_2d = per_frame_box.pred_boxes.cpu().numpy()
         per_boxes_2d_cor = per_frame_box.projected_boxes.cpu().numpy()
+        per_vapf_covariance = None
+        if self.vapf_lite.enabled:
+            if not per_frame_box.has("vapf_covariance_7d"):
+                raise RuntimeError(
+                    "VAPF-lite is enabled but observation covariance is absent"
+                )
+            per_vapf_covariance = (
+                per_frame_box.vapf_covariance_7d.detach().cpu().numpy()
+            )
+        per_capf_points = None
+        per_capf_valid = None
+        if self.capf.enabled:
+            missing = [
+                name
+                for name in self.capf.EVIDENCE_FIELDS
+                if not per_frame_box.has(name)
+            ]
+            if missing:
+                raise RuntimeError(
+                    "CAPF is enabled but observation evidence is absent: "
+                    + ", ".join(missing)
+                )
+            per_capf_points = (
+                per_frame_box.capf_surface_points_world.detach().cpu().numpy()
+            )
+            per_capf_valid = (
+                per_frame_box.capf_surface_valid.detach().cpu().numpy()
+            )
         for i in range(N_box):
 
             
@@ -803,6 +894,7 @@ class BoxFusion(object):
                     image_height=self.H,
                     image_width=self.W,
                     cfg=self.reliable_view_cfg,
+                    camera_poses=source_poses[valid_views],
                 )
                 selected_local = selection["selected_indices"]
                 fusion_idx = fusion_idx[selected_local]
@@ -836,6 +928,42 @@ class BoxFusion(object):
             cam_poses = per_cam_pose[fusion_idx] #[N,4,4]
            
             box_3d = per_boxes_3d[fusion_idx] #[N,6] 
+
+            if self.vapf_lite.enabled:
+                vapf_result = self.vapf_lite.fuse(
+                    box_3d,
+                    per_boxes_3d_R[fusion_idx],
+                    per_vapf_covariance[fusion_idx],
+                    frame_ids=(
+                        per_frame_box.frame_id[fusion_idx]
+                        .detach()
+                        .cpu()
+                        .numpy()
+                    ),
+                )
+                print(
+                    f"VAPF-lite {i}: {vapf_result.reason}, "
+                    f"views={num_of_boxes}, "
+                    f"robust={vapf_result.robust_observations}, "
+                    f"max_whitened={vapf_result.max_whitened_residual:.4f}"
+                )
+                if vapf_result.accepted:
+                    all_pred_box.pred_boxes_3d.tensor[i] = torch.from_numpy(
+                        vapf_result.box_xyzlhw
+                    ).to(all_pred_box.pred_boxes_3d.tensor[i].device)
+                    all_pred_box.pred_boxes_3d.R[i] = torch.from_numpy(
+                        vapf_result.rotation
+                    ).to(all_pred_box.pred_boxes_3d.R[i].device)
+                    if all_pred_box.has("vapf_covariance_7d"):
+                        all_pred_box.vapf_covariance_7d[i] = torch.from_numpy(
+                            vapf_result.covariance
+                        ).to(all_pred_box.vapf_covariance_7d[i].device)
+                    box_manager.update_fusion_flag(i)
+                    box_manager.add_fusion_ind(source_fusion_idx)
+                    # Accepted VAPF geometry replaces the released random
+                    # optimization for this track.  A rejected candidate falls
+                    # through to the unmodified native fusion below.
+                    continue
 
             corners_2d = per_boxes_2d_cor[fusion_idx] 
 
@@ -919,15 +1047,138 @@ class BoxFusion(object):
                 if fail_count >= 3:
                     break
                 
+            output_rot = mean_rot
+            if need_update and self.maskdepth_pfo_cfg["enabled"]:
+                required_fields = (
+                    "maskdepth_tight_boxes",
+                    "maskdepth_points_world",
+                    "maskdepth_point_valid",
+                    "maskdepth_quality",
+                    "maskdepth_valid",
+                )
+                if not all(per_frame_box.has(name) for name in required_fields):
+                    raise RuntimeError(
+                        "MaskDepth-PFO is enabled but EdgeTAM evidence fields are absent"
+                    )
+                evidence_valid = (
+                    per_frame_box.maskdepth_valid[fusion_idx]
+                    .detach()
+                    .cpu()
+                    .numpy()
+                    .astype(bool)
+                )
+                valid_count = int(np.count_nonzero(evidence_valid))
+                if valid_count < self.maskdepth_pfo_cfg["min_valid_views"]:
+                    self.maskdepth_pfo_stats["skipped_insufficient_views"] += 1
+                else:
+                    evidence_idx = fusion_idx[evidence_valid]
+                    # Match the released writeback contract: legacy PFO may
+                    # transiently propose a negative extent, which is clamped
+                    # to 1 cm immediately below.  MaskDepth-PFO must validate
+                    # the same finite positive rollback baseline.
+                    pfo_initial_box = np.asarray(
+                        global_xyzlwh, dtype=np.float32
+                    ).copy()
+                    pfo_initial_box[3:] = np.maximum(
+                        pfo_initial_box[3:], 0.01
+                    )
+                    evidence_weights = view_weights[evidence_valid].astype(np.float64)
+                    evidence_quality = (
+                        per_frame_box.maskdepth_quality[evidence_idx]
+                        .detach()
+                        .cpu()
+                        .numpy()
+                    )
+                    evidence_weights *= np.maximum(evidence_quality, 1.0e-3)
+                    result = optimize_maskdepth_pfo(
+                        initial_box_xyzlwh=pfo_initial_box,
+                        initial_rotation=mean_rot,
+                        camera_poses=per_cam_pose[evidence_idx],
+                        tight_boxes_xyxy=(
+                            per_frame_box.maskdepth_tight_boxes[evidence_idx]
+                            .detach()
+                            .cpu()
+                            .numpy()
+                        ),
+                        points_world=(
+                            per_frame_box.maskdepth_points_world[evidence_idx]
+                            .detach()
+                            .cpu()
+                            .numpy()
+                        ),
+                        point_valid=(
+                            per_frame_box.maskdepth_point_valid[evidence_idx]
+                            .detach()
+                            .cpu()
+                            .numpy()
+                        ),
+                        view_weights=evidence_weights,
+                        intrinsics=self.K,
+                        image_height=self.H,
+                        image_width=self.W,
+                        cfg=self.maskdepth_pfo_cfg,
+                        object_seed=i,
+                    )
+                    self.maskdepth_pfo_stats["attempted"] += 1
+                    self.maskdepth_pfo_stats["accepted"] += int(result.accepted)
+                    reasons = self.maskdepth_pfo_stats["reasons"]
+                    reasons[result.reason] = reasons.get(result.reason, 0) + 1
+                    self.maskdepth_pfo_stats["baseline_loss"].append(
+                        result.baseline_loss
+                    )
+                    self.maskdepth_pfo_stats["candidate_loss"].append(
+                        result.candidate_loss
+                    )
+                    global_xyzlwh = result.box_xyzlwh
+                    output_rot = result.rotation
+                    print(
+                        f"MaskDepth-PFO {i}: {result.reason}, "
+                        f"loss={result.baseline_loss:.4f}->{result.candidate_loss:.4f}, "
+                        f"mask={result.baseline_mask_iou:.4f}->"
+                        f"{result.candidate_mask_iou:.4f}, "
+                        f"depth={result.baseline_depth_support:.4f}->"
+                        f"{result.candidate_depth_support:.4f}"
+                    )
+
             if need_update:
                 # update tensor xyzlwh
                 global_lwh = global_xyzlwh[3:]
                 global_lwh[global_lwh < 0.01] = 0.01
                 global_xyzlwh[3:] = global_lwh
+                if self.capf.enabled:
+                    capf_result = self.capf.refine(
+                        anchor_box_xyzlhw=global_xyzlwh.copy(),
+                        anchor_rotation=output_rot.copy(),
+                        observation_boxes_xyzlhw=box_3d,
+                        observation_rotations=per_boxes_3d_R[fusion_idx],
+                        camera_poses=cam_poses,
+                        surface_points_world=per_capf_points[fusion_idx],
+                        surface_valid=per_capf_valid[fusion_idx],
+                        frame_ids=(
+                            per_frame_box.frame_id[fusion_idx]
+                            .detach()
+                            .cpu()
+                            .numpy()
+                        ),
+                        track_key=source_fusion_idx,
+                    )
+                    if not self.capf.oracle_shadow:
+                        global_xyzlwh = capf_result.box_xyzlhw
+                    update_names = [
+                        f"{('xyz'[item.face_index // 2])}"
+                        f"{('-' if item.face_index % 2 == 0 else '+')}"
+                        for item in capf_result.updates
+                    ]
+                    print(
+                        f"CAPF{'-oracle-shadow' if self.capf.oracle_shadow else ''} "
+                        f"{i}: {capf_result.reason}, "
+                        f"candidates={capf_result.attempted_candidates}, "
+                        f"faces={update_names}"
+                    )
                 all_pred_box.pred_boxes_3d.tensor[i] = torch.from_numpy(global_xyzlwh).to(all_pred_box.pred_boxes_3d.tensor[i].device)
                 if self.reliable_view_cfg["enabled"]:
                     all_pred_box.pred_boxes_3d.R[i] = torch.from_numpy(
-                        mean_rot
+                        output_rot
                     ).to(all_pred_box.pred_boxes_3d.R[i].device)
                 # update fusion flag
                 box_manager.update_fusion_flag(i)

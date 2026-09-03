@@ -1,0 +1,155 @@
+{
+  "annotation_access": false,
+  "bounded": {
+    "fastsam_candidates_per_keyframe": 16,
+    "sam3_queue_capacity": 1,
+    "semantic_views": 8,
+    "state_max_tracks": 1024,
+    "state_max_views_per_track": 5
+  },
+  "chosen_hypotheses": {
+    "HB": 270,
+    "PMR_HB": 88,
+    "PMR_YAW": 179
+  },
+  "complete": true,
+  "counts": {
+    "abstain_non_upright_producer_frame": 1,
+    "births": 6,
+    "candidates": 537,
+    "deadline_misses": 1,
+    "f0_candidates": 949,
+    "f4_invalid": 0,
+    "f4_valid": 949,
+    "fastsam_masks": 3297,
+    "keyframes": 118,
+    "native": 18,
+    "output": 24,
+    "overlays": 0,
+    "sam3_proposals": 55,
+    "sam3_results_accepted": 24,
+    "sam3_submitted": 24,
+    "semantic_views": 8
+  },
+  "deadline_ms": 833.333333,
+  "evaluator_access": false,
+  "future_access_count": 0,
+  "gt_access": false,
+  "late_result_count": 0,
+  "native_score_lower_bound": 0.125,
+  "native_scores_preserved": true,
+  "past_only": true,
+  "peak_cuda_allocated_bytes": 5917045248,
+  "peak_cuda_reserved_bytes": 6308233216,
+  "proposal_cache_access": false,
+  "query_before_commit": true,
+  "sam3": {
+    "closed": true,
+    "completed": 24,
+    "delivered": 24,
+    "drop_count": 0,
+    "dropped_disabled": 0,
+    "dropped_late": 0,
+    "dropped_pending": 0,
+    "enabled": true,
+    "end_to_end_runtime_ms_total": 24294.040604494512,
+    "gpu_runtime_ms_total": 23330.45379638672,
+    "healthy": true,
+    "last_end_to_end_runtime_ms": 940.8207179512829,
+    "last_error": null,
+    "last_gpu_runtime_ms": 903.9646606445312,
+    "last_worker_runtime_ms": 904.4684248510748,
+    "late_count": 0,
+    "max_queue_depth": 1,
+    "queue_depth": 0,
+    "started": true,
+    "submitted": 24,
+    "worker_error_count": 0,
+    "worker_pid": null,
+    "worker_runtime_ms_total": 23347.662307089195
+  },
+  "scene_id": "scene0246_00",
+  "schema": "boxfusion.stream3dv2_live.v1",
+  "state": {
+    "committed_frame_count": 118,
+    "committed_view_count": 949,
+    "future_access_count": 0,
+    "last_committed_frame_ordinal": 117,
+    "live_track_count": 0,
+    "live_view_count": 0,
+    "peak_live_track_count": 103,
+    "peak_live_view_count": 159,
+    "query_before_commit": true,
+    "retired_track_count": 482,
+    "terminal_finalized_track_count": 55
+  },
+  "teacher_cache_access": false,
+  "terminal_cache_access": false,
+  "terminal_output_decision": true,
+  "timing_ms": {
+    "f0_residual_lift": {
+      "count": 117,
+      "max": 182.89934983476996,
+      "mean": 83.05237598868453,
+      "p50": 84.2632430139929,
+      "p95": 137.18388746492565
+    },
+    "f2_refine": {
+      "count": 117,
+      "max": 31.309074023738503,
+      "mean": 12.447890950939977,
+      "p50": 11.255009099841118,
+      "p95": 26.775450585409992
+    },
+    "f3_and_memory": {
+      "count": 118,
+      "max": 174.03428396210074,
+      "mean": 29.62343569971242,
+      "p50": 23.99172040168196,
+      "p95": 66.26679393230003
+    },
+    "f4_boxer": {
+      "count": 117,
+      "max": 46.98717896826565,
+      "mean": 40.72071125921913,
+      "p50": 41.447465075179935,
+      "p95": 43.9746806398034
+    },
+    "fastsam": {
+      "count": 117,
+      "max": 380.30431792140007,
+      "mean": 55.21356605956506,
+      "p50": 49.73045620135963,
+      "p95": 68.5767012182623
+    },
+    "keyframe_total": {
+      "count": 118,
+      "max": 8342.817551922053,
+      "mean": 286.3369038391669,
+      "p50": 226.12847911659628,
+      "p95": 306.31818101974204
+    },
+    "sam3_poll": {
+      "count": 3051,
+      "max": 0.9622049983590841,
+      "mean": 0.0062136411311557276,
+      "p50": 0.0020370353013277054,
+      "p95": 0.01916044857352972
+    },
+    "sam3_submit": {
+      "count": 117,
+      "max": 7739.842162001878,
+      "mean": 66.27625859000234,
+      "p50": 0.0008489005267620087,
+      "p95": 0.7582467515021557
+    },
+    "sam3_terminal_drain": {
+      "count": 1,
+      "max": 0.0040370505303144455,
+      "mean": 0.0040370505303144455,
+      "p50": 0.0040370505303144455,
+      "p95": 0.0040370505303144455
+    }
+  },
+  "training_free": true
+}

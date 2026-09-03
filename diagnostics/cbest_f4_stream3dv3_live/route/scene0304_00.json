@@ -1,0 +1,174 @@
+{
+  "addon_deadline_ms": 285.0,
+  "annotation_access": false,
+  "bounded": {
+    "max_accepted_tracks": 128,
+    "max_births_per_scene": 2,
+    "max_f4_attempts_observed": 2,
+    "max_f4_sources_per_batch": 6,
+    "max_f4_views_per_track": 2,
+    "max_track_views": 6,
+    "prelift_top_k": 6
+  },
+  "complete": true,
+  "counts": {
+    "accepted_track_pool": 0,
+    "addon_deadline_misses": 1,
+    "births": 0,
+    "box_shortlisted": 305,
+    "discovery_keyframes": 30,
+    "f0_candidates": 122,
+    "f4_attempts": 37,
+    "f4_batches": 20,
+    "f4_valid": 37,
+    "fastsam_masks": 720,
+    "keyframes": 70,
+    "keyframes_skipped": 40,
+    "masks_prelift": 148,
+    "native": 10,
+    "output": 10,
+    "overlays": 0,
+    "tracks_retired": 63
+  },
+  "evaluator_access": false,
+  "f3": {
+    "audit_complete": true,
+    "keyframes": 70,
+    "max_logical_accessed_ordinal": 69
+  },
+  "f4_per_track": {
+    "65": 1,
+    "73": 1,
+    "74": 1,
+    "75": 2,
+    "77": 1
+  },
+  "fresh_inference": true,
+  "future_access_count": 0,
+  "gate_rejections": {},
+  "geometry_audit": {
+    "dtype": "float32",
+    "native_prefix_sha256": "18cb2df8fa5dad2d828a02714c122f67b6ceff1d80dea7f3da3d6f399380de94",
+    "output_prefix_sha256": "18cb2df8fa5dad2d828a02714c122f67b6ceff1d80dea7f3da3d6f399380de94"
+  },
+  "ground_truth_access": false,
+  "native_scores_preserved": true,
+  "past_only": true,
+  "peak_cuda_allocated_bytes": 5919973376,
+  "peak_cuda_reserved_bytes": 6306136064,
+  "pipeline_seconds": 158.26151545601897,
+  "pose_source": "scannet_provided_pose",
+  "proposal_cache_access": false,
+  "query_before_commit": true,
+  "raw_frame_count": 1748,
+  "run_fingerprint": "4ca697a6fb3fbed1ec1381a69c767e25e802af7e7600f4c72f9f633a0a7bdb33",
+  "runtime": {
+    "clock_scope": "pre-iteration V3 clock (first-poll fallback) through terminal V3 decision and F3 finalization; includes frame loading, native BoxFusion, and synchronous V3 work; excludes process/model construction and diagnostic serialization",
+    "end_to_end_fps": 11.045009868402094,
+    "pipeline_seconds": 158.26151545601897,
+    "raw_frame_count": 1748
+  },
+  "sam3": {
+    "enabled": false
+  },
+  "scene_id": "scene0304_00",
+  "schedule": {
+    "dataset_frame_count": 1773,
+    "expected_keyframe_count": 70,
+    "expected_raw_frame_count": 1748,
+    "keyframe_gap": 25
+  },
+  "schema": "boxfusion.stream3dv3_live.v1",
+  "score_audit": {
+    "append_scores": [],
+    "dtype": "float32",
+    "native_min": 0.5026777386665344,
+    "native_prefix_sha256": "bae0dfea9db92bd4b6c71c747d08c80ba10a2a0b3f46cd46d7cf78fe4304f7ff",
+    "output_prefix_sha256": "bae0dfea9db92bd4b6c71c747d08c80ba10a2a0b3f46cd46d7cf78fe4304f7ff"
+  },
+  "selection_and_acceptance_held_out": true,
+  "target_end_to_end_fps": 20.0,
+  "teacher_cache_access": false,
+  "terminal_cache_access": false,
+  "timing_ms": {
+    "depth_trigger": {
+      "count": 70,
+      "max": 3.3454829826951027,
+      "mean": 1.8328159315777677,
+      "p50": 1.7363905208185315,
+      "p95": 2.8894272865727544
+    },
+    "f0_residual_lift": {
+      "count": 30,
+      "max": 81.70639490708709,
+      "mean": 34.968578962919615,
+      "p50": 28.75571243930608,
+      "p95": 74.21286335447802
+    },
+    "f2_refine": {
+      "count": 30,
+      "max": 16.536306124180555,
+      "mean": 9.037868864834309,
+      "p50": 9.245251421816647,
+      "p95": 15.250332641880957
+    },
+    "f3_and_state": {
+      "count": 70,
+      "max": 16.80961693637073,
+      "mean": 1.3091480958142452,
+      "p50": 0.12134760618209839,
+      "p95": 8.316837262827903
+    },
+    "f4_boxer": {
+      "count": 30,
+      "max": 47.36704891547561,
+      "mean": 27.569840638898313,
+      "p50": 40.06181249860674,
+      "p95": 43.50273093441501
+    },
+    "fastsam": {
+      "count": 30,
+      "max": 387.1761199552566,
+      "mean": 63.087769698662065,
+      "p50": 49.92586560547352,
+      "p95": 65.72616386692971
+    },
+    "keyframe_total": {
+      "count": 70,
+      "max": 438.2235538214445,
+      "mean": 71.43934423636112,
+      "p50": 9.569315356202424,
+      "p95": 196.48524796357378
+    },
+    "mask_preselection": {
+      "count": 30,
+      "max": 4.085040185600519,
+      "mean": 3.170806417862574,
+      "p50": 3.2275214325636625,
+      "p95": 3.7168006063438943
+    },
+    "track_fusion_and_gate": {
+      "count": 30,
+      "max": 0.014623859897255898,
+      "mean": 0.010451884008944035,
+      "p50": 0.010489369742572308,
+      "p95": 0.014255603309720753
+    }
+  },
+  "training_free": true,
+  "trigger": {
+    "burst_remaining": 0,
+    "confirmed_voxels": 3221,
+    "last_run_ordinal": 67,
+    "memory_version": 70,
+    "queries": 70,
+    "reason_bootstrap": 1,
+    "reason_bounded_burst": 24,
+    "reason_cooldown": 17,
+    "reason_insufficient_persistence": 23,
+    "reason_persistent_novel_depth": 5,
+    "runs": 30,
+    "skips": 40,
+    "tentative_voxels": 93
+  }
+}

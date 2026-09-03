@@ -1,0 +1,514 @@
+{
+  "schema": "boxfusion.ca1m_e961_locked_fold1_deploy_pending_config.v2",
+  "namespace": "ca1m_e961_locked_fold1_deploy_v2",
+  "status": "static_design_only_not_sealable_pending_final_l6_protocol",
+  "operational_authority": false,
+  "authorizations": {
+    "static_protocol_seal": false,
+    "fold1_preregistration_seal": false,
+    "derive_or_publish_training_lists": false,
+    "locked_detector_training": false,
+    "fold1_source_path_resolution": false,
+    "fold1_candidate_generation": false,
+    "fold1_ground_truth_join": false,
+    "fold1_decision": false,
+    "canonical_detector_training": false,
+    "terminal_refit": false,
+    "incremental_refit": false,
+    "official_validation": false,
+    "policy_activation": false
+  },
+  "access_at_static_stage": {
+    "known_train_split_metadata_only": true,
+    "fold1_identity_commitment_metadata_only": true,
+    "fold1_source_path_or_loader_present": false,
+    "fold1_scene_list_opened": false,
+    "fold1_rgbd_opened": false,
+    "fold1_prediction_opened": false,
+    "fold1_ground_truth_opened": false,
+    "official_validation_path_or_loader_present": false,
+    "official_validation_identity_list_opened": false,
+    "official_validation_prediction_opened": false,
+    "official_validation_ground_truth_opened": false,
+    "native_b6_oof_sidecar_opened": false,
+    "native_b6_manifest_opened": false,
+    "gpu_started": false,
+    "runtime_output_created": false
+  },
+  "static_bindings": {
+    "e961_selection_contract": {
+      "path": "/data/ZhaoX/OVM3D-Dett/boxfusion_tr3d_dev/data/tr3d_ca1m_e961_v1/SELECTION_CONTRACT.json",
+      "sha256": "eceeb29aa0a4a7c7f8548d1a3e09c25b2b5d3eeb6d486481e63d32a3c0e97791",
+      "schema": "boxfusion.tr3d.ca1m_e961_selection.v1"
+    },
+    "legacy_split_protocol_metadata": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/manifests/ca1m_tr3d_benefit_gate_v1/split_manifest.json",
+      "sha256": "12d20f27765a178c55ffd450f5fb41f548b0779c2c1b3d3a8c544dcb3a511b8d",
+      "schema": "boxfusion.ca1m_tr3d_benefit_split.v1",
+      "scene_list_content_opened": false
+    },
+    "r4_terminal_static_protocol": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/manifests/ca1m_tr3d_terminal_gate_v5_final_r4/PREREGISTRATION_PROTOCOL.json",
+      "sha256": "c45f7ebdb20342a8c17e8b43f2964d70b9afba70a079478d2b02599597573399",
+      "schema": "boxfusion.ca1m_tr3d_terminal_gate_preregistration_protocol.v5.final.r4",
+      "operational_authority": false
+    },
+    "official_ca_ap_implementation": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/boxfusion/ca1m_tr3d_xfit_r2_eval.py",
+      "sha256": "e0786e1d62a3131ae0aa06db23b41d994e39bcd4946e23eacba3c3d763b7a025",
+      "symbol": "official_ca_ap"
+    },
+    "incremental_l6_static_protocol": {
+      "state": "pending_final_static_protocol",
+      "path": null,
+      "sha256": null,
+      "schema": "boxfusion.ca1m_e961_incremental_l6_preregistration_protocol.v2",
+      "operational_authority": false,
+      "pending_config_is_not_authority": true
+    },
+    "native_b6_fold1_oof_metadata_commitment": {
+      "manifest_path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/models/ca1m_native_b6_final_base_oof_row_scores_v2.manifest.json",
+      "manifest_sha256": "b1d00bcdc205ab806d705c61ee2abdaeac7e634e999fbf742cb9aaad0adbd23f",
+      "manifest_schema": "boxfusion.ca1m_native_b6_oof_row_scores_manifest.v2",
+      "manifest_opened_by_v2_static_audit": false,
+      "sidecar_opened_by_v2_static_audit": false,
+      "fold1_model_sha256": "f97c39e9e99d21fd8e765e66777242b4e02f05968ed78b076ad965958358284d",
+      "heldout_scene_count": 20,
+      "training_scene_count": 80,
+      "training_heldout_overlap_count": 0,
+      "each_row_model_excludes_scene": true
+    }
+  },
+  "audited_training_configs": {
+    "base": {
+      "path": "/data/ZhaoX/OVM3D-Dett/boxfusion_tr3d_dev/config/tr3d/tr3d_ca1m_foreground_e961_xfit_v1.py",
+      "sha256": "cf5b0cf61b4371f46439a364fe9291cdbb9205420c8530f8f0cef5c1b839c005"
+    },
+    "outer_dev": {
+      "path": "/data/ZhaoX/OVM3D-Dett/boxfusion_tr3d_dev/config/tr3d/ca1m_e961_xfit_v1/outer_dev.py",
+      "sha256": "a6e6aeb849483632d93eacb7c079092d47da3da152e98abbd8a56d68854f4ee3",
+      "heldout_fold": 0
+    },
+    "inner_holdout2": {
+      "path": "/data/ZhaoX/OVM3D-Dett/boxfusion_tr3d_dev/config/tr3d/ca1m_e961_xfit_v1/inner_holdout2.py",
+      "sha256": "a0ed632f9079d56dc907a31878252a6ee2098b2939329563ee7ae1644f903fa2",
+      "heldout_fold": 2
+    },
+    "inner_holdout3": {
+      "path": "/data/ZhaoX/OVM3D-Dett/boxfusion_tr3d_dev/config/tr3d/ca1m_e961_xfit_v1/inner_holdout3.py",
+      "sha256": "afb72521be9b7d05f1bb03e3188d898395482c1448da9a0a7365c72e4b7bbea7",
+      "heldout_fold": 3
+    },
+    "inner_holdout4": {
+      "path": "/data/ZhaoX/OVM3D-Dett/boxfusion_tr3d_dev/config/tr3d/ca1m_e961_xfit_v1/inner_holdout4.py",
+      "sha256": "4f67990bbe6abacaae5725d8d009ab7ac711aeb55f3e44e6f7afaaf414e8776d",
+      "heldout_fold": 4
+    }
+  },
+  "known_split_inputs": {
+    "e961": {
+      "path": "/data/ZhaoX/OVM3D-Dett/boxfusion_tr3d_dev/data/tr3d_ca1m_e961_v1/splits/e961_rank100_1060.txt",
+      "sha256": "702e26beab6f4d9bedb76ab2656f52f69bf1dca6132cb7a79666fef7920770db",
+      "scene_count": 961,
+      "rank_interval_inclusive": [100, 1060]
+    },
+    "e941": {
+      "path": "/data/ZhaoX/OVM3D-Dett/boxfusion_tr3d_dev/data/tr3d_ca1m_e961_v1/splits/e941_outer_rank100_1040.txt",
+      "sha256": "c0afeb0ed7661b9c6149796aa24c654e80021ffe5f576a65aeb8afe2b90e1a35",
+      "scene_count": 941,
+      "must_equal_e961_prefix_count": 941
+    },
+    "fold0": {
+      "path": "/data/ZhaoX/OVM3D-Dett/boxfusion_tr3d_dev/data/tr3d_ca1m_e961_v1/splits/fold0_heldout.txt",
+      "sha256": "9c886ca85ba599881797b25a49d2fc72dd136d255a245a09fe1cf17cbce735a7",
+      "scene_count": 20
+    },
+    "fold2": {
+      "path": "/data/ZhaoX/OVM3D-Dett/boxfusion_tr3d_dev/data/tr3d_ca1m_e961_v1/splits/fold2.txt",
+      "sha256": "7a0ae3ddd569e330210f3f566490e339d3dcad3ac1cda3e6666b12e6bb8bb8b0",
+      "scene_count": 20
+    },
+    "fold3": {
+      "path": "/data/ZhaoX/OVM3D-Dett/boxfusion_tr3d_dev/data/tr3d_ca1m_e961_v1/splits/fold3.txt",
+      "sha256": "6be1f5b2646344ee26de78ddd6997f504be0ea04f3226726eb1dfb29d9404e80",
+      "scene_count": 20
+    },
+    "fold4": {
+      "path": "/data/ZhaoX/OVM3D-Dett/boxfusion_tr3d_dev/data/tr3d_ca1m_e961_v1/splits/fold4.txt",
+      "sha256": "44b9d8574b72c9c6811ea540e142c7482a5a90c2c05c07f2e1ce56bd454c7839",
+      "scene_count": 20
+    }
+  },
+  "existing_role_train_lists": {
+    "outer_dev": {
+      "path": "/data/ZhaoX/OVM3D-Dett/boxfusion_tr3d_dev/data/tr3d_ca1m_e961_v1/splits/outer_dev_train1001.txt",
+      "sha256": "45d57af33b3ad0619cb7eb25a1fc63e33c19ff88c1876151b76866eaaf5b4b4c",
+      "ordered_formula": "E961[:941]+F2+F3+F4",
+      "scene_count": 1001
+    },
+    "inner_holdout2": {
+      "path": "/data/ZhaoX/OVM3D-Dett/boxfusion_tr3d_dev/data/tr3d_ca1m_e961_v1/splits/inner_holdout2_train1001.txt",
+      "sha256": "7f03c806aecc0f929abe897a030a9ba165b713880b9549488147d64c657234dd",
+      "ordered_formula": "E961+F3+F4",
+      "scene_count": 1001
+    },
+    "inner_holdout3": {
+      "path": "/data/ZhaoX/OVM3D-Dett/boxfusion_tr3d_dev/data/tr3d_ca1m_e961_v1/splits/inner_holdout3_train1001.txt",
+      "sha256": "ac1525230d77c16126cbceaca8f932924d8bcb21c004a2d450a05861531d285f",
+      "ordered_formula": "E961+F2+F4",
+      "scene_count": 1001
+    },
+    "inner_holdout4": {
+      "path": "/data/ZhaoX/OVM3D-Dett/boxfusion_tr3d_dev/data/tr3d_ca1m_e961_v1/splits/inner_holdout4_train1001.txt",
+      "sha256": "8aeb2c5f6310ae835f3a7ac5a63ed69feb5578f25778042630c95a51ae367dbd",
+      "ordered_formula": "E961+F2+F3",
+      "scene_count": 1001
+    }
+  },
+  "opaque_heldout_commitments": {
+    "fold1": {
+      "scene_count": 20,
+      "scene_ids_sha256": "d6238bae873c98737858ac3a84c0706091fa9a91113321ac9736a8d64de6d6b6",
+      "path": null,
+      "loader": null,
+      "opened": false
+    },
+    "official_validation": {
+      "scene_count": 107,
+      "scene_ids_sha256": "bd5f3fc66168114048a1b12addc45949c8f54f9c016b921bacfb6fe9e3e7dc2f",
+      "path": null,
+      "loader": null,
+      "opened": false
+    }
+  },
+  "locked_fold1_detector": {
+    "role": "locked_holdout1",
+    "heldout_fold": 1,
+    "ordered_train_formula": "E961[:921]+F0+F2+F3+F4",
+    "e_prefix_count": 921,
+    "e_prefix_rank_interval_inclusive": [100, 1020],
+    "e_prefix_sha256": "32bae2e6791c05b00f037df20dcb4ecc232e10e501b13d13d0a3de9cd48302b2",
+    "train_scene_count": 1001,
+    "train_scene_list_sha256": "9510760f3a018354ed8cbf175332ee6102d664e46b909ca25b5c0fc8d3f0ffa0",
+    "fold1_training_overlap_count": 0,
+    "initialization": "random_scratch_ca_only",
+    "scannet_weight_or_module_access": false,
+    "global_batch": 16,
+    "fp32": true,
+    "seed": 0,
+    "optimizer_updates": 11268,
+    "lr_milestones_updates": [7512, 10329],
+    "checkpoint_name": "iter_11268.pth",
+    "checkpoint_selection": false,
+    "requires_separate_fold1_preregistration": true,
+    "training_may_precede_one_time_claim": true,
+    "training_opens_fold1_source_or_gt": false,
+    "future_train_list": {"state": "pending", "path": null, "sha256": null},
+    "future_success_receipt": {"state": "pending", "path": null, "sha256": null, "schema": null}
+  },
+  "pre_fold1_result_freeze_barrier": {
+    "state": "blocked_pending_final_l6_protocol",
+    "r4_result_exactly_one_of_pass_or_scientific_stop": true,
+    "r4_pass_terminal_state": "active_frozen_terminal_policy",
+    "r4_scientific_stop_terminal_state": "inactive_identity_b6_oof_anchors",
+    "r4_provenance_or_implementation_failure_action": "permanent_block",
+    "l6_final_static_protocol_sha256_required_before_this_protocol_can_seal": true,
+    "l6_pending_config_cannot_be_authority": true,
+    "l6_fold234_result_must_be_sealed": true,
+    "l6_locked_gate_subtree_and_sha256_must_be_bound_before_fold1_preregistration": true,
+    "l6_fold0_reused_diagnostic_required_for_any_l6_pass_route": true,
+    "fold0_threshold_search_selection_retuning": false,
+    "fold1_threshold_search_selection_retuning": false,
+    "fold0_or_fold1_cannot_select_route": true,
+    "deterministic_route_table": {
+      "r4_pass_l6_pass": "terminal_plus_l6",
+      "r4_pass_l6_scientific_stop": "terminal_only",
+      "r4_scientific_stop_l6_pass": "baseline_plus_l6",
+      "r4_scientific_stop_l6_scientific_stop": "no_fold1"
+    }
+  },
+  "pre_fold1_route_lock": {
+    "state": "pending_final_l6_receipt_schemas",
+    "create_only": true,
+    "sealed_before_locked_detector_training": true,
+    "sealed_before_one_time_claim": true,
+    "selection_source": "frozen_fold234_results_only",
+    "fold0_or_fold1_used_for_route_selection": false,
+    "route_receipt_requirements": {
+      "terminal_only": {
+        "r4_result": {
+          "kind": "pass",
+          "schema": "boxfusion.ca1m_tr3d_terminal_gate_run.v5.final.r4",
+          "status": "PASS_EXPLORATORY_FOLD0_DIAGNOSTIC_COMPLETE",
+          "fold234_oof_safety_gate_passed": true
+        },
+        "l6_result": {
+          "kind": "scientific_stop",
+          "schema": null,
+          "status": null,
+          "source_protocol_sha256": null
+        },
+        "l6_fold0_reused_diagnostic": "not_applicable_after_scientific_stop",
+        "terminal_policy": "required_sha_bound_from_r4",
+        "terminal_threshold_receipt": "required_sha_bound_from_r4",
+        "l6_policy": "forbidden",
+        "l6_threshold_receipt": "forbidden",
+        "anchor_state": "r4_terminal_oof_replacements"
+      },
+      "terminal_plus_l6": {
+        "r4_result": {
+          "kind": "pass",
+          "schema": "boxfusion.ca1m_tr3d_terminal_gate_run.v5.final.r4",
+          "status": "PASS_EXPLORATORY_FOLD0_DIAGNOSTIC_COMPLETE",
+          "fold234_oof_safety_gate_passed": true
+        },
+        "l6_result": {
+          "kind": "pass",
+          "schema": null,
+          "status": null,
+          "source_protocol_sha256": null
+        },
+        "l6_fold0_reused_diagnostic": "required_complete_no_retuning",
+        "terminal_policy": "required_sha_bound_from_r4",
+        "terminal_threshold_receipt": "required_sha_bound_from_r4",
+        "l6_policy": "required_sha_bound_from_l6_protocol",
+        "l6_threshold_receipt": "required_sha_bound_from_l6_protocol",
+        "anchor_state": "r4_terminal_oof_replacements"
+      },
+      "baseline_plus_l6": {
+        "r4_result": {
+          "kind": "scientific_stop",
+          "schema": "boxfusion.ca1m_tr3d_terminal_gate_stop.v5.final.r4",
+          "status": "STOP_FOLD234_OOF_GATE_FAIL",
+          "terminal_inactive": true
+        },
+        "l6_result": {
+          "kind": "pass_on_identity_anchors",
+          "schema": null,
+          "status": null,
+          "source_protocol_sha256": null
+        },
+        "l6_fold0_reused_diagnostic": "required_complete_no_retuning",
+        "terminal_policy": "forbidden",
+        "terminal_threshold_receipt_application": "forbidden",
+        "terminal_materialization": "forbidden_identity_anchors_only",
+        "l6_policy": "required_sha_bound_from_l6_protocol",
+        "l6_threshold_receipt": "required_sha_bound_from_l6_protocol",
+        "anchor_state": "identity_b6_oof_anchors"
+      }
+    }
+  },
+  "locked_fold1_one_time_check": {
+    "state": "blocked",
+    "unlock_requires": [
+      "bound_final_l6_static_protocol_and_locked_gate_subtree",
+      "eligible_create_only_route_lock_receipt",
+      "separate_fold1_preregistration",
+      "locked_holdout1_detector_success_receipt"
+    ],
+    "claim": {
+      "create_only": true,
+      "created_before_fold1_source_path_resolution": true,
+      "binds_route_lock_sha256": true,
+      "binds_fold1_preregistration_sha256": true,
+      "binds_locked_detector_receipt_sha256": true,
+      "binds_all_route_policy_and_threshold_receipt_sha256": true,
+      "claim_failure_burns_attempt": true,
+      "retry_or_resume": false
+    },
+    "fold1_source_path_resolution_after_claim_only": true,
+    "candidate_generation_exactly_once": true,
+    "candidate_detector_source": "locked_holdout1_iter_11268_only",
+    "terminal_candidate_source": "locked_holdout1_iter_11268_only",
+    "incremental_observer_source": "causal_lightweight_stage6_observer_from_locked_holdout1_iter_11268_only",
+    "incremental_candidate_source": "causal_lightweight_stage6_confirmed_tracks_from_locked_holdout1_iter_11268_only",
+    "canonical_all_train_detector_for_fold1_forbidden": true,
+    "native_b6_anchor_score_source": "heldout_fold1_model_from_all_fold_oof_sidecar",
+    "native_b6_fold1_model_sha256": "f97c39e9e99d21fd8e765e66777242b4e02f05968ed78b076ad965958358284d",
+    "candidate_and_feature_manifests_sealed_before_gt": true,
+    "ground_truth_join_exactly_once_after_candidate_seal": true,
+    "terminal_thresholds_applied_byte_identically_from_r4": true,
+    "l6_thresholds_applied_byte_identically_from_bound_l6_protocol_if_route_has_l6": true,
+    "fold0_threshold_search_selection_retuning": false,
+    "fold1_threshold_search_selection_retuning": false,
+    "model_fit_on_fold1": false,
+    "checkpoint_selection_on_fold1": false,
+    "post_fold1_route_switch_or_fallback": false,
+    "l6_locked_gate_binding": {
+      "state": "pending_final_l6_static_protocol",
+      "source_protocol_path": null,
+      "source_protocol_sha256": null,
+      "exact_json_subtree": null,
+      "exact_json_subtree_sha256": null,
+      "runtime_override_allowed": false
+    },
+    "terminal_locked_gate": {
+      "min_delta_ap15": 0.0,
+      "min_delta_ap25": 0.0,
+      "min_delta_ap50": 0.005,
+      "min_replacements": 10,
+      "min_scenes": 5,
+      "min_positive_gain_fraction": 0.6,
+      "max_severe_harm_fraction": 0.1,
+      "max_target_switch_fraction": 0.1,
+      "source": "legacy_split_protocol_metadata.locked_internal_gate"
+    },
+    "failure_action": "hard_stop_no_canonical_deploy_no_official_validation"
+  },
+  "fold1_metric_and_route_gates": {
+    "official_evaluator": {
+      "symbol": "boxfusion.ca1m_tr3d_xfit_r2_eval.official_ca_ap",
+      "implementation_sha256": "e0786e1d62a3131ae0aa06db23b41d994e39bcd4946e23eacba3c3d763b7a025"
+    },
+    "box_geometry": "world_enclosing_aabb_from_8_corners",
+    "candidate_best_gt": "argmax_pairwise_world_aabb_iou_first_index_on_tie",
+    "ranking": "numpy_argsort_of_negative_float64_score_default_kind_no_override",
+    "matching": "scene_local_duplicate_aware_key_scene_id_and_gt_index",
+    "iou_comparison": "strict_greater_than",
+    "iou_thresholds": [0.15, 0.25, 0.5],
+    "recall_denominator": "ground_truth_count_plus_1e-6",
+    "ap_formula": "continuous_voc_precision_envelope_integral",
+    "delta_formula": "active_ap_minus_route_baseline_ap",
+    "terminal_threshold_comparison": "greater_than_or_equal",
+    "terminal_candidate_tie_order": [
+      "same_gt_gain_desc",
+      "candidate_iou_desc",
+      "strict_iou50_probability_desc",
+      "candidate_raw_score_desc",
+      "candidate_row_asc"
+    ],
+    "terminal_per_scene_cap": 16,
+    "terminal_scores_row_order_and_row_count_preserved": true,
+    "l6_rank_score_and_tie_contract": "exact_json_subtree_from_bound_l6_static_protocol",
+    "l6_rows_append_after_all_route_anchor_rows": true,
+    "route_gates": {
+      "terminal_only": {
+        "baseline": "identity_final_base_geometry_with_fold1_b6_oof_anchor_scores",
+        "active": "terminal_geometry_replacements_with_scores_preserved",
+        "terminal_policy": "required",
+        "l6_policy": "forbidden",
+        "requirements": "locked_fold1_one_time_check.terminal_locked_gate",
+        "frozen_terminal_threshold_application": true
+      },
+      "terminal_plus_l6": {
+        "baseline": "identity_final_base_geometry_with_fold1_b6_oof_anchor_scores",
+        "active": "terminal_geometry_replacements_plus_l6_append_only_rows",
+        "terminal_policy": "required",
+        "l6_policy": "required",
+        "terminal_component_requirements": "locked_fold1_one_time_check.terminal_locked_gate",
+        "l6_component_requirements": "locked_fold1_one_time_check.l6_locked_gate_binding.exact_json_subtree",
+        "end_to_end_min_delta_ap15": 0.0,
+        "end_to_end_min_delta_ap25": 0.0,
+        "end_to_end_min_delta_ap50": 0.005,
+        "frozen_terminal_and_l6_threshold_application": true
+      },
+      "baseline_plus_l6": {
+        "baseline": "identity_final_base_geometry_with_fold1_b6_oof_anchor_scores",
+        "active": "identity_anchor_rows_plus_l6_append_only_rows",
+        "terminal_policy": "forbidden",
+        "terminal_materialization": "forbidden",
+        "l6_policy": "required",
+        "requirements": "locked_fold1_one_time_check.l6_locked_gate_binding.exact_json_subtree",
+        "frozen_l6_threshold_application": true
+      }
+    },
+    "fold1_result_can_change_threshold_model_family_formula_or_route": false,
+    "official_validation_evaluator_formula_and_ties_must_be_identical": true
+  },
+  "canonical_deploy_after_fold1_pass": {
+    "official_validation_remains_unopened": true,
+    "detector": {
+      "role": "canonical_all_train",
+      "ordered_train_formula": "E961[:901]+F0+F1+F2+F3+F4",
+      "e_prefix_count": 901,
+      "e_prefix_rank_interval_inclusive": [100, 1000],
+      "e_prefix_sha256": "010e8839c8c91f481010939d15e68c47e60e85178c3963736481b0048920b44c",
+      "known_components_without_fold1_scene_count": 981,
+      "known_components_without_fold1_sha256": "f33fd498291e909248c7fde974a7d50b247ecac9814794897e82444f7f15b279",
+      "full_train_scene_count": 1001,
+      "full_train_scene_list_sha256": null,
+      "initialization": "random_scratch_ca_only",
+      "scannet_weight_or_module_access": false,
+      "global_batch": 16,
+      "fp32": true,
+      "seed": 0,
+      "optimizer_updates": 11268,
+      "lr_milestones_updates": [7512, 10329],
+      "checkpoint_name": "iter_11268.pth",
+      "checkpoint_selection": false,
+      "training_allowed_only_after_fold1_pass": true
+    },
+    "five_fold_detector_oof_sources": {
+      "fold0": "outer_dev",
+      "fold1": "locked_holdout1",
+      "fold2": "inner_holdout2",
+      "fold3": "inner_holdout3",
+      "fold4": "inner_holdout4",
+      "each_scene_detector_excludes_its_fold": true,
+      "canonical_all_train_detector_for_refit_rows": false
+    },
+    "terminal_refit": {
+      "required_routes": ["terminal_only", "terminal_plus_l6"],
+      "forbidden_route": "baseline_plus_l6",
+      "scene_count": 100,
+      "fit_folds": [0, 1, 2, 3, 4],
+      "training_rows": "five_fold_detector_oof_candidates_plus_all_fold_b6_oof_anchors",
+      "family_features_heads_and_hyperparameters": "byte_identical_to_r4",
+      "normalization_refit_on_all100_including_f0_f1": true,
+      "head_weights_refit_on_all100_including_f0_f1": true,
+      "thresholds": "byte_identical_from_r4_threshold_receipt",
+      "fold0_or_fold1_threshold_search_selection_retuning": false,
+      "frozen_threshold_application_allowed": true,
+      "official_validation_use": false
+    },
+    "incremental_refit": {
+      "required_routes": ["terminal_plus_l6", "baseline_plus_l6"],
+      "forbidden_route": "terminal_only",
+      "scene_count": 100,
+      "fit_folds": [0, 1, 2, 3, 4],
+      "training_rows": "five_fold_causal_lightweight_stage6_confirmed_track_oof_collection_after_route_specific_five_fold_terminal_or_identity_oof_state",
+      "family_features_heads_and_hyperparameters": "byte_identical_to_bound_l6_static_protocol",
+      "normalization_refit_on_all100_including_f0_f1": true,
+      "head_weights_refit_on_all100_including_f0_f1": true,
+      "thresholds": "byte_identical_from_bound_l6_fold234_threshold_receipt",
+      "fold0_or_fold1_threshold_search_selection_retuning": false,
+      "frozen_threshold_application_allowed": true,
+      "official_validation_use": false,
+      "append_only_below_all_route_anchor_scores": true
+    },
+    "deployment_order_by_route": {
+      "terminal_only": [
+        "ca_native_final_base_and_b6",
+        "canonical_all_train_detector_candidates",
+        "terminal_all100_refit_with_frozen_thresholds",
+        "separate_future_official_validation_authorization"
+      ],
+      "terminal_plus_l6": [
+        "ca_native_final_base_and_b6",
+        "canonical_all_train_detector_candidates",
+        "terminal_all100_refit_with_frozen_thresholds",
+        "causal_lightweight_stage6_confirmed_tracks",
+        "incremental_all100_refit_with_frozen_thresholds",
+        "separate_future_official_validation_authorization"
+      ],
+      "baseline_plus_l6": [
+        "ca_native_final_base_and_b6_identity_anchors",
+        "canonical_all_train_detector_candidates",
+        "causal_lightweight_stage6_confirmed_tracks",
+        "incremental_all100_refit_with_frozen_thresholds",
+        "separate_future_official_validation_authorization"
+      ]
+    }
+  },
+  "future_artifacts": {
+    "static_protocol": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/manifests/ca1m_e961_locked_fold1_deploy_v2/STATIC_PROTOCOL.json",
+    "fold1_preregistration": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/manifests/ca1m_e961_locked_fold1_deploy_v2/FOLD1_PREREGISTRATION.json",
+    "ready_config": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/manifests/ca1m_e961_locked_fold1_deploy_v2/READY_CONFIG.json",
+    "run_authorization": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/manifests/ca1m_e961_locked_fold1_deploy_v2/RUN_AUTHORIZATION.json",
+    "route_lock_receipt": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/manifests/ca1m_e961_locked_fold1_deploy_v2/ROUTE_LOCK.json",
+    "one_time_claim": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/manifests/ca1m_e961_locked_fold1_deploy_v2/FOLD1_ONE_TIME_CLAIM.json",
+    "fold1_decision_receipt": "/extra/ZhaoX/ca1m_e961_locked_fold1_deploy_v2/reports/FOLD1_DECISION.json",
+    "stop_receipt": "/extra/ZhaoX/ca1m_e961_locked_fold1_deploy_v2/reports/STOP.json",
+    "canonical_deploy_bundle": "/extra/ZhaoX/ca1m_e961_locked_fold1_deploy_v2/canonical/CANONICAL_DEPLOY_BUNDLE.json"
+  }
+}

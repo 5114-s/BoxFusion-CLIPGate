@@ -1,0 +1,27 @@
+{
+  "schema": "boxfusion.ca1m_tr3d_terminal_collection_preflight_supersession.v1",
+  "complete": true,
+  "create_only": true,
+  "run_authorized": false,
+  "superseded_report": {
+    "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/manifests/ca1m_tr3d_terminal_ca_native_train100_v3/collection_preflight.json",
+    "sha256": "82be95734a1c6d1bfbd975b376e38f65e8651d34a7d3d5d3fb5a3686c470d70b",
+    "must_not_be_used_as_authorization": true
+  },
+  "replacement_report": {
+    "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/manifests/ca1m_tr3d_terminal_ca_native_train100_v3/collection_preflight.blocked_pending_final_route.json",
+    "sha256": "6f1e0d67ddffdb92da80d1d63f83ae3e8d088191809dfd2b962db6dee1517ffd"
+  },
+  "current_config": {
+    "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/config/ca1m_tr3d_terminal_train100_v3.json",
+    "sha256": "ee3f15510834d163f5d7cab323f5983fb953367333d271e436c42efd3d4f3f65"
+  },
+  "checkpoint_binding_remains_valid": true,
+  "blocked_reasons": [
+    "final_route_frame_lineage_manifest_pending",
+    "g0_clip_reliable_topk3_anchor_manifest_pending",
+    "retrained_native_b6_artifacts_pending",
+    "proposal_overlay_split_not_materialized"
+  ],
+  "reason": "The first preflight referenced the old G0/native-B6 overlay inputs. Formal collection requires anchor-free CA proposal caches followed by a CPU overlay from the final G0+CLIP+reliable-TopK3 anchors and retrained native-B6 artifacts."
+}

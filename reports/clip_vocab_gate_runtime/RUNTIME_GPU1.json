@@ -1,0 +1,64 @@
+{
+  "batch_size": 3,
+  "checkpoint": "/data/ZhaoX/BoxFusion/models/open_clip_pytorch_model.bin",
+  "class_features": "/data/ZhaoX/BoxFusion/data/class_features.pt",
+  "cpu_crop_preprocess_from_resized_rgb_batch3": {
+    "count": 62,
+    "max_ms": 6.396882,
+    "mean_ms": 3.166172209677419,
+    "p50_ms": 2.9523515,
+    "p95_ms": 5.186345899999999
+  },
+  "cpu_disk_decode_resize_crop_preprocess_batch3": {
+    "count": 62,
+    "max_ms": 48.070028,
+    "mean_ms": 37.460788145161295,
+    "p50_ms": 37.8188935,
+    "p95_ms": 45.13318079999999
+  },
+  "deployment_contract": {
+    "model_reused": true,
+    "not_an_end_to_end_fps_measurement": true,
+    "precision": "native float32 inference (no autocast)",
+    "text_features_reused_on_gpu": true,
+    "three_preprocessed_crops_resident_on_gpu": true
+  },
+  "evaluator_access": false,
+  "gpu_encode_normalize_score473_batch3": {
+    "count": 100,
+    "max_ms": 70.2955551147461,
+    "mean_ms": 68.84373512268067,
+    "p50_ms": 68.75590515136719,
+    "p95_ms": 69.7633285522461
+  },
+  "gpu_repeats": 100,
+  "gpu_timing_excludes": [
+    "checkpoint/model load",
+    "text feature load",
+    "disk image decode",
+    "RGB resize/crop/preprocess",
+    "host-to-device transfer"
+  ],
+  "gpu_warmup": 10,
+  "gt_access": false,
+  "mode": "runtime_only_no_gt_no_evaluator",
+  "model_load_once_ms": 7328.412397,
+  "real_crop_count": 186,
+  "runtime": {
+    "cuda_device_capability": [
+      8,
+      6
+    ],
+    "cuda_device_index": 1,
+    "cuda_device_name": "NVIDIA GeForce RTX 3090",
+    "cuda_runtime": "12.4",
+    "python": "3.10.13",
+    "requested_device": "cuda:1",
+    "torch": "2.6.0+cu124"
+  },
+  "scene_root": "/data/ZhaoX/BoxFusion/upstream_clean/scannet_readme_frames",
+  "schema": "boxfusion.clip_vocab_gate_runtime.v1",
+  "sidecar": "/data/ZhaoX/BoxFusion/logs/scannet_cbest_raw_boxer_clip_vocab_shadow_score05/CLIP_VOCAB_SHADOW_FULL100.json",
+  "track_count": 62,
+  "training": false
+}
