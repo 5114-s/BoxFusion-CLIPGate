@@ -233,27 +233,51 @@ def nms_3d(instance_lists, box_manager, boxes, scores, init_id, cam_poses, box_s
         ),
         "spatial",
     )
+    pvq_ar = box_manager.pvq_ar
+    appearance_gate_on = bool(gate_cfg.get("enabled", False))
     appearance_features = None
     if (
-        gate_cfg.get("enabled", False)
-        and instance_lists.has("appearance_features")
-    ):
+        appearance_gate_on
+        or (pvq_ar is not None and pvq_ar.enabled)
+    ) and instance_lists.has("appearance_features"):
         appearance_features = _as_float_numpy(
             instance_lists.appearance_features
         )
+    if (
+        pvq_ar is not None
+        and pvq_ar.enabled
+        and pvq_ar.cfg["keyframe_map_log"]
+    ):
+        _frame_ids = instance_lists.frame_id
+        pvq_ar.log_keyframe_map(
+            keyframe_id=int(torch.max(_frame_ids).item()),
+            boxes=boxes,
+            scores=scores,
+            init_ids=init_id,
+        )
+    pvq_ar_nms_enabled = (
+        pvq_ar is not None
+        and pvq_ar.enabled
+        and pvq_ar.nms_stage["enabled"]
+    )
+    pvq_keyframe_id = (
+        int(torch.max(instance_lists.frame_id).item())
+        if pvq_ar_nms_enabled
+        else None
+    )
 
     while order.size > 0:
         nms_box_inds = []
-        
+
         i = order[0]
-        
+
         keep.append(i)
-        
+
         temp_order = order[1:]
         ious = calculate_obb_iou(boxes[i], boxes[order[1:]])
 
         similarities = None
-        if appearance_features is not None:
+        if appearance_gate_on and appearance_features is not None:
             similarities = cosine_similarity_to_many(
                 appearance_features[i],
                 appearance_features[temp_order],
@@ -271,18 +295,71 @@ def nms_3d(instance_lists, box_manager, boxes, scores, init_id, cam_poses, box_s
         inds = np.where(~gate_result["accepted"])[0]
         # i nms others, and is valid
         associate_inds = np.where(gate_result["accepted"])[0]
-        if associate_inds.shape[0]>=1:
+
+        '''
+        PVQ-AR NMS arbitration: contrast-score refusal of ambiguous absorbs.
+        Shadow mode never changes the native flow; active mode only removes
+        refused children from this round's merge set, letting the native
+        greedy loop re-assign (or keep) them in later rounds.
+        '''
+        refuse_positions = None
+        if pvq_ar_nms_enabled and associate_inds.shape[0] >= 1:
+            row_canonicals = {
+                row: min(
+                    int(value)
+                    for value in box_manager.fusion_list[row]
+                )
+                for row in range(len(box_manager.fusion_list))
+            }
+            refuse_positions = np.zeros(
+                associate_inds.shape[0], dtype=bool
+            )
+            for slot, position in enumerate(associate_inds):
+                child_row = int(temp_order[position])
+                refuse_positions[slot] = pvq_ar.adjudicate_nms_absorb(
+                    keyframe_id=pvq_keyframe_id,
+                    parent_row=int(i),
+                    child_row=child_row,
+                    parent_init_id=int(init_id[i]),
+                    child_init_id=int(init_id[child_row]),
+                    iou=float(ious[position]),
+                    parent_score=float(scores[i]),
+                    child_score=float(scores[child_row]),
+                    child_max_dim=float(box_size[child_row].max()),
+                    query_feature=_as_float_numpy(
+                        appearance_features[child_row]
+                    ),
+                    query_view_dir=(
+                        boxes[child_row].mean(axis=0)
+                        - _as_float_numpy(
+                            cam_poses[child_row][:3, 3]
+                        )
+                    ),
+                    parent_corners_world=boxes[i],
+                    child_corners_world=boxes[child_row],
+                    row_canonicals=row_canonicals,
+                )
+
+        if refuse_positions is not None and bool(np.any(refuse_positions)):
+            effective_inds = associate_inds[~refuse_positions]
+            survived = ~gate_result["accepted"]
+            survived[associate_inds[refuse_positions]] = True
+            inds = np.where(survived)[0]
+        else:
+            effective_inds = associate_inds
+
+        if effective_inds.shape[0]>=1:
             instance_lists.valid_num[i] +=1
             print(
-                'nms', i, '->', order[1 + associate_inds],
-                'iou:', np.round(ious[associate_inds], 3),
+                'nms', i, '->', order[1 + effective_inds],
+                'iou:', np.round(ious[effective_inds], 3),
                 'clip:', (
-                    np.round(similarities[associate_inds], 3)
+                    np.round(similarities[effective_inds], 3)
                     if similarities is not None else 'disabled'
                 ),
             )
 
-        nms_inds = associate_inds
+        nms_inds = effective_inds
         nms_inds = np.asarray(nms_inds)
         '''
         record the fusion history
@@ -293,11 +370,39 @@ def nms_3d(instance_lists, box_manager, boxes, scores, init_id, cam_poses, box_s
 
             for j in temp_order[nms_inds]:
                 nms_box_inds.append(j)
-   
+
+            # Observer-only NMS merge logging (PVQ-AR infrastructure):
+            # never modifies keep, fusion lists, or scores.
+            pvq_ar = box_manager.pvq_ar
+            if (
+                pvq_ar is not None
+                and pvq_ar.enabled
+                and pvq_ar.cfg["nms_observer"]
+            ):
+                frame_ids = instance_lists.frame_id
+                keyframe_id = int(torch.max(frame_ids).item())
+                for j in nms_box_inds:
+                    pvq_ar.log_nms_merge(
+                        keyframe_id=keyframe_id,
+                        parent_row=int(i),
+                        child_row=int(j),
+                        parent_init_id=int(init_id[i]),
+                        child_init_id=int(init_id[j]),
+                        parent_frame_id=int(frame_ids[i].item()),
+                        child_frame_id=int(frame_ids[j].item()),
+                        iou=float(
+                            ious[int(np.flatnonzero(temp_order == j)[0])]
+                        ),
+                        parent_score=float(scores[i]),
+                        child_score=float(scores[j]),
+                        parent_corners_world=boxes[i],
+                        child_corners_world=boxes[j],
+                    )
+
             '''
             record and update the fusion list
             '''
-            keep = box_manager.record(i, nms_box_inds, order_init_id, cam_poses, box_size, keep, boxes_centers)        
+            keep = box_manager.record(i, nms_box_inds, order_init_id, cam_poses, box_size, keep, boxes_centers)
 
         order = order[inds + 1] # +1 because inds is for temp_order
 
@@ -680,6 +785,25 @@ class Instances3D:
 
         cur_pose = all_kf_pose[frame_id] #[4,4]
 
+        # Merge-invariant canonical id (min init_id of the union) per kept
+        # global row, used to ignore duplicate rows of the same track when
+        # PVQ-AR looks for a genuinely different runner-up candidate.
+        global_canonicals = None
+        if (
+            box_manager.pvq_ar is not None
+            and box_manager.pvq_ar.enabled
+            and len(global_keep_idx) > 0
+        ):
+            global_canonicals = np.asarray(
+                [
+                    min(
+                        int(value)
+                        for value in box_manager.fusion_list[int(row)]
+                    )
+                    for row in global_keep_idx
+                ]
+            )
+
         for idx in small_idx:
    
             boxes_global = global_pred_box.get('pred_boxes_3d')
@@ -725,6 +849,132 @@ class Instances3D:
             corresponding_boxid = accepted_ids[
                 np.argmax(association_margin)
             ]
+
+            '''
+            PVQ-AR: local rearrangement of Top-1/Top-2 ambiguous edges only.
+            The native 3D NMS and every unambiguous 2D-matching decision stay
+            byte-identical; only this proposal->track assignment may change.
+            Every small-box edge is logged (observer-only) so the offline
+            choice-set oracle can measure runner-up closeness as well.
+            '''
+            pvq_ar = box_manager.pvq_ar
+            if pvq_ar is not None and pvq_ar.enabled:
+                all_margins = box_iou - gate_result["thresholds"]
+                accepted_order = np.argsort(
+                    -association_margin, kind="stable"
+                )
+                # accepted_order indexes the accepted subset; map back into
+                # the full box_iou candidate space.
+                top1_id = int(accepted_ids[accepted_order[0]])
+                # The runner-up must be a genuinely different track: the
+                # native keep list can hold duplicate rows of one track,
+                # which project (and score) identically.
+                runner_up_mask = np.ones(all_margins.shape, dtype=bool)
+                runner_up_mask[top1_id] = False
+                if global_canonicals is not None:
+                    runner_up_mask &= (
+                        global_canonicals != global_canonicals[top1_id]
+                    )
+                if np.any(runner_up_mask):
+                    # Multiplying by the mask would turn excluded entries
+                    # into 0.0, which beats every negative runner-up margin;
+                    # mask with -inf instead so argmax finds the true
+                    # different-track runner-up.
+                    masked_margins = np.where(
+                        runner_up_mask, all_margins, -np.inf
+                    )
+                    top2_id_any = int(np.argmax(masked_margins))
+                    top2_margin_any = float(all_margins[top2_id_any])
+                else:
+                    top2_id_any = -1
+                    top2_margin_any = None
+                ambiguous = (
+                    accepted_ids.size >= 2
+                    and top2_margin_any is not None
+                    and top2_margin_any > 0.0
+                    and float(all_margins[top1_id]) - top2_margin_any
+                    <= pvq_ar.cfg["ambiguity_margin"]
+                )
+                top1_canonical = min(
+                    int(value)
+                    for value in box_manager.fusion_list[
+                        int(global_keep_idx[top1_id])
+                    ]
+                )
+                top2_canonical = (
+                    min(
+                        int(value)
+                        for value in box_manager.fusion_list[
+                            int(global_keep_idx[top2_id_any])
+                        ]
+                    )
+                    if top2_id_any >= 0
+                    else None
+                )
+                pvq_ar.log_correspondence_edge(
+                    frame_id=frame_id,
+                    proposal_init_id=int(init_id[idx + N_glo]),
+                    top1_margin=float(all_margins[top1_id]),
+                    top2_margin=top2_margin_any,
+                    top1_canonical=top1_canonical,
+                    top2_canonical=top2_canonical,
+                    accepted_count=int(accepted_ids.size),
+                    ambiguous=bool(ambiguous),
+                )
+                if ambiguous:
+                    chosen = pvq_ar.adjudicate_ambiguity(
+                        frame_id=frame_id,
+                        proposal_row=int(idx),
+                        proposal_init_id=int(init_id[idx + N_glo]),
+                        query_feature=_as_float_numpy(
+                            pred_instances.appearance_features[idx]
+                        ),
+                        query_view_dir=(
+                            pred_instances.pred_boxes_3d.tensor[idx][:3]
+                            .detach()
+                            .cpu()
+                            .numpy()
+                            - cur_pose[:3, 3]
+                        ),
+                        proposal_corners_world=(
+                            pred_instances.pred_boxes_3d.corners[idx]
+                            .detach()
+                            .cpu()
+                            .numpy()
+                        ),
+                        candidate_rows=[
+                            int(global_keep_idx[top1_id]),
+                            int(global_keep_idx[top2_id_any]),
+                        ],
+                        candidate_canonicals=[
+                            top1_canonical,
+                            top2_canonical,
+                        ],
+                        candidate_ious=[
+                            float(box_iou[top1_id]),
+                            float(box_iou[top2_id_any]),
+                        ],
+                        candidate_margins=[
+                            float(all_margins[top1_id]),
+                            top2_margin_any,
+                        ],
+                        candidate_scores=[
+                            float(
+                                global_box_scores[global_keep_idx[top1_id]]
+                            ),
+                            float(
+                                global_box_scores[
+                                    global_keep_idx[top2_id_any]
+                                ]
+                            ),
+                        ],
+                        candidate_corners_world=[
+                            boxes_3d[top1_id],
+                            boxes_3d[top2_id_any],
+                        ],
+                    )
+                    if chosen == 1:
+                        corresponding_boxid = top2_id_any
 
             '''
             box with large IoU with old boxes in past keyframes

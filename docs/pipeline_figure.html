@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: "Noto Sans CJK SC", "PingFang SC", "Microsoft YaHei", sans-serif; background: #ffffff; }
+  .canvas { position: relative; width: 1500px; height: 840px; background: #ffffff; }
+
+  .region { position: absolute; border-radius: 14px; border-width: 2px; border-style: solid; }
+  .region .rlabel { position: absolute; top: 10px; left: 16px; font-size: 16px; font-weight: 700; }
+  .reg-a { left: 230px; top: 60px;  width: 430px; height: 600px; background: #EFF6FF; border-color: #93C5FD; }
+  .reg-a .rlabel { color: #1D4ED8; }
+  .reg-b { left: 700px; top: 60px;  width: 400px; height: 600px; background: #FFFBEB; border-color: #FCD34D; }
+  .reg-b .rlabel { color: #B45309; }
+  .reg-c { left: 1140px; top: 60px; width: 330px; height: 250px; background: #FEF2F2; border-color: #FCA5A5; }
+  .reg-c .rlabel { color: #B91C1C; }
+
+  .node { position: absolute; border-radius: 10px; padding: 10px 12px; }
+  .node .t { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+  .node .d { font-size: 12.5px; line-height: 1.45; color: #4B5563; }
+  .orig { background: #F3F4F6; border: 1.5px solid #9CA3AF; }
+  .orig .t { color: #374151; }
+  .new  { background: #FFFFFF; border: 2px solid #DC2626; }
+  .new  .t { color: #B91C1C; }
+  .star { color: #DC2626; font-size: 15px; }
+
+  .input { position: absolute; left: 30px; top: 250px; width: 150px; height: 230px;
+           background: #ECFDF5; border: 2px solid #6EE7B7; border-radius: 12px; padding: 12px; text-align: center; }
+  .input .t { font-size: 15px; font-weight: 700; color: #065F46; margin-top: 8px; }
+  .frames { position: relative; width: 96px; height: 72px; margin: 10px auto 4px auto; }
+  .frame { position: absolute; width: 88px; height: 60px; border: 2px solid #10B981; border-radius: 5px;
+           background: linear-gradient(160deg, #D1FAE5 0%, #A7F3D0 100%); }
+  .f1 { left: 0; top: 10px; } .f2 { left: 5px; top: 5px; } .f3 { left: 10px; top: 0; }
+  .cap { position: absolute; font-size: 12px; color: #4B5563; }
+
+  .outnode { position: absolute; border-radius: 10px; padding: 10px 14px; }
+
+  svg.arrows { position: absolute; left: 0; top: 0; width: 1500px; height: 840px; pointer-events: none; }
+  .legend { position: absolute; left: 230px; top: 680px; width: 1240px; height: 120px;
+            border: 1.5px dashed #9CA3AF; border-radius: 10px; background: #FAFAFA; padding: 10px 16px; }
+  .legend .lt { font-size: 14px; font-weight: 700; color: #374151; margin-bottom: 6px; }
+  .legend table { border-collapse: collapse; font-size: 12.5px; }
+  .legend td, .legend th { padding: 3px 14px 3px 0; text-align: left; color: #374151; }
+  .chip { display: inline-block; width: 22px; height: 13px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+</style>
+</head>
+<body>
+<div class="canvas">
+
+  <div class="input">
+    <div class="frames"><div class="frame f1"></div><div class="frame f2"></div><div class="frame f3"></div></div>
+    <div class="t">RGB-D 流<br>+ 相机位姿</div>
+    <div class="cap" style="bottom:10px; left:0; width:100%;">gap-25 关键帧</div>
+  </div>
+
+  <div class="region reg-a"><div class="rlabel">(a) Proposal Generation</div></div>
+  <div class="node orig" style="left:252px; top:108px; width:180px; height:84px;">
+    <div class="t">CuTR（原生）</div><div class="d">单视角 3D proposal<br>+ 投影 / crop → CLIP 语义（原生）</div>
+  </div>
+  <div class="node new" style="left:456px; top:108px; width:182px; height:84px;">
+    <div class="t"><span class="star">★</span> WeDetect-Uni</div><div class="d">第二前向（新）<br>每关键帧 · 类无关 proposal</div>
+  </div>
+  <div class="node new" style="left:252px; top:250px; width:386px; height:104px;">
+    <div class="t"><span class="star">★</span> M1a · BoxerNet 几何引擎（共享）</div>
+    <div class="d">同一冻结权重三流复用：精修流（native，原用法 → AP50）<br>＋ 发现流（新：提升 WeDetect proposal → AP15）</div>
+  </div>
+  <div class="cap" style="left:262px; top:388px; width:370px;">feature cache：每帧编码一次，多框查询为批量解码（边际成本≈0）</div>
+
+  <div class="region reg-b"><div class="rlabel">(b) Association Module</div></div>
+  <div class="node orig" style="left:720px; top:108px; width:360px; height:70px;">
+    <div class="t">3D NMS ＋ 2D Matching（原生）</div><div class="d">SA / CA 关联逻辑未动</div>
+  </div>
+  <div class="node new" style="left:720px; top:206px; width:360px; height:78px;">
+    <div class="t"><span class="star">★</span> M1b · child 回收缓冲（新）</div><div class="d">被 NMS 吞掉的 child 框保活 → 第二路候选</div>
+  </div>
+  <div class="node new" style="left:720px; top:312px; width:360px; height:112px;">
+    <div class="t"><span class="star">★</span> M1c · 因果确认漏斗（新）</div>
+    <div class="d">past-only receipt · ≥3 不同历史帧 · 去重门 0.25<br>medoid 几何 · cap 12 · 低分追加<br>（47k 候选 → 1,132 birth，79× FP 压缩）</div>
+  </div>
+
+  <div class="region reg-c"><div class="rlabel">(c) Multi-View Box Fusion</div></div>
+  <div class="node orig" style="left:1160px; top:108px; width:290px; height:88px;">
+    <div class="t">Random Optimization / PFO（原生）</div><div class="d">跨视角投影一致性优化中心与尺寸<br>—— 本路线未改动 ——</div>
+  </div>
+
+  <div class="node new outnode" style="left:1140px; top:350px; width:330px; height:100px;">
+    <div class="t"><span class="star">★</span> M3 · 跨检测器共识重排（新）</div>
+    <div class="d">最终框投影回关键帧 × WeDetect 所见 → 支持度<br>score′ = score + 0.6·(sup−0.5)，只升不降</div>
+  </div>
+  <div class="node new outnode" style="left:1140px; top:474px; width:330px; height:88px;">
+    <div class="t"><span class="star">★</span> M2 · 标注策略感知评分（新）</div>
+    <div class="d">birth 按最大边长查表：&lt;0.3m→0.05 … ≥1m→0.50<br>（尺寸读出标注策略）</div>
+  </div>
+  <div class="outnode" style="left:1140px; top:588px; width:330px; height:72px; background:#1F2937; border-radius:10px;">
+    <div class="t" style="color:#F9FAFB; font-size:15px; font-weight:700;">全局 3D 对象框（real-score）</div>
+    <div class="d" style="color:#D1D5DB; font-size:13px;">42.95 / 38.87 / 19.33（vs 论文 +13.7/+14.2/+11.3）</div>
+  </div>
+
+  <div class="legend">
+    <div class="lt">图例与贡献</div>
+    <table>
+      <tr>
+        <th><span class="chip" style="background:#F3F4F6; border:1.5px solid #9CA3AF;"></span>灰框：原版组件（未改动）</th>
+        <th><span class="chip" style="background:#fff; border:2px solid #DC2626;"></span><span class="star">★</span>红框：新增模块</th>
+        <th>底座（real-score + Top-K3 + Boxer 精修流，此前工作）：29.21 → 34.99</th>
+      </tr>
+      <tr>
+        <td>M1 双源残差实例恢复（a 引擎化发现流 + b 回收缓冲 + c 确认漏斗）：+4.2（AP15/25 主）</td>
+        <td>M2 标注策略感知评分：+0.39</td>
+        <td>M3 跨检测器共识重排：+3.77（三项全升，reprojection 一致性 = 免标签质量估计）</td>
+      </tr>
+    </table>
+  </div>
+
+  <svg class="arrows" viewBox="0 0 1500 840">
+    <defs>
+      <marker id="ah" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+        <polygon points="0 0, 9 3.5, 0 7" fill="#6B7280"/>
+      </marker>
+      <marker id="ahr" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+        <polygon points="0 0, 9 3.5, 0 7" fill="#DC2626"/>
+      </marker>
+    </defs>
+    <!-- input -> (a) -->
+    <line x1="182" y1="365" x2="226" y2="365" stroke="#6B7280" stroke-width="2.5" marker-end="url(#ah)"/>
+    <!-- (a) -> (b) : native proposals -->
+    <line x1="646" y1="150" x2="696" y2="143" stroke="#6B7280" stroke-width="2.5" marker-end="url(#ah)"/>
+    <text x="652" y="128" font-size="12" fill="#4B5563">native proposal</text>
+    <!-- CuTR -> engine -->
+    <line x1="342" y1="196" x2="342" y2="246" stroke="#6B7280" stroke-width="2" marker-end="url(#ah)"/>
+    <!-- WeDetect -> engine -->
+    <path d="M 547 196 L 547 246" stroke="#DC2626" stroke-width="2" fill="none" marker-end="url(#ahr)"/>
+    <!-- engine -> funnel (a to b, below) -->
+    <path d="M 445 354 L 445 470 L 716 470 L 716 380" stroke="#DC2626" stroke-width="2.2" fill="none" marker-end="url(#ahr)"/>
+    <text x="470" y="462" font-size="12" fill="#B91C1C">WeDetect 提升候选（发现流）</text>
+    <!-- NMS -> recycle -->
+    <line x1="900" y1="182" x2="900" y2="202" stroke="#DC2626" stroke-width="2" marker-end="url(#ahr)"/>
+    <text x="908" y="196" font-size="11.5" fill="#B91C1C">吞并事件</text>
+    <!-- recycle -> funnel -->
+    <line x1="900" y1="288" x2="900" y2="308" stroke="#DC2626" stroke-width="2" marker-end="url(#ahr)"/>
+    <!-- (b) -> (c) -->
+    <line x1="1104" y1="143" x2="1136" y2="143" stroke="#6B7280" stroke-width="2.5" marker-end="url(#ah)"/>
+    <text x="1092" y="128" font-size="12" fill="#4B5563">关联 / 融合列表</text>
+    <!-- (c) -> M3 -->
+    <line x1="1300" y1="252" x2="1300" y2="344" stroke="#6B7280" stroke-width="2.5" marker-end="url(#ah)"/>
+    <text x="1308" y="300" font-size="12" fill="#4B5563">融合后 native 框</text>
+    <!-- WeDetect proposals -> M3 (support query, dashed) -->
+    <path d="M 640 96 L 1300 96 L 1300 344" stroke="#DC2626" stroke-width="1.8" stroke-dasharray="6 4" fill="none" marker-end="url(#ahr)"/>
+    <text x="700" y="88" font-size="12" fill="#B91C1C">支持度查询（proposal 复用第三处）</text>
+    <!-- M3 -> final -->
+    <line x1="1300" y1="454" x2="1300" y2="582" stroke="#6B7280" stroke-width="2.2" marker-end="url(#ah)"/>
+    <!-- funnel -> M2 -->
+    <path d="M 1084 368 L 1112 368 L 1112 518" stroke="#DC2626" stroke-width="2" fill="none" marker-end="url(#ahr)"/>
+    <text x="1046" y="428" font-size="12" fill="#B91C1C" transform="rotate(-90 1058 428)">birth 框</text>
+    <!-- M2 -> final -->
+    <line x1="1300" y1="566" x2="1300" y2="584" stroke="#6B7280" stroke-width="2.2" marker-end="url(#ah)"/>
+  </svg>
+</div>
+</body>
+</html>

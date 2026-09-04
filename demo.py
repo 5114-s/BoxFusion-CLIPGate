@@ -240,6 +240,7 @@ def run(cfg, model, dataset, clip_model, preprocess, tokenized_text, text_featur
             "enabled", False
         )
         or box_manager.causal_hungarian.needs_appearance
+        or box_manager.pvq_ar.enabled
     ):
         raise ValueError(
             "Terminal-batch CLIP cannot replace features required by association"
@@ -619,6 +620,8 @@ def run(cfg, model, dataset, clip_model, preprocess, tokenized_text, text_featur
                 cfg, scene_id=scene_id
             )
             observer_scene_id = scene_id
+            if box_manager.pvq_ar.enabled:
+                box_manager.pvq_ar.bind_scene(scene_id)
             if observer_adapter.config.mode == "shadow":
                 if shadow_variant == "graw":
                     graw_extractor = RawFragmentExtractor()
@@ -997,6 +1000,7 @@ def run(cfg, model, dataset, clip_model, preprocess, tokenized_text, text_featur
             association_features_enabled = (
                 appearance_gate_enabled
                 or box_manager.causal_hungarian.needs_appearance
+                or box_manager.pvq_ar.enabled
             )
             if association_features_enabled:
                 # Extract once per new proposal. The normalized image feature is
@@ -1138,9 +1142,12 @@ def run(cfg, model, dataset, clip_model, preprocess, tokenized_text, text_featur
                 all_pred_box = pred_instances
                 all_poses = pose_np
                 per_frame_ins = pred_instances
- 
+
                 #record the current frame boxes info
                 box_manager.init_new_predictions(len(pred_instances),0)
+                if box_manager.pvq_ar.enabled:
+                    box_manager.pvq_ar.begin_keyframe(box_manager)
+                    box_manager.pvq_ar.record_observations(pred_instances)
                 observer_adapter.attach(box_manager, observer_frame_token)
                 finalize_group3d_shadow_frame(
                     pred_instances,
@@ -1153,6 +1160,11 @@ def run(cfg, model, dataset, clip_model, preprocess, tokenized_text, text_featur
             else:
                 
                 box_manager.init_new_predictions(len(pred_instances),len(per_frame_ins))
+                if box_manager.pvq_ar.enabled:
+                    # Snapshot committed prototypes (previous keyframes only)
+                    # before this keyframe's NMS/correspondence commits run.
+                    box_manager.pvq_ar.begin_keyframe(box_manager)
+                    box_manager.pvq_ar.record_observations(pred_instances)
                 observer_adapter.attach(box_manager, observer_frame_token)
 
                 num_before_cat = len(all_pred_box)
@@ -1310,6 +1322,9 @@ def run(cfg, model, dataset, clip_model, preprocess, tokenized_text, text_featur
                 print(Box_Fuser.vapf_lite.summary())
             if Box_Fuser.capf.enabled:
                 print(Box_Fuser.capf.summary())
+            if box_manager.pvq_ar.enabled:
+                print(box_manager.pvq_ar.summary())
+                box_manager.pvq_ar.finalize()
             if lifting_adapter is not None:
                 print(lifting_adapter.summary())
             if boxer_mvpr is not None:

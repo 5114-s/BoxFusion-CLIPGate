@@ -2,10 +2,11 @@ from dataclasses import dataclass
 from typing import List, Dict, Set
 from boxfusion.instances import Instances3D
 from boxfusion.causal_hungarian_association import CausalHungarianAssociator
+from boxfusion.pvq_ar import PVQAR
 import operator
 import numpy as np
 import torch
-import copy 
+import copy
 
 
 def _copy_observer_index(value):
@@ -43,6 +44,23 @@ class BoxManager:
         self.num_record = {}
         self.cfg = cfg
         self.causal_hungarian = CausalHungarianAssociator(cfg)
+        self.pvq_ar = PVQAR(cfg)
+        if self.pvq_ar.enabled:
+            if self.causal_hungarian.enabled:
+                raise ValueError(
+                    "PVQ-AR requires the native association route; it is "
+                    "mutually exclusive with causal_hungarian"
+                )
+            if (
+                cfg.get("association", {})
+                .get("appearance_gate", {})
+                .get("enabled", False)
+            ):
+                raise ValueError(
+                    "PVQ-AR and the appearance gate cannot be enabled "
+                    "together; the gate rewrites association thresholds and "
+                    "breaks single-variable attribution"
+                )
         self.rotation_gap = self.cfg['association']['rotation_gap']
         self.translation_gap = self.cfg['association']['translation_gap']
         self.small_size = self.cfg['box_fusion']['small_size'] 
