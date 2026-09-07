@@ -24,15 +24,21 @@ from PIL import Image
 sys.path.insert(0, '/data/ZhaoX/BoxFusion')
 sys.path.insert(0, '/data/ZhaoX/BoxFusion/third_party/WeDetect')
 
-SCANS = '/extra/ZhaoX/scannet_data/scans'
+SCANS = os.environ.get('SCANS_ROOT', '/extra/ZhaoX/scannet_data/scans')
+CA1M_ROOT = os.environ.get('CA1M_ROOT', '/extra/ZhaoX/boxfusion_ca1m')
 GAP = 25
 SCORE_LIFT = 0.05
 TOPK_PER_FRAME = 150
 DEDUP, CAP, TTL, SELF_NMS = 0.25, 12, 10, 0.50
-ALPHA, TAU = 0.8, 0.5
+ALPHA = float(os.environ.get('CAUSAL_ALPHA', '0.8'))
+M2_MODE = os.environ.get('M2_MODE', 'add')   # add | banded | births
+M2_EXCLUSIVE = os.environ.get('M2_EXCLUSIVE', '0') == '1'
+TAU = float(os.environ.get('CAUSAL_TAU', '0.5'))
 EDGES = (0.3, 0.5, 0.7, 1.0)
 TABLE = (0.05, 0.10, 0.25, 0.40, 0.50)
 M5_UNS_THR, M5_MIN_INV, M5_DEMOTE = 0.80, 5, 0.3
+M5_OFF = os.environ.get('M5_OFF', '0') == '1'
+M5_CH2_OFF = os.environ.get('M5_CH2_OFF', '0') == '1'
 
 def obb_to_corners(center, extents, R):
     signs = np.array([[sx, sy, sz] for sx in (-1, 1) for sy in (-1, 1) for sz in (-1, 1)], float)
@@ -45,13 +51,17 @@ def aabb_iou(c1, c2):
     return inter/float(np.maximum(np.prod(hi1-lo1)+np.prod(hi2-lo2)-inter, 1e-9))
 
 def price(m):
+    if os.environ.get('FIXED_PRICE', '0') == '1':
+        return 0.10
     e = float((m.max(0)-m.min(0)).max())
     for b, s in zip(EDGES, TABLE):
         if e < b:
             return s
     return TABLE[-1]
 
-def project_xyxy(corners_w, pose, K, W=1296, H=968):
+def project_xyxy(corners_w, pose, K, W=None, H=None):
+    if W is None: W = 1296
+    if H is None: H = 968
     Rt = np.linalg.inv(pose)
     c = (Rt[:3, :3] @ corners_w.T).T + Rt[:3, 3]
     if (c[:, 2] < 0.1).any():
@@ -102,20 +112,44 @@ def load_models():
     adapter = build_lifting_adapter(cfg, device="cuda", code_root="/data/ZhaoX/BoxFusion")
     return wmodel, adapter
 
-def process_scene(scene, native_pkl, nms_jsonl, out_pkl, wmodel, adapter):
-    t0 = time.time()
-    K_color = np.loadtxt(f'{SCANS}/{scene}/intrinsic/intrinsic_color.txt')[:3, :3]
-    K_depth = np.loadtxt(f'{SCANS}/{scene}/intrinsic/intrinsic_depth.txt')[:3, :3]
-    n_frames = len(glob.glob(f'{SCANS}/{scene}/color/*.jpg'))
+def load_ca1m_scene(scene):
+    root = f'{CA1M_ROOT}/{scene}'
+    poses_all = np.load(f'{root}/all_poses.npy')
+    n = len(poses_all)
     kfs = []
-    for f in range(0, n_frames, GAP):
-        pf, cf, df = f'{SCANS}/{scene}/pose/{f}.txt', f'{SCANS}/{scene}/color/{f}.jpg', f'{SCANS}/{scene}/depth/{f}.png'
-        if not all(os.path.exists(p) for p in (pf, cf, df)):
+    for f in range(0, n, 20):
+        cf, df = f'{root}/rgb/{f}.png', f'{root}/depth/{f}.png'
+        if not all(os.path.exists(p) for p in (cf, df)):
             continue
-        pose = np.loadtxt(pf).reshape(4, 4)
+        pose = poses_all[f]
         if not np.isfinite(pose).all():
             continue
         kfs.append((f, pose, cf, df))
+    K_color = np.loadtxt(f'{root}/K_rgb.txt').reshape(3, 3)[:3, :3]
+    K_depth = np.loadtxt(f'{root}/K_depth.txt').reshape(3, 3)[:3, :3]
+    w0, h0 = Image.open(kfs[0][2]).size if kfs else (512, 384)
+    return K_color, K_depth, kfs, w0, h0, 20
+
+def process_scene(scene, native_pkl, nms_jsonl, out_pkl, wmodel, adapter, gap=GAP):
+    t0 = time.time()
+    if scene.startswith('scene'):
+        K_color = np.loadtxt(f'{SCANS}/{scene}/intrinsic/intrinsic_color.txt')[:3, :3]
+        K_depth = np.loadtxt(f'{SCANS}/{scene}/intrinsic/intrinsic_depth.txt')[:3, :3]
+        n_frames = len(glob.glob(f'{SCANS}/{scene}/color/*.jpg'))
+        kfs = []
+        for f in range(0, n_frames, GAP):
+            pf, cf, df = f'{SCANS}/{scene}/pose/{f}.txt', f'{SCANS}/{scene}/color/{f}.jpg', f'{SCANS}/{scene}/depth/{f}.png'
+            if not all(os.path.exists(p) for p in (pf, cf, df)):
+                continue
+            pose = np.loadtxt(pf).reshape(4, 4)
+            if not np.isfinite(pose).all():
+                continue
+            kfs.append((f, pose, cf, df))
+        W_IMG, H_IMG = 1296, 968
+        depth_scale = 1000.0
+    else:
+        K_color, K_depth, kfs, W_IMG, H_IMG, gap = load_ca1m_scene(scene)
+        depth_scale = 1000.0
     # ---- 1+2: live WeDetect + lift on every keyframe (in stream order) ----
     corners_all, scores_all, fids_all, b2d_all = [], [], [], []
     world_pts = []          # M5 ch2: depth backprojection, every 4th kf, 8px step
@@ -132,7 +166,7 @@ def process_scene(scene, native_pkl, nms_jsonl, out_pkl, wmodel, adapter):
                 pb, ps = pb[order], ps[order]
             if len(pb):
                 rgb = np.asarray(Image.open(cf).convert('RGB'))
-                depth = np.asarray(Image.open(df)).astype(np.float32) / 1000.0
+                depth = np.asarray(Image.open(df)).astype(np.float32) / depth_scale
                 datum, meta = adapter._make_datum(
                     image=rgb, depth=depth, boxes_xyxy=torch.from_numpy(pb).float(),
                     image_K=K_color, depth_K=K_depth, camera_to_world=pose,
@@ -150,7 +184,7 @@ def process_scene(scene, native_pkl, nms_jsonl, out_pkl, wmodel, adapter):
                     fids_all.append(int(f))
                     b2d_all.append(pb[i])
             if ki % 4 == 0:                      # depth points for M5 ch2
-                depth = np.asarray(Image.open(df)).astype(np.float64) / 1000.0
+                depth = np.asarray(Image.open(df)).astype(np.float64) / depth_scale
                 Hh, Ww = depth.shape
                 ys, xs = np.mgrid[0:Hh:8, 0:Ww:8]
                 z = depth[ys, xs].ravel(); xs_ = xs.ravel(); ys_ = ys.ravel()
@@ -214,7 +248,7 @@ def process_scene(scene, native_pkl, nms_jsonl, out_pkl, wmodel, adapter):
                 receipts.append(dict(obs=[c], frames={f}, last_ord=f, scores=[s], n_wd=src_wd))
         cand_b = []
         for r in receipts:
-            mv = 3 if 2*r['n_wd'] > len(r['obs']) else 2
+            mv = int(os.environ.get('CAUSAL_MINVIEWS', '0')) or (3 if 2*r['n_wd'] > len(r['obs']) else 2)
             if len(r['frames']) < mv:
                 continue
             obs = r['obs']
@@ -233,32 +267,98 @@ def process_scene(scene, native_pkl, nms_jsonl, out_pkl, wmodel, adapter):
             if len(kept) >= CAP:
                 break
         births = kept
-    all_rows = list(rows) + [(0, m, price(m)) for _, m in births]
+    all_rows = [(r[0], r[1], r[2], True) for r in rows] + [(0, m, price(m), False) for _, m in births]
 
     # ---- 5+6: M2 support and M5 dual-channel, per row ----
     out_rows = []
     n_demoted = 0
-    for cls, corners_, s in all_rows:
-        cc = np.asarray(corners_, float)
-        sup, inv, uns, core = 0.0, 0, 0, 0
-        for fr, props in by_frame.items():
+    excl_series = None
+    if M2_EXCLUSIVE:
+        row_boxes = [np.asarray(r[1], float) for r in all_rows]
+        excl_series = [[] for _ in row_boxes]
+        for fr in sorted(by_frame):
+            props = by_frame[fr]
             pose = pose_cache.get(fr)
             if pose is None:
                 continue
-            bb = project_xyxy(cc, pose, K_color)
-            if bb is None:
-                continue
-            inv += 1
-            v = iou2d(bb, props)
-            sup = max(sup, v)
-            if v < 0.30:
-                uns += 1
+            pairs = []
+            valid = []
+            for i, cc0 in enumerate(row_boxes):
+                bb = project_xyxy(cc0, pose, K_color, W=W_IMG, H=H_IMG)
+                if bb is None:
+                    continue
+                valid.append(i)
+                x1 = np.maximum(bb[0], props[:,0]); y1 = np.maximum(bb[1], props[:,1])
+                x2 = np.minimum(bb[2], props[:,2]); y2 = np.minimum(bb[3], props[:,3])
+                inter = np.maximum(0, x2-x1)*np.maximum(0, y2-y1)
+                ua = (bb[2]-bb[0])*(bb[3]-bb[1]) + (props[:,2]-props[:,0])*(props[:,3]-props[:,1]) - inter
+                iv = inter/np.maximum(ua, 1e-9)
+                for j in np.where(iv >= 0.10)[0]:
+                    pairs.append((float(iv[j]), i, int(j)))
+            pairs.sort(reverse=True)
+            used_b, used_p, assigned = set(), set(), {}
+            for v, i, j in pairs:
+                if i in used_b or j in used_p:
+                    continue
+                used_b.add(i); used_p.add(j); assigned[i] = v
+            for i in valid:
+                excl_series[i].append(assigned.get(i, 0.0))
+    for row_idx, (cls, corners_, s, is_native) in enumerate(all_rows):
+        cc = np.asarray(corners_, float)
+        sup, inv, uns, core = 0.0, 0, 0, 0
+        last_sup_ord = -1        # windowed M5: support-interruption detection
+        inview_after_lastsup = 0
+        if excl_series is not None:
+            for v in excl_series[row_idx]:
+                inv += 1
+                sup = max(sup, v)
+                if v < 0.30:
+                    uns += 1
+                    inview_after_lastsup += 1
+                else:
+                    last_sup_ord = inv
+                    inview_after_lastsup = 0
+        else:
+            for fr in sorted(by_frame):
+                props = by_frame[fr]
+                pose = pose_cache.get(fr)
+                if pose is None:
+                    continue
+                bb = project_xyxy(cc, pose, K_color, W=W_IMG, H=H_IMG)
+                if bb is None:
+                    continue
+                inv += 1
+                v = iou2d(bb, props)
+                sup = max(sup, v)
+                if v < 0.30:
+                    uns += 1
+                    inview_after_lastsup += 1
+                else:
+                    last_sup_ord = inv
+                    inview_after_lastsup = 0
         lo, hi = cc.min(0), cc.max(0)
         ctr = (lo+hi)/2; ext = hi-lo
         lo2, hi2 = ctr-ext*0.75, ctr+ext*0.75
         core = int(((P >= lo2) & (P <= hi2)).all(1).sum()) if len(P) else 0
-        ns = min(0.99, float(s) + ALPHA * max(0.0, sup - TAU))          # M2
-        if inv >= M5_MIN_INV and (uns/max(inv,1) >= M5_UNS_THR or core == 0):   # M5
+        if M2_MODE == 'nativelogit':
+            if is_native:
+                s_c = min(max(float(s), 1e-4), 1 - 1e-4)
+                lg = float(np.log(s_c / (1 - s_c)) + 2.0 * max(0.0, sup - TAU))
+                ns = 1.0 / (1.0 + np.exp(-lg))
+            else:
+                ns = float(s)
+        elif M2_MODE == 'banded':
+            ns = min(0.99, float(s) * (1.0 + 0.25 * max(0.0, sup - TAU)))   # M2-lite: rank-preserving
+        elif M2_MODE == 'births' and is_native:
+            ns = float(s)
+        else:
+            ns = min(0.99, float(s) + ALPHA * max(0.0, sup - TAU))          # M2
+        ch2_empty = (core == 0) if not M5_CH2_OFF else False
+        support_lost = inview_after_lastsup >= M5_MIN_INV        # seen, then gone >=5 in-view kfs
+        m5_score_gate = float(os.environ.get('M5_SCORE_THR', '1.0'))
+        if M5_OFF:
+            pass
+        elif float(s) < m5_score_gate and inv >= M5_MIN_INV and (uns/max(inv,1) >= M5_UNS_THR or support_lost or ch2_empty):   # M5
             ns = ns * M5_DEMOTE
             n_demoted += 1
         out_rows.append((cls, corners_, ns))
