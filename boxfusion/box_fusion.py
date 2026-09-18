@@ -851,6 +851,21 @@ class BoxFusion(object):
             prepare the data used for fusion
             '''
             source_fusion_idx = list(box_manager.fusion_list[i])
+            dynamic_branch = getattr(box_manager, "dynamic_object_branch", None)
+            if (
+                dynamic_branch is not None
+                and dynamic_branch.is_dynamic_fusion_ids(source_fusion_idx)
+            ):
+                # A confirmed moving object must not be averaged over its
+                # complete world-space history.  The dynamic branch maintains
+                # a bounded causal current-state estimate for this row.  The
+                # persistent row is deliberately frozen at its pre-dynamic
+                # anchor instead of accepting an all-history PFO update.
+                dynamic_branch.record_static_fusion_bypass(
+                    native_row_index=i,
+                    fusion_ids=source_fusion_idx,
+                )
+                continue
             fusion_idx = np.asarray(source_fusion_idx, dtype=np.int64)
 
             if self.reliable_view_cfg["enabled"]:

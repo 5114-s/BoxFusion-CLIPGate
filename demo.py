@@ -76,6 +76,13 @@ from boxfusion.tm_fpf_c1 import (
     make_target_mask_view,
     match_fastsam_target_masks,
 )
+from boxfusion.causal_dynamic_branch import (
+    build_causal_dynamic_branch,
+    dynamic_event_ledger_complete,
+    resolve_causal_dynamic_branch_config,
+)
+from boxfusion.motion_chain import MotionChain
+from boxfusion.dynamic_policy_online import DynamicPolicyOnline
 
 
 def resolve_group3d_shadow_variant(cfg):
@@ -174,6 +181,28 @@ def run(cfg, model, dataset, clip_model, preprocess, tokenized_text, text_featur
     strict_live_route = (
         stream3dv3_live if stream3dv3_live is not None else stream3dv2_live
     )
+    dynamic_branch_cfg = resolve_causal_dynamic_branch_config(cfg)
+    if dynamic_branch_cfg.mode.value == "active" and strict_live_route is not None:
+        raise ValueError(
+            "The active causal dynamic branch and Stream3Dv2/v3 terminal "
+            "birth route cannot share one current output"
+        )
+    if dynamic_branch_cfg.mode.value == "active":
+        persistent_root = cfg.get("data", {}).get("output_dir")
+        roots = (
+            persistent_root,
+            dynamic_branch_cfg.current_output_root,
+            dynamic_branch_cfg.events_root,
+        )
+        if any(not isinstance(root, str) or not root for root in roots):
+            raise ValueError(
+                "active causal dynamic output roots must be explicit non-empty paths"
+            )
+        resolved_roots = [Path(root).expanduser().resolve() for root in roots]
+        if len(set(resolved_roots)) != len(resolved_roots):
+            raise ValueError(
+                "persistent, current, and event roots must be distinct"
+            )
     tm_fpf_c1 = TMFPFC1(cfg.get("box_fusion", {}))
     if tm_fpf_c1.enabled:
         if stream3dv2_live is None or stream3dv3_live is not None:
@@ -230,6 +259,11 @@ def run(cfg, model, dataset, clip_model, preprocess, tokenized_text, text_featur
 
     box_manager = BoxManager(cfg)
     Box_Fuser = BoxFusion(cfg)
+    dynamic_branch = None
+    dynamic_scene_id = None
+    box_manager.dynamic_object_branch = None
+    motion_chain = None
+    dynamic_policy_online = None
     edgetam_maskdepth = EdgeTAMMaskDepthProvider(cfg["box_fusion"])
     terminal_clip_enabled = bool(
         stream3dv2_live is not None
@@ -241,6 +275,10 @@ def run(cfg, model, dataset, clip_model, preprocess, tokenized_text, text_featur
         )
         or box_manager.causal_hungarian.needs_appearance
         or box_manager.pvq_ar.enabled
+        or (
+            dynamic_branch_cfg.mode.value != "disabled"
+            and dynamic_branch_cfg.use_appearance
+        )
     ):
         raise ValueError(
             "Terminal-batch CLIP cannot replace features required by association"
@@ -472,6 +510,23 @@ def run(cfg, model, dataset, clip_model, preprocess, tokenized_text, text_featur
     puf_gclean_shadow = None
     puf_gclean_frame_records = []
 
+    def process_dynamic_keyframe(
+        current_predictions, *, appearance_by_init_id=None
+    ):
+        """Advance the dynamic map once, after native association and before PFO."""
+
+        if dynamic_branch is None or not dynamic_branch.enabled:
+            return None
+        return dynamic_branch.process_keyframe(
+            source_frame_id=count,
+            current_instances=current_predictions,
+            fusion_list=box_manager.fusion_list,
+            depth_m=sample["wide"]["depth"][-1],
+            intrinsics=sample["sensor_info"].gt.depth.K[-1],
+            camera_to_world=sample["sensor_info"].gt.RT[-1],
+            appearance_by_init_id=appearance_by_init_id,
+        )
+
     def observer_native_fields(current_predictions=None):
         """Borrow only native arrays/lists that an observer must not change."""
 
@@ -615,6 +670,27 @@ def run(cfg, model, dataset, clip_model, preprocess, tokenized_text, text_featur
             if isinstance(sample_video_id, (list, tuple, np.ndarray))
             else str(sample_video_id)
         )
+        if dynamic_branch is None:
+            dynamic_branch = build_causal_dynamic_branch(cfg, scene_id=scene_id)
+            dynamic_scene_id = scene_id
+            box_manager.dynamic_object_branch = dynamic_branch
+        elif dynamic_scene_id != scene_id:
+            raise ValueError(
+                "One BoxFusion run cannot mix dynamic scenes: "
+                f"{dynamic_scene_id} != {scene_id}"
+            )
+        if motion_chain is None:
+            if cfg.get("motion_chain", {}).get("enabled", False):
+                if dynamic_branch.enabled and dynamic_branch.active:
+                    raise ValueError(
+                        "motion_chain requires the causal dynamic branch to "
+                        "be inactive (single-variable attribution)"
+                    )
+                motion_chain = MotionChain(cfg, scene_id=scene_id)
+                if not motion_chain.enabled:
+                    motion_chain = None
+        if dynamic_policy_online is None and cfg.get("dynamic_policy", {}).get("enabled", False):
+            dynamic_policy_online = DynamicPolicyOnline(cfg, scene_id)
         if observer_adapter is None:
             observer_adapter = build_observer_track_adapter(
                 cfg, scene_id=scene_id
@@ -930,10 +1006,17 @@ def run(cfg, model, dataset, clip_model, preprocess, tokenized_text, text_featur
 
         # only process keyframes
         if count % gap ==0 or count == len(dataset)-1:
+            dynamic_appearance_by_init_id = None
             
             all_kf_pose[count] = pose_np
             pose_np = np.expand_dims(pose_np,axis=0)
-            pose_np = np.repeat(pose_np, repeats=len(pred_instances), axis=0) 
+            pose_np = np.repeat(pose_np, repeats=len(pred_instances), axis=0)
+            if dynamic_policy_online is not None:
+                dynamic_policy_online.process_keyframe(
+                    int(count), dataset,
+                    float(cfg["cam"]["png_depth_scale"]),
+                    float(count) / float(gap if gap else 1) ,
+                )
             
             if len(pred_instances)==0:
                 if observer_adapter.enabled and count % gap == 0:
@@ -943,6 +1026,7 @@ def run(cfg, model, dataset, clip_model, preprocess, tokenized_text, text_featur
                     ):
                         empty_token = observer_adapter.begin_keyframe(count, ())
                         observer_adapter.finalize(box_manager, empty_token)
+                process_dynamic_keyframe(pred_instances)
                 all_pred_box = all_pred_box
                 all_poses = all_poses
                 box_count += len(pred_instances)
@@ -1138,6 +1222,14 @@ def run(cfg, model, dataset, clip_model, preprocess, tokenized_text, text_featur
 
                     class_results, box_features = text_prompt(boxes, tokenized_text, text_features, image, clip_model, preprocess) #[N_box]
                     pred_instances.categories = class_results
+                    if dynamic_branch is not None and dynamic_branch.needs_appearance:
+                        dynamic_appearance_by_init_id = {
+                            int(init_id): feature
+                            for init_id, feature in zip(
+                                pred_instances.init_id.detach().cpu().tolist(),
+                                box_features.detach().float().cpu().numpy(),
+                            )
+                        }
 
                 all_pred_box = pred_instances
                 all_poses = pose_np
@@ -1156,6 +1248,14 @@ def run(cfg, model, dataset, clip_model, preprocess, tokenized_text, text_featur
                     fragment_keyframe,
                     source_attempt_id,
                 )
+                process_dynamic_keyframe(
+                    pred_instances,
+                    appearance_by_init_id=dynamic_appearance_by_init_id,
+                )
+                if motion_chain is not None:
+                    motion_chain.process_keyframe(
+                        per_frame_ins, box_manager.fusion_list, int(count)
+                    )
 
             else:
                 
@@ -1210,6 +1310,11 @@ def run(cfg, model, dataset, clip_model, preprocess, tokenized_text, text_featur
 
                     # update the fusion list based on keep_idx
                     box_manager.update(keep_idx)
+
+                    if motion_chain is not None:
+                        motion_chain.process_keyframe(
+                            per_frame_ins, box_manager.fusion_list, int(count)
+                        )
                 
                     print(count," box_manager",box_manager.fusion_list)
 
@@ -1224,14 +1329,6 @@ def run(cfg, model, dataset, clip_model, preprocess, tokenized_text, text_featur
                         fragment_keyframe,
                         source_attempt_id,
                     )
-
-                    '''
-                    multi-view box fusion
-                    '''
-                    print("frame_id:box_num",box_manager.num_record)
-                    if cfg['box_fusion']['use']:
-                        Box_Fuser.boxfusion(all_pred_box, per_frame_ins, box_manager)
-                
                     #predict the semantic classes of remaining new boxes
                     cur_keep_idx = [i-num_before_cat for i in keep_idx if i>=num_before_cat]
                     cur_keep_idx_in_all = [i for i in range(keep_idx.shape[0]) if keep_idx[i]>=num_before_cat]
@@ -1248,6 +1345,32 @@ def run(cfg, model, dataset, clip_model, preprocess, tokenized_text, text_featur
                         # if len(pred_instances)>0:
                         class_results, box_features = text_prompt(boxes, tokenized_text, text_features, image, clip_model, preprocess) #[N_box]
                         all_pred_box.categories[cur_keep_idx_in_all] = class_results
+                        if dynamic_branch is not None and dynamic_branch.needs_appearance:
+                            retained_init_ids = (
+                                pred_instances.init_id[cur_keep_idx]
+                                .detach()
+                                .cpu()
+                                .tolist()
+                            )
+                            dynamic_appearance_by_init_id = {
+                                int(init_id): feature
+                                for init_id, feature in zip(
+                                    retained_init_ids,
+                                    box_features.detach().float().cpu().numpy(),
+                                )
+                            }
+
+                    process_dynamic_keyframe(
+                        pred_instances,
+                        appearance_by_init_id=dynamic_appearance_by_init_id,
+                    )
+
+                    '''
+                    multi-view box fusion
+                    '''
+                    print("frame_id:box_num",box_manager.num_record)
+                    if cfg['box_fusion']['use']:
+                        Box_Fuser.boxfusion(all_pred_box, per_frame_ins, box_manager)
 
                 else: # no new box
                     all_pred_box = all_pred_box[mask]
@@ -1260,6 +1383,7 @@ def run(cfg, model, dataset, clip_model, preprocess, tokenized_text, text_featur
                         fragment_keyframe,
                         source_attempt_id,
                     )
+                    process_dynamic_keyframe(pred_instances)
                     print(count, "new boxes have all been nms"," box_manager",box_manager.fusion_list)
 
             if re_vis:
@@ -1273,14 +1397,74 @@ def run(cfg, model, dataset, clip_model, preprocess, tokenized_text, text_featur
         if count == len(dataset)-1 or (count+gap)>len(dataset)-1:
             run_terminal_clip(all_pred_box)
             terminal_geometry = run_terminal_tm_fpf_c1(all_pred_box)
-            terminal_boxes_3d = terminal_geometry.corners.cpu().numpy()
-            terminal_scores = all_pred_box.scores.detach().cpu().numpy()
-            terminal_valid_mask = np.ones(terminal_boxes_3d.shape[0], dtype=bool)
+            dynamic_persistent = None
+            dynamic_current = None
+            if dynamic_branch is not None and dynamic_branch.enabled:
+                dynamic_persistent = dynamic_branch.materialize_persistent(
+                    all_pred_box,
+                    box_manager.fusion_list,
+                    base_geometry=terminal_geometry,
+                )
+                dynamic_current = dynamic_branch.materialize_current(
+                    all_pred_box,
+                    box_manager.fusion_list,
+                    base_geometry=terminal_geometry,
+                )
+            native_row_count = len(all_pred_box)
+            motion_chain_output = None
+            if motion_chain is not None and dynamic_persistent is None:
+                motion_chain_output = motion_chain.materialize(
+                    all_pred_box, box_manager.fusion_list
+                )
+            if dynamic_persistent is not None and dynamic_branch.active:
+                persistent_mask = np.asarray(dynamic_persistent.mask, dtype=bool)
+                terminal_source_indices = np.flatnonzero(persistent_mask)
+                terminal_boxes_3d = np.asarray(dynamic_persistent.corners)[
+                    persistent_mask
+                ]
+                terminal_scores = np.asarray(dynamic_persistent.scores)[
+                    persistent_mask
+                ]
+            elif motion_chain_output is not None:
+                terminal_source_indices = np.flatnonzero(motion_chain_output["mask"])
+                terminal_boxes_3d = np.asarray(motion_chain_output["corners"])[
+                    motion_chain_output["mask"]
+                ]
+                terminal_scores = np.asarray(motion_chain_output["scores"])[
+                    motion_chain_output["mask"]
+                ]
+            else:
+                terminal_source_indices = np.arange(native_row_count)
+                terminal_boxes_3d = terminal_geometry.corners.cpu().numpy()
+                terminal_scores = all_pred_box.scores.detach().cpu().numpy()
+            terminal_valid_mask = np.zeros(native_row_count, dtype=bool)
+            terminal_valid_mask[terminal_source_indices] = True
+            current_boxes_3d = None
+            current_scores = None
+            if dynamic_current is not None and dynamic_branch.active:
+                current_mask = np.asarray(dynamic_current.mask, dtype=bool)
+                current_boxes_3d = np.asarray(dynamic_current.corners)[current_mask]
+                current_scores = np.asarray(dynamic_current.scores)[current_mask]
             if cfg['dataset'] == 'scannet':
-                terminal_boxes_3d, terminal_valid_mask = post_process(
+                terminal_boxes_3d, post_valid_mask = post_process(
                     terminal_boxes_3d, return_mask=True
                 )
-                terminal_scores = terminal_scores[terminal_valid_mask]
+                terminal_scores = terminal_scores[post_valid_mask]
+                terminal_valid_mask[:] = False
+                terminal_valid_mask[
+                    terminal_source_indices[np.flatnonzero(post_valid_mask)]
+                ] = True
+                if current_boxes_3d is not None:
+                    current_boxes_3d, current_valid_mask = post_process(
+                        current_boxes_3d, return_mask=True
+                    )
+                    current_scores = current_scores[current_valid_mask]
+            if dynamic_policy_online is not None:
+                terminal_boxes_3d, terminal_scores = (
+                    dynamic_policy_online.materialize_terminal(
+                        terminal_boxes_3d, terminal_scores,
+                        float(count - 1) / float(gap if gap else 1)))
+                terminal_valid_mask = np.zeros(len(terminal_boxes_3d), dtype=bool)
             if Box_Fuser.capf.oracle_shadow:
                 terminal_track_keys = [
                     box_manager.fusion_list[int(index)]
@@ -1421,9 +1605,40 @@ def run(cfg, model, dataset, clip_model, preprocess, tokenized_text, text_featur
                     ]] # list of tuples class_idx[n]
 
                     save_box(save_list, output_path)
-                elif proposal_cache is not None:
+                elif (
+                    proposal_cache is not None
+                    or (dynamic_branch is not None and dynamic_branch.active)
+                ):
                     print("Saving score-preserving predictions: count=0")
                     save_box([[]], output_path)
+
+                if dynamic_branch is not None and dynamic_branch.active:
+                    current_root = dynamic_branch.config.current_output_root
+                    os.makedirs(current_root, exist_ok=True)
+                    current_output_path = os.path.join(
+                        current_root, scene_id + "_boxes.pkl"
+                    )
+                    assert current_boxes_3d is not None
+                    assert current_scores is not None
+                    assert current_boxes_3d.shape[0] == current_scores.shape[0]
+                    current_save_list = [[
+                        (int(0), current_boxes_3d[n], float(current_scores[n]))
+                        for n in range(current_boxes_3d.shape[0])
+                    ]]
+                    save_box(current_save_list, current_output_path)
+                    print(
+                        "Saving causal dynamic current predictions:",
+                        f"count={current_scores.shape[0]}",
+                        f"modified={len(dynamic_current.modified_rows)}",
+                        f"retired_or_duplicate={len(dynamic_current.dropped_rows)}",
+                        f"path={current_output_path}",
+                    )
+                    print(
+                        "Saving causal dynamic persistent predictions:",
+                        f"modified={len(dynamic_persistent.modified_rows)}",
+                        f"deduplicated={len(dynamic_persistent.dropped_rows)}",
+                        f"path={output_path}",
+                    )
 
                 if observer_adapter is not None and observer_adapter.config.mode == "shadow":
                     observer_adapter.write_diagnostics()
@@ -1614,6 +1829,21 @@ def run(cfg, model, dataset, clip_model, preprocess, tokenized_text, text_featur
                         "Proposal-cache record requires an evaluated output file"
                     )
                 proposal_cache.finalize(scene_id, prediction_path=output_path)
+
+            if dynamic_branch is not None and dynamic_branch.enabled:
+                dynamic_summary = dynamic_branch.close()
+                dynamic_timing = dynamic_summary["timing_ms"]
+                print(
+                    "Causal dynamic branch summary |",
+                    f"mode={dynamic_summary['mode']}",
+                    f"tracks={dynamic_summary['state_tracks']}",
+                    f"dynamic={dynamic_summary['dynamic_tracks']}",
+                    f"reactivations={dynamic_summary['reactivations']}",
+                    f"relocations={dynamic_summary['relocations']}",
+                    f"pfo_bypasses={dynamic_summary['static_fusion_bypasses']}",
+                    f"keyframe_p50/p95_ms={dynamic_timing['p50']:.3f}/"
+                    f"{dynamic_timing['p95']:.3f}",
+                )
                     
             exit(0)
             break
@@ -1670,9 +1900,44 @@ if __name__ == "__main__":
                 new_datadir = os.path.join(os.path.dirname(os.path.dirname(cfg['data']['datadir'])),  args.seq+'/frames/')
                 cfg['data']['datadir'] = new_datadir
                 
-            # eval only
-            if os.path.exists(os.path.join(cfg['data']['output_dir'],args.seq+"_boxes.pkl")) and cfg["eval"]:
-                print("Results for boxes already exist, skip evaluation")
+            # Eval-only resume is complete only when every configured output
+            # view exists.  This prevents a persistent file from hiding a
+            # missing causal-dynamic current file after an interrupted run.
+            persistent_path = os.path.join(
+                cfg['data']['output_dir'], args.seq + "_boxes.pkl"
+            )
+            expected_paths = [persistent_path]
+            dynamic_section = cfg.get("causal_dynamic_branch", {}) or {}
+            dynamic_mode = dynamic_section.get("mode", "disabled")
+            if dynamic_mode == "active":
+                current_root = dynamic_section.get("current_output_root")
+                if not isinstance(current_root, str) or not current_root:
+                    raise ValueError(
+                        "active causal_dynamic_branch requires current_output_root"
+                    )
+                expected_paths.append(
+                    os.path.join(current_root, args.seq + "_boxes.pkl")
+                )
+            event_complete = True
+            if dynamic_mode != "disabled":
+                events_root = dynamic_section.get("events_root")
+                if not isinstance(events_root, str) or not events_root:
+                    raise ValueError(
+                        "enabled causal_dynamic_branch requires events_root"
+                    )
+                event_complete = dynamic_event_ledger_complete(
+                    os.path.join(events_root, args.seq + ".jsonl"),
+                    scene_id=args.seq,
+                )
+            if (
+                cfg["eval"]
+                and all(
+                    os.path.isfile(path) and os.path.getsize(path) > 0
+                    for path in expected_paths
+                )
+                and event_complete
+            ):
+                print("All configured result views already exist, skip evaluation")
                 sys.exit(0)
         
         dataset = get_dataset(cfg)

@@ -326,6 +326,13 @@ class PVQAR:
         summary = {
             "scene_id": self.scene_id,
             "mode": self.cfg["mode"],
+            # Auditable observer coverage, independent of association choices.
+            # A missing JSONL is a verified empty stream only when this count
+            # is zero. Reaching the cap is conservatively marked incomplete.
+            "nms_observer": bool(self.cfg["nms_observer"]),
+            "nms_records": self._nms_records,
+            "nms_record_cap": self._nms_record_cap,
+            "nms_record_cap_hit": self._nms_records >= self._nms_record_cap,
             **{key: value for key, value in self.stats.items()},
             "abstain_reasons": dict(sorted(self._abstain_reasons.items())),
             "memory_tracks": len(self._committed),

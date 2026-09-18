@@ -6,9 +6,23 @@ For one scene, immediately after demo.py (observers on) finishes:
   3. Children from the run's own NMS observer log (M1b)
   4. Funnel + scene-end finalize (v9 semantics: per-observation dedup vs final map,
      medoid, cap, size pricing)                                    (M1c/M1d)
-  5. Consensus support over live keyframe proposals, boost alpha=0.8 tau=0.5 (M2)
-  6. Negative-evidence retirement: ch1 in-view-unsupported, ch2 depth-empty core (M5)
+  5. Optional strict-online dense-anchor recovery: per-frame top-M, bounded
+     voxel state, birth on third distinct observed frame            (M1-A)
+  6. Consensus support over live keyframe proposals, boost alpha=0.8 tau=0.5 (M2)
+  7. Negative-evidence retirement: ch1 in-view-unsupported, ch2 depth-empty core (M5)
 Everything is past data at scene end. No offline caches are read except the run's own logs.
+With ``--m1a-online``, M1-A emits causal birth events during the frame loop and
+writes a trace sidecar; its state has fixed active/birth caps. M1-P and the
+legacy evaluator pickle are still finalized at scene end.
+
+The legacy three-field pickle remains the evaluator-facing output.  Its score is
+the persistent (static-map) score by default.  A JSON sidecar stores both the
+persistent score and the M5-adjusted current score/state for every row; dynamic
+evaluation must opt in with ``--score-view current``.
+
+Both evaluator views can be materialized from the same forward pass by adding
+``--persistent-out-pkl`` and/or ``--current-out-pkl``. Batch runs use the
+corresponding ``--persistent-out-root``/``--current-out-root`` options.
 
 Usage:
   python tools/integrated_online.py --scene scene0568_00 \
@@ -24,11 +38,16 @@ from PIL import Image
 sys.path.insert(0, '/data/ZhaoX/BoxFusion')
 sys.path.insert(0, '/data/ZhaoX/BoxFusion/third_party/WeDetect')
 
+from boxfusion.m1_anchor_online import OnlineAnchorRecovery
+
 SCANS = os.environ.get('SCANS_ROOT', '/extra/ZhaoX/scannet_data/scans')
 CA1M_ROOT = os.environ.get('CA1M_ROOT', '/extra/ZhaoX/boxfusion_ca1m')
 GAP = 25
 SCORE_LIFT = 0.05
 TOPK_PER_FRAME = 150
+M1A_TOPM = int(os.environ.get('M1A_TOPM', '300'))
+M1A_MAX_ACTIVE = int(os.environ.get('M1A_MAX_ACTIVE', '4096'))
+M1A_MAX_BIRTHS = int(os.environ.get('M1A_MAX_BIRTHS', '640'))
 DEDUP, CAP, TTL, SELF_NMS = 0.25, 12, 10, 0.50
 ALPHA = float(os.environ.get('CAUSAL_ALPHA', '0.8'))
 M2_MODE = os.environ.get('M2_MODE', 'add')   # add | banded | births
@@ -39,6 +58,131 @@ TABLE = (0.05, 0.10, 0.25, 0.40, 0.50)
 M5_UNS_THR, M5_MIN_INV, M5_DEMOTE = 0.80, 5, 0.3
 M5_OFF = os.environ.get('M5_OFF', '0') == '1'
 M5_CH2_OFF = os.environ.get('M5_CH2_OFF', '0') == '1'
+DUAL_STATE_SCHEMA = 'boxfusion.integrated_online.dual_score.v1'
+SCORE_VIEWS = ('persistent', 'current')
+
+def _normalise_score_view(score_view):
+    if score_view is None:
+        score_view = os.environ.get('OUTPUT_SCORE_VIEW', 'persistent')
+    score_view = str(score_view).strip().lower()
+    if score_view not in SCORE_VIEWS:
+        raise ValueError(f'score_view must be one of {SCORE_VIEWS}, got {score_view!r}')
+    return score_view
+
+def _dual_state_path(out_pkl):
+    return f'{out_pkl}.dual_state.json'
+
+def _write_dual_score_output(payload, dual_rows, state_rows, out_pkl,
+                             scene=None, score_view=None):
+    """Write a legacy-compatible pickle plus the canonical dual-score sidecar.
+
+    ``dual_rows`` entries are ``(class_id, corners, persistent, current)``.
+    The pickle deliberately stays at the historical three-field row contract;
+    the sidecar is the lossless object-state representation.
+    """
+    score_view = _normalise_score_view(score_view)
+    if len(dual_rows) != len(state_rows):
+        raise ValueError('dual score rows and state rows must have identical length')
+    score_index = 2 if score_view == 'persistent' else 3
+    selected_rows = [
+        (row[0], row[1], float(row[score_index]))
+        for row in dual_rows
+    ]
+    out_sc = [selected_rows] + [
+        [(det[0], det[1], det[2]) for det in sc]
+        for sc in payload[1:]
+    ]
+    parent = os.path.dirname(out_pkl)
+    if parent:
+        os.makedirs(parent, exist_ok=True)
+    with open(out_pkl, 'wb') as handle:
+        pickle.dump(out_sc, handle)
+
+    sidecar = {
+        'schema': DUAL_STATE_SCHEMA,
+        'scene_id': scene,
+        'row_count': len(state_rows),
+        'selected_score_view': score_view,
+        'static_score_view': 'persistent',
+        'dynamic_score_view': 'current',
+        'm5_dataset_conditioned': False,
+        'm5_enabled': not M5_OFF,
+        'rows': state_rows,
+    }
+    sidecar_path = _dual_state_path(out_pkl)
+    with open(sidecar_path, 'w', encoding='utf-8') as handle:
+        json.dump(sidecar, handle, ensure_ascii=False, sort_keys=True, indent=2)
+        handle.write('\n')
+    return out_sc, sidecar_path
+
+def _write_requested_score_outputs(payload, dual_rows, state_rows, out_pkl,
+                                   scene=None, score_view=None,
+                                   persistent_out_pkl=None,
+                                   current_out_pkl=None):
+    """Materialize requested evaluator views from one computed dual state.
+
+    ``out_pkl`` remains the historical primary output selected by
+    ``score_view``. Optional explicit paths expose both state views without a
+    second model forward. A path cannot represent conflicting score views;
+    identical path/view requests are coalesced.
+    """
+    requests = [
+        ('primary', out_pkl, _normalise_score_view(score_view)),
+        ('persistent', persistent_out_pkl, 'persistent'),
+        ('current', current_out_pkl, 'current'),
+    ]
+    unique = {}
+    roles = {}
+    for role, path, view in requests:
+        if path is None:
+            continue
+        path = os.fspath(path)
+        identity = os.path.abspath(path)
+        previous = unique.get(identity)
+        if previous is not None and previous[1] != view:
+            raise ValueError(
+                f'output path {path!r} was requested for both '
+                f'{previous[1]!r} and {view!r} score views')
+        unique.setdefault(identity, (path, view))
+        roles[role] = identity
+
+    written = {}
+    for identity, (path, view) in unique.items():
+        _, sidecar_path = _write_dual_score_output(
+            payload, dual_rows, state_rows, path,
+            scene=scene, score_view=view)
+        written[identity] = {
+            'path': path,
+            'score_view': view,
+            'sidecar_path': sidecar_path,
+        }
+    return {
+        role: written[identity]
+        for role, identity in roles.items()
+    }
+
+def _write_m1_only_output(payload, all_rows, out_pkl):
+    """Materialize the pre-M2/pre-M5 M1 ablation from the same forward pass.
+
+    ``all_rows`` is ordered as untouched native rows followed by M1 births.
+    Writing it before support re-scoring makes the M1 and M1+M2 results exactly
+    paired: proposal geometry, birth selection, row order, and model forward are
+    identical, and only M2's native-score transform differs.
+    """
+    selected_rows = [
+        (row[0], row[1], float(row[2]))
+        for row in all_rows
+    ]
+    out_sc = [selected_rows] + [
+        [(det[0], det[1], det[2]) for det in sc]
+        for sc in payload[1:]
+    ]
+    parent = os.path.dirname(out_pkl)
+    if parent:
+        os.makedirs(parent, exist_ok=True)
+    with open(out_pkl, 'wb') as handle:
+        pickle.dump(out_sc, handle)
+    return out_sc
 
 def obb_to_corners(center, extents, R):
     signs = np.array([[sx, sy, sz] for sx in (-1, 1) for sy in (-1, 1) for sz in (-1, 1)], float)
@@ -82,22 +226,29 @@ def iou2d(box, props):
     ua = (box[2]-box[0])*(box[3]-box[1]) + (props[:,2]-props[:,0])*(props[:,3]-props[:,1]) - inter
     return float((inter/np.maximum(ua,1e-9)).max())
 
-def load_models():
-    from wedetect_uni_infer import SimpleYOLOWorldDetector
-    CKPT_W = '/data/ZhaoX/BoxFusion/third_party/WeDetect/wedetect_base_uni.pth'
-    wmodel = SimpleYOLOWorldDetector(backbone_size='base', prompt_dim=768, num_prompts=256, num_proposals=300)
-    ck = torch.load(CKPT_W, map_location='cpu', weights_only=False)
-    for key in list(ck.keys()):
-        if 'backbone' in key:
-            ck[key.replace('backbone.image_model.model.', 'backbone.')] = ck.pop(key)
-    for key in list(ck.keys()):
-        if 'bbox_head' in key:
-            nk = key.replace('bbox_head.head_module.', 'bbox_head.')
-            nk = nk.replace('0.2.', '0.6.').replace('1.2.', '1.6.').replace('2.2.', '2.6.')
-            nk = nk.replace('1.bn', '4').replace('1.conv', '3').replace('0.bn', '1').replace('0.conv', '0')
-            ck[nk] = ck.pop(key)
-    wmodel.load_state_dict(ck, strict=False)
-    wmodel = wmodel.cuda().eval()
+def load_models(m1a_online=False):
+    if m1a_online:
+        # DenseCapture returns the ordinary post-NMS stream and the 8,400
+        # pre-NMS anchors from the same frozen forward pass.
+        from tools.validate_ca1m_prenms_query import DenseCapture
+        wmodel = DenseCapture()
+    else:
+        from wedetect_uni_infer import SimpleYOLOWorldDetector
+        wmodel = SimpleYOLOWorldDetector(backbone_size='base', prompt_dim=768,
+                                         num_prompts=256, num_proposals=300)
+        CKPT_W = '/data/ZhaoX/BoxFusion/third_party/WeDetect/wedetect_base_uni.pth'
+        ck = torch.load(CKPT_W, map_location='cpu', weights_only=False)
+        for key in list(ck.keys()):
+            if 'backbone' in key:
+                ck[key.replace('backbone.image_model.model.', 'backbone.')] = ck.pop(key)
+        for key in list(ck.keys()):
+            if 'bbox_head' in key:
+                nk = key.replace('bbox_head.head_module.', 'bbox_head.')
+                nk = nk.replace('0.2.', '0.6.').replace('1.2.', '1.6.').replace('2.2.', '2.6.')
+                nk = nk.replace('1.bn', '4').replace('1.conv', '3').replace('0.bn', '1').replace('0.conv', '0')
+                ck[nk] = ck.pop(key)
+        wmodel.load_state_dict(ck, strict=False)
+        wmodel = wmodel.cuda().eval()
     from boxfusion.boxer_lifter import build_lifting_adapter
     cfg = {"lifting": {"backend": "boxer", "boxer": {
         "mode": "observer", "apply_stage": "post_filter",
@@ -130,8 +281,13 @@ def load_ca1m_scene(scene):
     w0, h0 = Image.open(kfs[0][2]).size if kfs else (512, 384)
     return K_color, K_depth, kfs, w0, h0, 20
 
-def process_scene(scene, native_pkl, nms_jsonl, out_pkl, wmodel, adapter, gap=GAP):
-    t0 = time.time()
+def process_scene(scene, native_pkl, nms_jsonl, out_pkl, wmodel, adapter,
+                  gap=GAP, score_view=None, persistent_out_pkl=None,
+                  current_out_pkl=None, m1_out_pkl=None, m1a_online=False,
+                  timing_out_json=None):
+    if torch.cuda.is_available():
+        torch.cuda.synchronize()
+    t0 = time.perf_counter()
     if scene.startswith('scene'):
         K_color = np.loadtxt(f'{SCANS}/{scene}/intrinsic/intrinsic_color.txt')[:3, :3]
         K_depth = np.loadtxt(f'{SCANS}/{scene}/intrinsic/intrinsic_depth.txt')[:3, :3]
@@ -152,23 +308,42 @@ def process_scene(scene, native_pkl, nms_jsonl, out_pkl, wmodel, adapter, gap=GA
         depth_scale = 1000.0
     # ---- 1+2: live WeDetect + lift on every keyframe (in stream order) ----
     corners_all, scores_all, fids_all, b2d_all = [], [], [], []
+    m1a = (OnlineAnchorRecovery(
+        scene, voxel_m=.3, min_views=3,
+        max_active=M1A_MAX_ACTIVE, max_births=M1A_MAX_BIRTHS)
+        if m1a_online else None)
+    m1a_update_seconds = 0.0
     world_pts = []          # M5 ch2: depth backprojection, every 4th kf, 8px step
     for ki, (f, pose, cf, df) in enumerate(kfs):
         try:
-            with torch.no_grad():
-                out = wmodel([cf])[0]
-            pb = out['bboxes'].float().cpu().numpy()
-            ps = out['scores'].float().cpu().numpy()
+            pil = Image.open(cf).convert('RGB')
+            dense_ids = np.empty(0, dtype=np.int64)
+            dense_boxes = np.empty((0, 4), dtype=np.float32)
+            dense_scores = np.empty(0, dtype=np.float32)
+            if m1a_online:
+                raw = wmodel.forward(pil)
+                pb = np.asarray(raw['post_boxes'], dtype=np.float32)
+                ps = np.asarray(raw['post_scores'], dtype=np.float32)
+                raw_scores = np.asarray(raw['scores'], dtype=np.float32)
+                dense_ids = np.argsort(-raw_scores, kind='stable')[:M1A_TOPM]
+                dense_boxes = np.asarray(raw['boxes'], dtype=np.float32)[dense_ids]
+                dense_scores = raw_scores[dense_ids]
+            else:
+                with torch.no_grad():
+                    out = wmodel([cf])[0]
+                pb = out['bboxes'].float().cpu().numpy()
+                ps = out['scores'].float().cpu().numpy()
             sel = ps >= SCORE_LIFT
             pb, ps = pb[sel], ps[sel]
             if len(pb) > TOPK_PER_FRAME:
-                order = np.argsort(-ps)[:TOPK_PER_FRAME]
+                order = np.argsort(-ps, kind='stable')[:TOPK_PER_FRAME]
                 pb, ps = pb[order], ps[order]
-            if len(pb):
-                rgb = np.asarray(Image.open(cf).convert('RGB'))
+            combined = np.concatenate([pb, dense_boxes]) if len(dense_boxes) else pb
+            if len(combined):
+                rgb = np.asarray(pil)
                 depth = np.asarray(Image.open(df)).astype(np.float32) / depth_scale
                 datum, meta = adapter._make_datum(
-                    image=rgb, depth=depth, boxes_xyxy=torch.from_numpy(pb).float(),
+                    image=rgb, depth=depth, boxes_xyxy=torch.from_numpy(combined).float(),
                     image_K=K_color, depth_K=K_depth, camera_to_world=pose,
                     scene_id=scene, frame_id=int(f))
                 outp, _, _ = adapter.forward_raw_with_feature_cache(
@@ -178,11 +353,26 @@ def process_scene(scene, native_pkl, nms_jsonl, out_pkl, wmodel, adapter, gap=GA
                 centers = obbs.bb3_center_world.float().cpu().numpy()
                 extents = obbs.bb3_diagonal.float().cpu().numpy()
                 rots = obbs.T_world_object.R.float().cpu().numpy()
-                for i in range(len(centers)):
-                    corners_all.append(obb_to_corners(centers[i], np.abs(extents[i])+1e-6, rots[i]))
+                lifted = np.asarray([
+                    obb_to_corners(centers[i], np.abs(extents[i])+1e-6, rots[i])
+                    for i in range(len(centers))], dtype=np.float64).reshape(-1, 8, 3)
+                for i in range(len(pb)):
+                    corners_all.append(lifted[i])
                     scores_all.append(float(ps[i]))
                     fids_all.append(int(f))
                     b2d_all.append(pb[i])
+                if m1a_online:
+                    dense_corners = lifted[len(pb):]
+                    valid = (np.isfinite(dense_corners).all(axis=(1, 2))
+                             & (np.ptp(dense_corners, axis=1) > 0).all(1))
+                    started = time.perf_counter()
+                    m1a.update(m1a.frames_seen, int(f), dense_ids[valid],
+                               dense_corners[valid], dense_scores[valid])
+                    m1a_update_seconds += time.perf_counter() - started
+            elif m1a_online:
+                # Dense top-M is non-empty for the frozen detector; keep this
+                # explicit so a changed detector cannot silently skip time.
+                raise RuntimeError('M1-A dense candidate stream is empty')
             if ki % 4 == 0:                      # depth points for M5 ch2
                 depth = np.asarray(Image.open(df)).astype(np.float64) / depth_scale
                 Hh, Ww = depth.shape
@@ -202,7 +392,9 @@ def process_scene(scene, native_pkl, nms_jsonl, out_pkl, wmodel, adapter, gap=GA
         by_frame.setdefault(int(fr), []).append(b)
     by_frame = {k: np.array(v) for k, v in by_frame.items()}
     pose_cache = {f: p for f, p, _, _ in kfs}
-    t_fwd = time.time() - t0
+    if torch.cuda.is_available():
+        torch.cuda.synchronize()
+    t_fwd = time.perf_counter() - t0
 
     # ---- 3: children from this run's NMS log ----
     cands = [(int(fr), np.asarray(c, float), float(s), 1)
@@ -267,10 +459,20 @@ def process_scene(scene, native_pkl, nms_jsonl, out_pkl, wmodel, adapter, gap=GA
             if len(kept) >= CAP:
                 break
         births = kept
-    all_rows = [(r[0], r[1], r[2], True) for r in rows] + [(0, m, price(m), False) for _, m in births]
+    m1a_births = m1a.rows() if m1a is not None else []
+    m1a_start = len(rows) + len(births)
+    all_rows = ([(r[0], r[1], r[2], True) for r in rows]
+                + [(0, m, price(m), False) for _, m in births]
+                + [(0, r['box'], r['score'], False) for r in m1a_births])
+    if m1_out_pkl is not None:
+        if os.path.abspath(os.fspath(m1_out_pkl)) == os.path.abspath(os.fspath(out_pkl)):
+            raise ValueError('M1-only output must not overwrite the M1+M2 output')
+        _write_m1_only_output(d, all_rows, m1_out_pkl)
+    m1_done = time.perf_counter()
 
     # ---- 5+6: M2 support and M5 dual-channel, per row ----
-    out_rows = []
+    dual_rows = []
+    state_rows = []
     n_demoted = 0
     excl_series = None
     if M2_EXCLUSIVE:
@@ -356,18 +558,115 @@ def process_scene(scene, native_pkl, nms_jsonl, out_pkl, wmodel, adapter, gap=GA
         ch2_empty = (core == 0) if not M5_CH2_OFF else False
         support_lost = inview_after_lastsup >= M5_MIN_INV        # seen, then gone >=5 in-view kfs
         m5_score_gate = float(os.environ.get('M5_SCORE_THR', '1.0'))
-        if M5_OFF:
-            pass
-        elif float(s) < m5_score_gate and inv >= M5_MIN_INV and (uns/max(inv,1) >= M5_UNS_THR or support_lost or ch2_empty):   # M5
-            ns = ns * M5_DEMOTE
+        unsupported_ratio = uns/max(inv, 1)
+        retire_reasons = []
+        if unsupported_ratio >= M5_UNS_THR:
+            retire_reasons.append('unsupported_ratio')
+        if support_lost:
+            retire_reasons.append('support_lost')
+        if ch2_empty:
+            retire_reasons.append('depth_empty_core')
+        retired = (
+            not M5_OFF
+            and float(s) < m5_score_gate
+            and inv >= M5_MIN_INV
+            and bool(retire_reasons)
+        )
+        persistent_score = float(ns)
+        current_score = persistent_score
+        if retired:   # M5 updates currentness only; persistent map evidence is immutable.
+            current_score = persistent_score * M5_DEMOTE
             n_demoted += 1
-        out_rows.append((cls, corners_, ns))
-    out_sc = [out_rows] + [[(det[0], det[1], det[2]) for det in sc] for sc in d[1:]]
-    os.makedirs(os.path.dirname(out_pkl), exist_ok=True)
-    pickle.dump(out_sc, open(out_pkl, 'wb'))
-    dt = time.time() - t0
-    print(f'{scene}: kfs={len(kfs)} lifted={len(corners_all)} births={len(births)} '
-          f'rows={len(out_rows)} demoted={n_demoted} | fwd {t_fwd:.1f}s total {dt:.1f}s', flush=True)
+        dual_rows.append((cls, corners_, persistent_score, current_score))
+        source = ('native' if is_native else
+                  ('m1a_anchor_birth' if row_idx >= m1a_start else
+                   'm1p_proposal_birth'))
+        state_rows.append({
+            'row_index': row_idx,
+            'source': source,
+            'persistent_score': persistent_score,
+            'current_score': current_score,
+            'current_state': 'retired' if retired else 'active',
+            'm5_retired': bool(retired),
+            'm5_reasons': retire_reasons if retired else [],
+            'support': float(sup),
+            'in_view_count': int(inv),
+            'unsupported_count': int(uns),
+            'unsupported_ratio': float(unsupported_ratio),
+            'in_view_after_last_support': int(inview_after_lastsup),
+            'last_support_ordinal': int(last_sup_ord),
+            'core_point_count': int(core),
+        })
+    m2_done = time.perf_counter()
+    score_view = _normalise_score_view(score_view)
+    written = _write_requested_score_outputs(
+        d, dual_rows, state_rows, out_pkl, scene=scene,
+        score_view=score_view,
+        persistent_out_pkl=persistent_out_pkl,
+        current_out_pkl=current_out_pkl)
+    m1a_trace_path = None
+    if m1a is not None:
+        ranked_scores = [float(r['score']) for r in m1a_births]
+        if len(ranked_scores) != len(set(ranked_scores)):
+            raise RuntimeError('M1-A deterministic scores are not unique within scene')
+        trace = {
+            'schema': 'boxfusion.m1a.strict_online.v1',
+            'scene_id': scene,
+            'strictly_causal': True,
+            'uses_future_frames': False,
+            'uses_final_map_mask': False,
+            'uses_gt': False,
+            'parameters': {
+                'top_m_per_keyframe': M1A_TOPM,
+                'voxel_m': .3,
+                'confirmation_distinct_frames': 3,
+                'max_active': M1A_MAX_ACTIVE,
+                'max_births': M1A_MAX_BIRTHS,
+                'score_interval': [0.040001, 0.049999],
+            },
+            'tracker': m1a.diagnostics(),
+            'state_update_seconds': m1a_update_seconds,
+            'score_unique_within_scene': True,
+            'birth_events': m1a.events,
+        }
+        m1a_trace_path = f'{out_pkl}.m1a_online.json'
+        with open(m1a_trace_path, 'w', encoding='utf-8') as handle:
+            json.dump(trace, handle, ensure_ascii=False, sort_keys=True, indent=2)
+            handle.write('\n')
+    if torch.cuda.is_available():
+        torch.cuda.synchronize()
+    dt = time.perf_counter() - t0
+    timing = {
+        'scene_id': scene,
+        'keyframes': len(kfs),
+        'm1a_online': bool(m1a_online),
+        'frontend_and_lifting_seconds': float(t_fwd),
+        'm1_finalize_seconds': float(m1_done - (t0 + t_fwd)),
+        'cumulative_through_m1_seconds': float(m1_done - t0),
+        'm2_scoring_seconds': float(m2_done - m1_done),
+        'output_serialization_seconds': float(dt - (m2_done - t0)),
+        'total_seconds': float(dt),
+        'm1p_births': len(births),
+        'm1a_births': len(m1a_births),
+        'output_rows': len(dual_rows),
+        'm1a_state_update_seconds': float(m1a_update_seconds),
+    }
+    if timing_out_json is not None:
+        timing_parent = os.path.dirname(os.fspath(timing_out_json))
+        if timing_parent:
+            os.makedirs(timing_parent, exist_ok=True)
+        with open(timing_out_json, 'w', encoding='utf-8') as handle:
+            json.dump(timing, handle, ensure_ascii=False, sort_keys=True, indent=2)
+            handle.write('\n')
+    materialized = ','.join(
+        f'{record["score_view"]}:{record["path"]}'
+        for record in written.values())
+    print(f'{scene}: kfs={len(kfs)} lifted={len(corners_all)} '
+          f'm1p_births={len(births)} m1a_births={len(m1a_births)} '
+          f'rows={len(dual_rows)} retired={n_demoted} score_view={score_view} '
+          f'outputs={materialized} m1_only={m1_out_pkl or "disabled"} '
+          f'm1a_trace={m1a_trace_path or "disabled"} '
+          f'| fwd {t_fwd:.1f}s total {dt:.1f}s', flush=True)
     return dt, len(kfs)
 
 if __name__ == '__main__':
@@ -378,8 +677,42 @@ if __name__ == '__main__':
     ap.add_argument('--nms-jsonl')
     ap.add_argument('--out-pkl')
     ap.add_argument('--batch', help='scene list file; native/kfmap run dirs fixed')
+    ap.add_argument(
+        '--score-view', choices=SCORE_VIEWS,
+        default=os.environ.get('OUTPUT_SCORE_VIEW', 'persistent'),
+        help='legacy pickle score: persistent for static maps (default), current for dynamic state')
+    ap.add_argument(
+        '--persistent-out-pkl',
+        help='single-scene persistent-score pickle from the same forward pass')
+    ap.add_argument(
+        '--current-out-pkl',
+        help='single-scene current-score pickle from the same forward pass')
+    ap.add_argument(
+        '--persistent-out-root',
+        default=os.environ.get('CAUSAL_PERSISTENT_OUT'),
+        help='batch root for persistent-score evaluator pickles')
+    ap.add_argument(
+        '--current-out-root',
+        default=os.environ.get('CAUSAL_CURRENT_OUT'),
+        help='batch root for current-score evaluator pickles')
+    ap.add_argument(
+        '--m1-out-pkl',
+        help='single-scene pre-M2/pre-M5 M1-only pickle from the same forward pass')
+    ap.add_argument(
+        '--m1-out-root',
+        default=os.environ.get('CAUSAL_M1_OUT'),
+        help='batch root for paired pre-M2/pre-M5 M1-only evaluator pickles')
+    ap.add_argument(
+        '--m1a-online', action='store_true',
+        default=os.environ.get('M1A_ONLINE', '0') == '1',
+        help=('enable strict causal pre-NMS anchor recovery: dense top-M, '
+              'bounded voxel state, third-distinct-frame births'))
     args = ap.parse_args()
-    wmodel, adapter = load_models()
+    if args.batch and (args.persistent_out_pkl or args.current_out_pkl or args.m1_out_pkl):
+        ap.error('--persistent-out-pkl/--current-out-pkl/--m1-out-pkl are single-scene options')
+    if not args.batch and (args.persistent_out_root or args.current_out_root or args.m1_out_root):
+        ap.error('--persistent-out-root/--current-out-root/--m1-out-root require --batch')
+    wmodel, adapter = load_models(m1a_online=args.m1a_online)
     if args.batch:
         NAT = os.environ.get('CAUSAL_NAT', '/data/ZhaoX/BoxFusion/results/scannet_t05_boxer_kfmap_score05')
         KFD = os.environ.get('CAUSAL_KFD', '/data/ZhaoX/BoxFusion/diagnostics/kfmap_score05')
@@ -387,8 +720,27 @@ if __name__ == '__main__':
         os.makedirs(OUTD, exist_ok=True)
         scenes = [l.strip() for l in open(args.batch) if l.strip()]
         for sc in scenes:
+            persistent_out = (
+                f'{args.persistent_out_root}/{sc}_boxes.pkl'
+                if args.persistent_out_root else None)
+            current_out = (
+                f'{args.current_out_root}/{sc}_boxes.pkl'
+                if args.current_out_root else None)
+            m1_out = (
+                f'{args.m1_out_root}/{sc}_boxes.pkl'
+                if args.m1_out_root else None)
             process_scene(sc, f'{NAT}/{sc}_boxes.pkl', f'{KFD}/{sc}_pvq_nms.jsonl',
-                          f'{OUTD}/{sc}_boxes.pkl', wmodel, adapter)
+                          f'{OUTD}/{sc}_boxes.pkl', wmodel, adapter,
+                          score_view=args.score_view,
+                          persistent_out_pkl=persistent_out,
+                          current_out_pkl=current_out,
+                          m1_out_pkl=m1_out,
+                          m1a_online=args.m1a_online)
         print('BATCH_DONE', flush=True)
     else:
-        process_scene(args.scene, args.native_pkl, args.nms_jsonl, args.out_pkl, wmodel, adapter)
+        process_scene(args.scene, args.native_pkl, args.nms_jsonl, args.out_pkl,
+                      wmodel, adapter, score_view=args.score_view,
+                      persistent_out_pkl=args.persistent_out_pkl,
+                      current_out_pkl=args.current_out_pkl,
+                      m1_out_pkl=args.m1_out_pkl,
+                      m1a_online=args.m1a_online)

@@ -108,6 +108,40 @@ def test_config_validation():
         {"enabled": True, "diagnostics_dir": "/tmp/x"}
     )
     assert resolved["max_prototypes"] == 4
+
+
+def test_nms_observer_summary_distinguishes_empty_and_capped_stream(tmp_path):
+    empty = pvq_ar_module.PVQAR(
+        make_cfg(nms_observer=True, diagnostics_dir=str(tmp_path / "empty"))
+    )
+    empty.bind_scene("42446540")
+    empty_summary = empty.finalize()
+    assert empty_summary["nms_observer"] is True
+    assert empty_summary["nms_records"] == 0
+    assert empty_summary["nms_record_cap_hit"] is False
+    assert not (tmp_path / "empty" / "42446540_pvq_nms.jsonl").exists()
+
+    capped = pvq_ar_module.PVQAR(
+        make_cfg(nms_observer=True, diagnostics_dir=str(tmp_path / "capped"))
+    )
+    capped.bind_scene("42446540")
+    capped._nms_record_cap = 1
+    event = dict(
+        keyframe_id=20, parent_row=0, child_row=1,
+        parent_init_id=0, child_init_id=1,
+        parent_frame_id=0, child_frame_id=20,
+        iou=0.2, parent_score=0.8, child_score=0.3,
+        parent_corners_world=np.zeros((8, 3)),
+        child_corners_world=np.ones((8, 3)),
+    )
+    capped.log_nms_merge(**event)
+    capped.log_nms_merge(**event)
+    capped_summary = capped.finalize()
+    lines = (tmp_path / "capped" / "42446540_pvq_nms.jsonl").read_text().splitlines()
+    assert capped_summary["nms_records"] == len(lines) == 1
+    assert capped_summary["nms_record_cap"] == 1
+    assert capped_summary["nms_record_cap_hit"] is True
+    assert capped_summary["applied_rearrangements"] == 0
     disabled = pvq_ar_module.resolve_pvq_ar_config(None)
     assert disabled["enabled"] is False
 

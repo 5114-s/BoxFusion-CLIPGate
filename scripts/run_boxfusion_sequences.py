@@ -4,12 +4,38 @@
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import subprocess
 import sys
 from pathlib import Path
 
 import yaml
+
+
+DYNAMIC_EVENT_SCHEMA = "boxfusion.causal_dynamic_branch.v1"
+
+
+def dynamic_event_ledger_complete(path: Path, *, scene_id: str) -> bool:
+    """Require the final durable event record before treating a scene as done."""
+
+    if not path.is_file() or path.stat().st_size <= 0:
+        return False
+    final_record = None
+    try:
+        with path.open("r", encoding="utf-8") as handle:
+            for raw_line in handle:
+                line = raw_line.strip()
+                if line:
+                    final_record = json.loads(line)
+    except (OSError, UnicodeError, json.JSONDecodeError):
+        return False
+    return bool(
+        isinstance(final_record, dict)
+        and final_record.get("schema") == DYNAMIC_EVENT_SCHEMA
+        and final_record.get("type") == "summary"
+        and final_record.get("scene_id") == scene_id
+    )
 
 
 def read_sequences(path: Path, dataset: str) -> list[str]:
@@ -99,6 +125,31 @@ def main() -> int:
         cfg = yaml.full_load(f)
     out_dir = Path(cfg["data"]["output_dir"])
     out_dir.mkdir(parents=True, exist_ok=True)
+    dynamic_section = cfg.get("causal_dynamic_branch", {}) or {}
+    dynamic_current_dir = None
+    dynamic_mode = dynamic_section.get("mode", "disabled")
+    dynamic_event_dir = None
+    if dynamic_mode != "disabled":
+        events_root = dynamic_section.get("events_root")
+        if not isinstance(events_root, str) or not events_root:
+            parser.error("enabled causal_dynamic_branch requires events_root")
+        dynamic_event_dir = Path(events_root)
+        dynamic_event_dir.mkdir(parents=True, exist_ok=True)
+    if dynamic_mode == "active":
+        current_root = dynamic_section.get("current_output_root")
+        if not isinstance(current_root, str) or not current_root:
+            parser.error(
+                "active causal_dynamic_branch requires current_output_root"
+            )
+        dynamic_current_dir = Path(current_root)
+        dynamic_current_dir.mkdir(parents=True, exist_ok=True)
+        artifact_roots = {
+            out_dir.expanduser().resolve(),
+            dynamic_current_dir.expanduser().resolve(),
+            dynamic_event_dir.expanduser().resolve(),
+        }
+        if len(artifact_roots) != 3:
+            parser.error("persistent, current, and event roots must be distinct")
     log_dir = Path(args.log_dir)
     log_dir.mkdir(parents=True, exist_ok=True)
 
@@ -113,8 +164,26 @@ def main() -> int:
     skipped_missing: list[str] = []
     for idx, seq in enumerate(seqs, start=1):
         pred = out_dir / f"{seq}_boxes.pkl"
-        if pred.exists():
-            print(f"[{idx}/{len(seqs)}] skip {seq}: {pred} exists", flush=True)
+        expected_predictions = [pred]
+        if dynamic_current_dir is not None:
+            expected_predictions.append(
+                dynamic_current_dir / f"{seq}_boxes.pkl"
+            )
+        event_complete = (
+            dynamic_event_dir is None
+            or dynamic_event_ledger_complete(
+                dynamic_event_dir / f"{seq}.jsonl", scene_id=seq
+            )
+        )
+        predictions_complete = all(
+            path.is_file() and path.stat().st_size > 0
+            for path in expected_predictions
+        )
+        if predictions_complete and event_complete:
+            print(
+                f"[{idx}/{len(seqs)}] skip {seq}: all result views exist",
+                flush=True,
+            )
             continue
 
         if args.skip_missing:
@@ -126,9 +195,10 @@ def main() -> int:
                 continue
 
         log_path = log_dir / f"{seq}.log"
+        repository_root = Path(__file__).resolve().parents[1]
         cmd = [
             sys.executable,
-            "demo.py",
+            str(repository_root / "demo.py"),
             args.dataset,
             "--model-path",
             args.model_path,
@@ -141,7 +211,13 @@ def main() -> int:
         ]
         print(f"[{idx}/{len(seqs)}] run {seq}; log={log_path}", flush=True)
         with open(log_path, "w") as log:
-            proc = subprocess.run(cmd, env=env, stdout=log, stderr=subprocess.STDOUT)
+            proc = subprocess.run(
+                cmd,
+                cwd=repository_root,
+                env=env,
+                stdout=log,
+                stderr=subprocess.STDOUT,
+            )
         if proc.returncode != 0:
             failures.append(seq)
             print(f"[{idx}/{len(seqs)}] FAILED {seq} rc={proc.returncode}", flush=True)
