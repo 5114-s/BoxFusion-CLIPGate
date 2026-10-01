@@ -1,0 +1,49 @@
+{
+  "schema": "boxfusion.tr3d_foreground_init_observer_smoke.v1",
+  "role": "initialization_only_pipeline_and_recall_diagnostic",
+  "not_a_final_t1_result": true,
+  "no_ap_improvement_claim": true,
+  "checkpoint_sha256": "09f2f650540716556719d2858d9a484dcbf682e2e94576887855b9b637b6492e",
+  "config_sha256": "f3490e76e6bf542134ceb4f6404ef6e1612d36225efda0d849b923ccfd3fc814",
+  "scene_list_sha256": "0b45515fe11a531ecc3fcc6f41dfb1842e8520565e6b63df331f897722b072dd",
+  "frozen_b6_prediction_tree_sha256": "2ebfd520797f0a63fd2d239de60fdc9a09fd99966b9ba09af3e741c8c75e4608",
+  "scene_count": 10,
+  "ground_truth_count": 149,
+  "tr3d_candidate_count": 2197,
+  "tr3d_kernel_runtime_seconds": 1.1815347482915968,
+  "observer_contract": {
+    "observer_only": true,
+    "mutation_enabled": false,
+    "applied_count": 0,
+    "frozen_b6_verified_before_and_after": true
+  },
+  "recall_oracle": {
+    "0.15": {
+      "b6": 0.5369127516778524,
+      "tr3d": 0.9731543624161074,
+      "union": 0.9798657718120806,
+      "union_gain": 0.4429530201342282,
+      "novel_true_positives": 66,
+      "novel_precision_upper_bound": 0.030040964952207556
+    },
+    "0.25": {
+      "b6": 0.48322147651006714,
+      "tr3d": 0.9463087248322147,
+      "union": 0.959731543624161,
+      "union_gain": 0.47651006711409394,
+      "novel_true_positives": 71,
+      "novel_precision_upper_bound": 0.0323167956304051
+    },
+    "0.50": {
+      "b6": 0.2953020134228188,
+      "tr3d": 0.8791946308724832,
+      "union": 0.8926174496644296,
+      "union_gain": 0.5973154362416108,
+      "novel_true_positives": 89,
+      "novel_precision_upper_bound": 0.04050978607191625
+    }
+  },
+  "continuation_gate_passed": false,
+  "failure_reason": "high recall but uncalibrated proposal precision is below the preregistered 0.15 requirement",
+  "full_local_report_sha256": "29fe4435473ed36ed73da4c2539267eb2b7b950b6269610c8e6f880b1da7a0be"
+}

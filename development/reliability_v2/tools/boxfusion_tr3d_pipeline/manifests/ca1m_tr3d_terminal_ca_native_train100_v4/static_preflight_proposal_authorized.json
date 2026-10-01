@@ -1,0 +1,84 @@
+{
+  "blocked_reasons": [
+    "final_base_train100_anchor_manifest_pending",
+    "final_base_native_b6_v2_artifacts_pending",
+    "cpu_overlay_authorization_pending",
+    "full_two_stage_run_not_authorized"
+  ],
+  "checkpoint_binding": {
+    "ca1m_random_scratch": true,
+    "checkpoint_sha256": "d3ba6cc22f0a1a11ab47e55ccdd21c2ef4a84efaf3c6359b7e8231a6c8d3b4a7",
+    "effective_config_sha256": "38368fb5eb692ae2452d098bd4bb0814bbbb83feae780cf83446121bd9e7b88b",
+    "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/manifests/ca1m_tr3d_terminal_ca_native_train100_v3/checkpoint_binding.json",
+    "scannet_module_access": false,
+    "sha256": "19b8c3d12de8dd8d3ffff1413c6c6003a5ccb1a10cf213b972ebd43fa9db5043"
+  },
+  "complete": true,
+  "config_path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/config/ca1m_tr3d_terminal_train100_v4.json",
+  "config_sha256": "04601d6681f13c5c33ebf6d30ac1afc4367eda03ea7fcaa5c3cc23f4ff005e0b",
+  "distribution_parity": {
+    "lineage_scenes": 100,
+    "old_diagnostic_runtime_dependency": false,
+    "point_array_scenes": 100,
+    "point_byte_scenes": 100,
+    "receipt_path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/manifests/ca1m_tr3d_terminal_ca_native_train100_v4/lineage_training_point_parity_v2.json",
+    "receipt_sha256": "e06a1497367b59b0137ec8eb04c817e184b335f2e5ba4c3dea090a48e58b675b",
+    "training_distribution_points": 24382287,
+    "training_point_runtime_dependency": false
+  },
+  "forbidden_reuse": {
+    "old_native_b6_or_scannet_b6": true,
+    "old_terminal_v1_v2_v3_artifacts": true,
+    "sealed_v3_binding_only_exception": true
+  },
+  "full_run_authorized": false,
+  "gpu_started": false,
+  "ground_truth_access": false,
+  "namespace": "ca1m_tr3d_terminal_ca_native_train100_v4",
+  "overlay_cpu_only": true,
+  "overlay_inputs_bound": false,
+  "overlay_inventory": {
+    "complete": false,
+    "count": 0,
+    "exists": false,
+    "missing_count": 100
+  },
+  "overlay_stage_contract_ready": true,
+  "overlay_stage_runtime_authorized": false,
+  "processed_rgbd_inventory": {
+    "annotation_files_opened": false,
+    "demo_gap20_early_finalize_frame_count": 3010,
+    "files_opened": [
+      "all_poses.npy",
+      "K_depth_per_frame.npy_or_K_depth.txt"
+    ],
+    "frame_count": 61189,
+    "max_scene_frames": 2327,
+    "min_scene_frames": 3,
+    "rgb_depth_image_bytes_opened": false,
+    "root": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1",
+    "scene_count": 100
+  },
+  "proposal_authorization": {
+    "decision": "ALLOW_STAGE_P_ONLY",
+    "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/manifests/ca1m_tr3d_terminal_ca_native_train100_v4/proposal_stage_authorization_v2.json",
+    "point_hash_precheck_before_gpu": true,
+    "scope": "stage_p_only",
+    "sha256": "5b0db0390a28e0216e5a00518df75c4ada1953285df42643d5ba526deeea7a09"
+  },
+  "proposal_cache_depends_on_anchor_or_b6": false,
+  "proposal_inventory": {
+    "complete": false,
+    "exists": false,
+    "missing_count": 100,
+    "valid_count": 0
+  },
+  "proposal_stage_anchor_access": false,
+  "proposal_stage_b6_access": false,
+  "proposal_stage_contract_ready": true,
+  "proposal_stage_runtime_authorized": true,
+  "scene_count": 100,
+  "scene_list_sha256": "35321e9942dc5d512db2952b9ca6228b1291127e0c13fd92aa458f2d7eb7f9fd",
+  "schema": "boxfusion.ca1m_tr3d_terminal_two_stage_preflight.v4",
+  "validation_ground_truth_access": false
+}

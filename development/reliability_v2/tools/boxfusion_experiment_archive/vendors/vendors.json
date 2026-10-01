@@ -1,0 +1,43 @@
+{
+  "schema": "boxfusion.external_vendor_references.v1",
+  "vendors": [
+    {
+      "name": "Boxer",
+      "url": "https://github.com/facebookresearch/boxer.git",
+      "commit": "1f86542dc342a4b1d474c87c97c5d1d6566d9148",
+      "checkpoint_included": false,
+      "local_patch": "vendor_patches/boxer/alehead_autograd_safe.patch",
+      "local_overlay": "vendor_patches/boxer/boxernet.py"
+    },
+    {
+      "name": "SGCDet",
+      "url": "https://github.com/RM-Zhang/SGCDet.git",
+      "commit": "eb4ba52a711ab30302569ce7329aca9be28aa39d",
+      "checkpoint_included": false,
+      "local_states": [
+        {
+          "route": "boxfusion_b6_sgcdet_local_refiner_dev",
+          "dirty_files": 0
+        },
+        {
+          "route": "boxfusion_b6_selective_boxer_sgcdet_dev",
+          "dirty_files": 98,
+          "change_kind": "vendor dataset-support files absent; no added or modified implementation files",
+          "local_deletion_manifest": "vendor_patches/sgcdet/boxfusion_b6_selective_boxer_sgcdet_deleted_paths.txt"
+        }
+      ]
+    },
+    {
+      "name": "mmdetection3d",
+      "url": "https://github.com/open-mmlab/mmdetection3d.git",
+      "commit": "fe25f7a51d36e3702f961e198894580d83c4387b",
+      "checkpoint_included": false
+    },
+    {
+      "name": "SPGroup3D",
+      "url": "https://github.com/zyrant/SPGroup3D.git",
+      "commit": "181283547323d3bd54d0e9f58baf0cd413ccc107",
+      "checkpoint_included": false
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "checkpoint_selection_authorized": false,
+  "complete": true,
+  "continuation_gate": {
+    "min_delta_ap15": 0.0,
+    "min_delta_ap25": 0.0,
+    "min_delta_ap50": 0.005,
+    "min_replacement_scenes": 5,
+    "min_replacements": 10,
+    "pass_authorizes_inner_roles": [
+      "inner_holdout2",
+      "inner_holdout3",
+      "inner_holdout4"
+    ],
+    "proposal_exact20_finite_ca_only": true,
+    "same_gt_min_iou_gain": 0.05
+  },
+  "create_only": true,
+  "failure_action": "stop_without_training_inner_models_or_opening_fold1_or_official_validation",
+  "fold0_prior_exposure": [
+    "v1_checkpoint_diagnostic",
+    "terminal_v4_gate"
+  ],
+  "fold0_role": "reused_dev",
+  "fold0_scene_count": 20,
+  "fold1_access": false,
+  "gpu_started_by_preregistration": false,
+  "inputs": {
+    "anchor_shadow": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/inputs/ca1m_tr3d_xfit_r2_outer_dev_eval_v1/fold0_final_base_b6_v2_oof.npz",
+      "sha256": "202340ff97c3de5f49a969ec983222cae0772913b831f808f870aea71a639c88"
+    },
+    "anchor_shadow_manifest": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/inputs/ca1m_tr3d_xfit_r2_outer_dev_eval_v1/fold0_final_base_b6_v2_oof.manifest.json",
+      "sha256": "b574d029adcf3d24735869d314a7e2f2dd39e6ad05ea16a6a193d2171dec1669"
+    },
+    "fold0_scene_list": {
+      "path": "/data/ZhaoX/OVM3D-Dett/boxfusion_tr3d_dev/data/tr3d_ca1m_visible_xfit_v2_formal/splits/predict_fold0.txt",
+      "sha256": "9c886ca85ba599881797b25a49d2fc72dd136d255a245a09fe1cf17cbce735a7"
+    },
+    "gt_shadow_inventory": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/manifests/ca1m_tr3d_benefit_gate_final_base_v4/derived_train_gt_shadow_inventory_v1.json",
+      "sha256": "6c3bdfd666ca49558ac390197abeec588949f05e33d9c8a18d1b5c8326d9e9a7"
+    },
+    "point_parity": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/manifests/ca1m_tr3d_terminal_ca_native_train100_v4/lineage_training_point_parity_v4.json",
+      "sha256": "35d9dfafc7272d92d98c97c6ef23f4323432e9bd0af5045bc5f78b1ae9afa00d"
+    },
+    "r2_training_authorization": {
+      "path": "/data/ZhaoX/OVM3D-Dett/boxfusion_tr3d_dev/data/tr3d_ca1m_visible_xfit_v2_formal/TRAINING_AUTHORIZATION_R2.json",
+      "sha256": "46e30060cfbe000b330d50688c0e5534f2f3887622fab1da3138a2f1613fec5c"
+    },
+    "v1_fold0_comparison_manifest": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/inputs/ca1m_tr3d_xfit_r2_outer_dev_eval_v1/v1_fold0_proposal_comparison_manifest.json",
+      "sha256": "b38d55b42eceef21639943a41c689ce45c1eb698dfe46e0f4e43280500e967f1"
+    },
+    "v1_sealed_raw_diagnostic": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/manifests/ca1m_tr3d_terminal_ca_native_train100_v3/checkpoint_dev_diagnostic_v4.receipt.json",
+      "sha256": "ab097945760157b824a04075e825df9981e9c6af52754f72c020ff54981f9b33"
+    },
+    "xfit_contract": {
+      "path": "/data/ZhaoX/OVM3D-Dett/boxfusion_tr3d_dev/data/tr3d_ca1m_visible_xfit_v2_formal/XFIT_FORMAL_CONTRACT.json",
+      "sha256": "562b1204e96eed9ce9883b5fcecc65a422104896dc26a87ea988db66d5e01572"
+    }
+  },
+  "official_validation_access": false,
+  "oracle_role": "non_deployable_same_best_gt_geometry_headroom",
+  "partition": "threshold_dev_fold0",
+  "r2_fold0_gt_access_at_seal": false,
+  "r2_proposal_access_at_seal": false,
+  "raw_detector_ap_role": "diagnostic_only_no_checkpoint_selection",
+  "schema": "boxfusion.ca1m_tr3d_xfit_r2_outer_dev_preregistration.v1",
+  "sealed_before_r2_fold0_gt_access": true,
+  "train_only": true
+}

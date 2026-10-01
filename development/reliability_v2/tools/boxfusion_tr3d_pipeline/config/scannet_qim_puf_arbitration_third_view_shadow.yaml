@@ -1,0 +1,108 @@
+dataset: scannet
+
+# Isolated training-free third-view experiment. Native BoxFusion remains the
+# only association/fusion/output path. PUF decisions and both confirmation
+# modules are diagnostics; no native box is filtered or appended here.
+moon_qim_lite:
+  enabled: true
+  observer_only: true
+  voxel_size_m: 0.30
+  samples_per_axis: 3
+  neighbor_radius: 1
+  max_candidates_per_query: 8
+  max_tracks: 1024
+  track_ttl_keyframes: 80
+  max_postings_per_key: 32
+
+puf_lite:
+  enabled: true
+  observer_only: true
+  top_k: 3
+  birth_likelihood: 0.40
+  center_sigma: 0.50
+  center_margin_m: 0.05
+  shared_key_power: 1.0
+  max_tracks: 1024
+  exhaustive_fallback: true
+  probability_tolerance: 1.0e-12
+  snapshot_tolerance: 1.0e-5
+  epsilon: 1.0e-9
+  max_diagnostic_examples: 64
+
+puf_arbitration_lite:
+  enabled: true
+  observer_only: true
+  track_min_probability: 0.70
+  track_min_margin: 0.20
+  birth_min_probability: 0.70
+  birth_min_margin: 0.20
+  conflict_min_owner_gap: 0.10
+  max_proposals: 256
+  probability_tolerance: 1.0e-12
+  max_diagnostic_examples: 64
+
+third_view_birth_lite:
+  enabled: true
+  observer_only: true
+  min_distinct_source_frames: 3
+  max_tracks: 1024
+  max_sources_per_group: 5
+  max_diagnostic_examples: 64
+
+side_birth_probation_lite:
+  enabled: true
+  observer_only: true
+  min_distinct_keyframes: 3
+  max_missed_keyframes: 10
+  max_pending_tracks: 256
+  max_birth_events: 8192
+
+data:
+  datadir: ./data/scannet_val/scene0011_01/frames
+  start: 0
+  output_dir: ./results/scannet_qim_puf_arbitration_third_view_shadow
+  gap: 25
+
+cam:
+  H: 480
+  W: 640
+  fx: 574.540771
+  fy: 577.583740
+  cx: 322.522827
+  cy: 238.558853
+  png_depth_scale: 1000.
+
+detection:
+  score_thresh: 0.5
+  uv_bound: true
+  uv_bound_value: 0.9
+  floor_mask: true
+  floor_ratio: 15
+  scale_box: 1.5
+
+association:
+  small_threshold: 0.1
+  rotation_gap: 30
+  translation_gap: 0.8
+
+box_fusion:
+  use: true
+  iters: 20
+  pst_path: ./data/pst_1024_0.tiff
+  pst_size: 1024
+  random_opt:
+    center_init_size: 0.1
+    center_scaling_coefficient: 0.1
+    shape_init_size: 0.5
+    shape_scaling_coefficient: 0.5
+  check_valid: false
+  nms_threshold: 0.1
+  small_size: 0.35
+
+vis:
+  rerun: false
+  show_class: false
+  show_label: false
+  trajectory: true
+
+eval: true

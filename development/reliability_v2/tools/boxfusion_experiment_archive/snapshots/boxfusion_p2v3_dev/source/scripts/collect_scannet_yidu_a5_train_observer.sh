@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Strict train-only A5 observer collection.  This is a narrow wrapper around
+# the already provenance-checked, no-evaluation train collector.
+#
+# Required inputs have YiDu-specific names:
+#   BOXFUSION_YIDU_TRAIN_TEACHER_CACHE
+#   BOXFUSION_YIDU_TRAIN_TEACHER_METADATA_ROOT
+#   BOXFUSION_YIDU_TRAIN_TEACHER_NAMESPACE
+#
+# The default is check-only. Set BOXFUSION_YIDU_TRAIN_EXECUTE=1 only after
+# reviewing every path.
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+
+export BOXFUSION_TRAIN_OBSERVER_PROFILE="yidu_a5_raw_fused_query_observer"
+export EXECUTE="${BOXFUSION_YIDU_TRAIN_EXECUTE:-0}"
+unset BOXFUSION_TRIFUSION_PROTOCOL_EXECUTE
+export BOXFUSION_TRIFUSION_TRAIN_SCENE_LIST="${BOXFUSION_YIDU_TRAIN_SCENE_LIST:-$ROOT/evaluation/data_util/meta_data/scannetv2_train_b6_100.txt}"
+export BOXFUSION_TRIFUSION_FORBIDDEN_VAL_SCENE_LIST="${BOXFUSION_YIDU_FORBIDDEN_VAL_SCENE_LIST:-$ROOT/evaluation/data_util/meta_data/scannetv2_val.txt}"
+export BOXFUSION_TRIFUSION_TRAIN_FRAMES_ROOT="${BOXFUSION_YIDU_TRAIN_FRAMES_ROOT:-$ROOT/data/scannet_train}"
+export BOXFUSION_TRIFUSION_TRAIN_TEACHER_CACHE="${BOXFUSION_YIDU_TRAIN_TEACHER_CACHE:-}"
+export BOXFUSION_TRIFUSION_TRAIN_TEACHER_METADATA_ROOT="${BOXFUSION_YIDU_TRAIN_TEACHER_METADATA_ROOT:-}"
+export BOXFUSION_TRIFUSION_TRAIN_TEACHER_NAMESPACE="${BOXFUSION_YIDU_TRAIN_TEACHER_NAMESPACE:-}"
+export BOXFUSION_TRIFUSION_TRAIN_RUN_TAG="${BOXFUSION_YIDU_TRAIN_RUN_TAG:-yidu_a5_train_observer_v1}"
+export BOXFUSION_TRIFUSION_TRAIN_ALLOW_RESUME="${BOXFUSION_YIDU_TRAIN_ALLOW_RESUME:-0}"
+export BOXFUSION_ENV_ROOT="${BOXFUSION_YIDU_ENV_ROOT:-${BOXFUSION_ENV_ROOT:-/home/admin1/miniconda3/envs/boxfusion2}}"
+
+if [[ -n "${BOXFUSION_YIDU_TRAIN_PRED_ROOT:-}" ]]; then
+    export BOXFUSION_TRIFUSION_TRAIN_PRED_ROOT="$BOXFUSION_YIDU_TRAIN_PRED_ROOT"
+fi
+if [[ -n "${BOXFUSION_YIDU_TRAIN_LOG_ROOT:-}" ]]; then
+    export BOXFUSION_TRIFUSION_TRAIN_LOG_ROOT="$BOXFUSION_YIDU_TRAIN_LOG_ROOT"
+fi
+if [[ -n "${BOXFUSION_YIDU_TRAIN_DIAGNOSTICS_ROOT:-}" ]]; then
+    export BOXFUSION_TRIFUSION_TRAIN_DIAGNOSTICS_ROOT="$BOXFUSION_YIDU_TRAIN_DIAGNOSTICS_ROOT"
+fi
+
+exec bash "$ROOT/scripts/collect_scannet_trifusion_train_observer.sh" "$@"

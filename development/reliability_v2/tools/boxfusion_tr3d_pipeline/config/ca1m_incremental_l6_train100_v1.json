@@ -1,0 +1,190 @@
+{
+  "schema": "boxfusion.ca1m_incremental_l6_protocol.v1",
+  "namespace": "ca1m_incremental_l6_ca_native_train100_v1",
+  "dataset": "ca1m",
+  "method_source": "scannet_l6_method_only_no_scannet_trained_artifact",
+  "status": "static_contract_only_pending_new_upstream_chain",
+  "execution_driver_implemented": false,
+  "run_authorized": false,
+  "train_only": true,
+  "observer_only_until_policy_authorized": true,
+  "validation_ground_truth_access": false,
+  "validation_prediction_access": false,
+  "evaluator_access": false,
+  "scene_splits": {
+    "train100": {
+      "path": "/extra/ZhaoX/tr3d_ca1m_train100_v1/splits/train100.txt",
+      "sha256": "35321e9942dc5d512db2952b9ca6228b1291127e0c13fd92aa458f2d7eb7f9fd",
+      "scene_count": 100
+    },
+    "weights_train": {
+      "path": "/extra/ZhaoX/tr3d_ca1m_train100_v1/splits/weights_train.txt",
+      "sha256": "7f0a22c660f7f9bd44137f5049c694393e038f5ab97ec55053443bfc00967478",
+      "scene_count": 60,
+      "folds": [2, 3, 4]
+    },
+    "threshold_dev": {
+      "path": "/extra/ZhaoX/tr3d_ca1m_train100_v1/splits/threshold_dev.txt",
+      "sha256": "9c886ca85ba599881797b25a49d2fc72dd136d255a245a09fe1cf17cbce735a7",
+      "scene_count": 20,
+      "folds": [0]
+    },
+    "locked_internal_check": {
+      "path": "/extra/ZhaoX/tr3d_ca1m_train100_v1/splits/locked_internal_check.txt",
+      "sha256": "d6238bae873c98737858ac3a84c0706091fa9a91113321ac9736a8d64de6d6b6",
+      "scene_count": 20,
+      "folds": [1],
+      "one_time_access": true
+    },
+    "official_validation_forbidden": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/evaluation/data_util/meta_data/ca1m_val_full107.txt",
+      "sha256": "bd5f3fc66168114048a1b12addc45949c8f54f9c016b921bacfb6fe9e3e7dc2f",
+      "scene_count": 107,
+      "identity_only_no_ground_truth": true
+    }
+  },
+  "ca_native_tr3d_binding": {
+    "schema": "boxfusion.tr3d.ca1m_checkpoint_binding.v1",
+    "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/manifests/ca1m_tr3d_terminal_ca_native_train100_v3/checkpoint_binding.json",
+    "sha256": "19b8c3d12de8dd8d3ffff1413c6c6003a5ccb1a10cf213b972ebd43fa9db5043",
+    "checkpoint_sha256": "d3ba6cc22f0a1a11ab47e55ccdd21c2ef4a84efaf3c6359b7e8231a6c8d3b4a7",
+    "initialization": "ca1m_random_scratch",
+    "raw_checkpoint_argument_allowed": false,
+    "raw_config_argument_allowed": false,
+    "scannet_checkpoint_or_config_allowed": false
+  },
+  "required_upstream_chain": {
+    "route": "ca1m_final_base_b6_v2_terminal_benefit_v2",
+    "all_or_none_binding": true,
+    "final_base": {
+      "manifest_schema": "boxfusion.ca1m_final_base_identity_audit.v1",
+      "anchor_root": null,
+      "manifest": null,
+      "manifest_sha256": null
+    },
+    "native_b6_v2": {
+      "collection_manifest_schema": "boxfusion.ca1m_native_b6_final_base_train_collection.v2",
+      "diagnostics_root": null,
+      "collection_manifest": null,
+      "collection_manifest_sha256": null,
+      "checkpoint": null,
+      "checkpoint_sha256": null,
+      "checkpoint_manifest": null,
+      "checkpoint_manifest_sha256": null
+    },
+    "terminal_v4": {
+      "proposal_schema": "boxfusion.ca1m_tr3d_anchor_free_proposal_cache.v4",
+      "overlay_schema": "boxfusion.ca1m_tr3d_terminal_cpu_overlay.v4",
+      "sealed_manifest_schema": "boxfusion.ca1m_tr3d_terminal_train100_seal.v4",
+      "proposal_root": null,
+      "overlay_root": null,
+      "sealed_manifest": null,
+      "sealed_manifest_sha256": null
+    },
+    "terminal_benefit_v2": {
+      "policy_schema": "boxfusion.ca1m_tr3d_terminal_gate_policy.v2",
+      "active_anchor_manifest_schema": "boxfusion.ca1m_tr3d_terminal_active_anchor.v2",
+      "policy": null,
+      "policy_sha256": null,
+      "post_terminal_anchor_root": null,
+      "post_terminal_anchor_manifest": null,
+      "post_terminal_anchor_manifest_sha256": null,
+      "cross_fitted_train100_receipt": null,
+      "cross_fitted_train100_receipt_sha256": null
+    }
+  },
+  "candidate_collection": {
+    "schema": "boxfusion.ca1m_incremental_l6_observer.v1",
+    "status": "pending_upstream_chain",
+    "run_authorized": false,
+    "processed_rgbd_root": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1",
+    "frame_lineage_schema": "boxfusion.ca1m_demo_gap20_early_finalize_lineage.v1",
+    "frame_gap": 20,
+    "causal_incremental": true,
+    "latest_only_async": true,
+    "visibility_top_k": 5,
+    "source_features": [
+      "visibility_quality_mean",
+      "support_ratio_mean",
+      "free_space_ratio_mean",
+      "invalid_ratio_mean",
+      "selected_geometry"
+    ],
+    "output_root": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_incremental_l6_ca_native_train100_v1/observer",
+    "ground_truth_access": false,
+    "validation_access": false,
+    "create_only": true,
+    "exact_scene_count": 100
+  },
+  "training_protocol": {
+    "dataset_schema": "boxfusion.ca1m_incremental_l6_dataset.v1",
+    "policy_schema": "boxfusion.ca1m_incremental_l6_policy.v1",
+    "terminal_anchor_cross_fitted": true,
+    "fit_folds": [2, 3, 4],
+    "threshold_calibration_folds": [0],
+    "one_time_locked_audit_folds": [1],
+    "targets": {
+      "novel25": "candidate_gt_iou_ge_0.25_and_post_terminal_anchor_gt_iou_lt_0.25",
+      "quality50": "candidate_gt_iou_ge_0.50",
+      "target_switch": "hard_negative"
+    },
+    "model": "dual_scene_grouped_logistic_novelty25_quality50",
+    "normalization": "weights_train_only",
+    "threshold_selection": "fold0_only",
+    "activation_decision": "fold1_one_time_only",
+    "sample_gate": {
+      "weights_train_candidates_min": 120,
+      "weights_train_novel25_positive_min": 20,
+      "weights_train_novel25_negative_min": 20,
+      "weights_train_novel50_positive_min": 10,
+      "threshold_dev_candidates_min": 20,
+      "threshold_dev_positive_scenes_min": 4,
+      "locked_internal_candidates_min": 20,
+      "locked_internal_positive_scenes_min": 4,
+      "failure_action": "block_without_lowering_thresholds"
+    },
+    "output_dataset": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/datasets/ca1m_incremental_l6_train100_v1.npz",
+    "output_dataset_manifest": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/reports/ca1m_incremental_l6_train100_v1/dataset_manifest.json",
+    "output_policy": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/models/ca1m_incremental_l6_policy_train100_v1.json"
+  },
+  "runtime_protocol": {
+    "schema": "boxfusion.ca1m_incremental_l6_active.v1",
+    "append_only": true,
+    "anchor_rows_first_and_byte_identical": true,
+    "replacement_allowed": false,
+    "deletion_allowed": false,
+    "class_agnostic": true,
+    "ground_truth_access": false,
+    "source_rank_formula": "novelty_probability+0.10*visibility01+0.08*support-0.18*free_space+0.04*fused_geometry",
+    "score_policy": "global_source_rank_float32_below_every_sealed_anchor_v1",
+    "candidate_nms_iou": 0.25,
+    "max_candidates_per_scene_upper_bound": 32,
+    "create_only": true
+  },
+  "forbidden_reuse": {
+    "scannet_policy_schemas": [
+      "boxfusion.tr3d_incremental_novelty_gate.v1",
+      "boxfusion.tr3d_c3_source_gate_policy.v1"
+    ],
+    "scannet_checkpoint_sha256": [
+      "09f2f650540716556719d2858d9a484dcbf682e2e94576887855b9b637b6492e",
+      "a484fd79093aa3004f4d2984e7ad8763c5d5cbec7edd04172d775643a8436448",
+      "e74b29335f32baa6595bcc84a9b3e4fdd14b92a7044abd408a44de95fc360dc4",
+      "86ffb8d6ff8dcc2f376057e9bd1f7d1f7f87a294eb75922ad5a1e73755c79905"
+    ],
+    "old_ca_terminal_namespaces": [
+      "ca1m_tr3d_terminal_train100_v1",
+      "ca1m_tr3d_terminal_train100_v2",
+      "ca1m_tr3d_terminal_ca_native_train100_v3"
+    ],
+    "old_ca_native_b6_namespaces": [
+      "ca1m_native_b6_train100_v1",
+      "ca1m_native_b6_canonical103_v1"
+    ],
+    "exception": "v3 checkpoint_binding.json_is_model_identity_only_not_a_terminal_cache",
+    "old_policy_access": false,
+    "old_terminal_cache_access": false,
+    "old_native_b6_artifact_access": false,
+    "raw_model_override_access": false
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "artifact": {
+    "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/inputs/ca1m_tr3d_xfit_r2_outer_dev_eval_v1/fold0_final_base_b6_v2_oof.npz",
+    "schema": "boxfusion.ca1m_tr3d_xfit_r2_fold0_final_base_b6_oof.v1",
+    "sha256": "202340ff97c3de5f49a969ec983222cae0772913b831f808f870aea71a639c88"
+  },
+  "candidate_access": false,
+  "complete": true,
+  "create_only": true,
+  "each_score_model_excludes_scene": true,
+  "fold0_only": true,
+  "fold1_access": false,
+  "fold_id": 0,
+  "ground_truth_access": false,
+  "official_validation_access": false,
+  "row_count": 1505,
+  "scene_count": 20,
+  "schema": "boxfusion.ca1m_tr3d_xfit_r2_fold0_final_base_b6_oof.v1.manifest",
+  "score_source": "ca1m_native_b6_final_base_all_fold_oof_v2_fold0_rows",
+  "source_gt_or_candidate_members_opened": false,
+  "source_npz_members_opened": [
+    "schema",
+    "complete",
+    "baseline_scene_ids",
+    "baseline_fold_ids",
+    "baseline_row_indices",
+    "baseline_corners",
+    "baseline_scores"
+  ],
+  "sources": {
+    "final_base": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/reports/ca1m_native_final_base_train100_v1/collection_manifest.json",
+      "sha256": "110dac18eb436eb6735299141d77fa00d4fed6042f93de81e5288e6b5d0e2f52"
+    },
+    "fold0_scene_list": {
+      "path": "/data/ZhaoX/OVM3D-Dett/boxfusion_tr3d_dev/data/tr3d_ca1m_visible_xfit_v2_formal/splits/predict_fold0.txt",
+      "sha256": "9c886ca85ba599881797b25a49d2fc72dd136d255a245a09fe1cf17cbce735a7"
+    },
+    "native_b6_v2_oof": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/models/ca1m_native_b6_final_base_oof_row_scores_v2.npz",
+      "sha256": "82b5e70c635958398c04b0e3ba5dbf25203b61bcabd725330bd68812d156e5ed"
+    },
+    "terminal_v4_dataset": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/datasets/ca1m_tr3d_benefit_final_base_v4.npz",
+      "sha256": "8e234d727d25c5448924814d0a04d87af2acb9963af5c39b700dacde03d19b32"
+    },
+    "terminal_v4_dataset_manifest": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/datasets/ca1m_tr3d_benefit_final_base_v4.manifest.json",
+      "sha256": "9873e2be71fd4f1f24675042af54543b47e48bdbd15617fb6b16b0c14786a76b"
+    }
+  },
+  "train_only": true
+}

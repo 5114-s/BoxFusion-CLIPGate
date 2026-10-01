@@ -1,0 +1,233 @@
+{
+  "anchor_array_access_at_seal": false,
+  "complete": true,
+  "continuation_gate": {
+    "failure_action": "stop_without_inner_training_or_fold1_or_official_validation_access",
+    "min_delta_ap15": 0.0,
+    "min_delta_ap25": 0.0,
+    "min_delta_ap50": 0.005,
+    "min_replacement_scenes": 5,
+    "min_replacements": 10,
+    "pass_authorizes_inner_roles": [
+      "inner_holdout2",
+      "inner_holdout3",
+      "inner_holdout4"
+    ],
+    "proposal_exact20_finite_ca_only": true
+  },
+  "create_only": true,
+  "evaluation_config": {
+    "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/config/ca1m_tr3d_e961_outer_dev_eval_v2.json",
+    "sha256": "26c094ef9be746d20bb863ba6bb4ac37e29eba157974095bd744118a84515f68"
+  },
+  "expanded_checkpoint_access_at_seal": false,
+  "expanded_training_receipt_access_at_seal": false,
+  "fold0_gt_access_at_seal": false,
+  "fold1_access": false,
+  "frozen_inputs_without_array_access": {
+    "final_base_b6_oof_anchor": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/inputs/ca1m_tr3d_xfit_r2_outer_dev_eval_v1/fold0_final_base_b6_v2_oof.npz",
+      "sha256": "202340ff97c3de5f49a969ec983222cae0772913b831f808f870aea71a639c88"
+    },
+    "final_base_b6_oof_anchor_manifest": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/inputs/ca1m_tr3d_xfit_r2_outer_dev_eval_v1/fold0_final_base_b6_v2_oof.manifest.json",
+      "sha256": "b574d029adcf3d24735869d314a7e2f2dd39e6ad05ea16a6a193d2171dec1669"
+    },
+    "fold0_scene_list": {
+      "count": 20,
+      "exact": true,
+      "fold": 0,
+      "path": "/data/ZhaoX/OVM3D-Dett/boxfusion_tr3d_dev/data/tr3d_ca1m_e961_v1/splits/predict_fold0.txt",
+      "role": "reused_dev",
+      "sha256": "9c886ca85ba599881797b25a49d2fc72dd136d255a245a09fe1cf17cbce735a7"
+    },
+    "opaque_fold0_gt_inventory": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/manifests/ca1m_tr3d_benefit_gate_final_base_v4/derived_train_gt_shadow_inventory_v1.json",
+      "sha256": "6c3bdfd666ca49558ac390197abeec588949f05e33d9c8a18d1b5c8326d9e9a7"
+    },
+    "point_inference_config": {
+      "ground_truth_access": false,
+      "path": "/data/ZhaoX/OVM3D-Dett/boxfusion_tr3d_dev/config/tr3d/tr3d_ca1m_foreground_point_inference_xfit_r2.py",
+      "point_input_only": true,
+      "scannet_config_access": false,
+      "sha256": "479f7e61eff9fd23fc086ebc2603e161caa876defe73c556a0e671a8fd35c052",
+      "standalone": true,
+      "validation_access": false
+    },
+    "point_parity": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/manifests/ca1m_tr3d_terminal_ca_native_train100_v4/lineage_training_point_parity_v4.json",
+      "sha256": "35d9dfafc7272d92d98c97c6ef23f4323432e9bd0af5045bc5f78b1ae9afa00d"
+    },
+    "same_point_path_v1_comparison": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/inputs/ca1m_tr3d_xfit_r2_outer_dev_eval_v1/v1_fold0_proposal_comparison_manifest.json",
+      "sha256": "b38d55b42eceef21639943a41c689ce45c1eb698dfe46e0f4e43280500e967f1"
+    },
+    "selection_contract": {
+      "path": "/data/ZhaoX/OVM3D-Dett/boxfusion_tr3d_dev/data/tr3d_ca1m_e961_v1/SELECTION_CONTRACT.json",
+      "sha256": "eceeb29aa0a4a7c7f8548d1a3e09c25b2b5d3eeb6d486481e63d32a3c0e97791"
+    }
+  },
+  "implementation": {
+    "e961_contract": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/boxfusion/ca1m_tr3d_e961_outer_eval_v1.py",
+      "sha256": "d73b12e73915b0fcede38f7918775926dd32f2c25068d8c690432e5a35d9f31a"
+    },
+    "e961_outer_train_contract": {
+      "path": "/data/ZhaoX/OVM3D-Dett/boxfusion_tr3d_dev/tools/tr3d_ca1m_e961_outer_train_r2.py",
+      "sha256": "36f2f02cbc1201aa55adb1104cb198f1cb4fda478e466101dcafc7660790a70f"
+    },
+    "e961_outer_train_driver": {
+      "path": "/data/ZhaoX/OVM3D-Dett/boxfusion_tr3d_dev/scripts/run_tr3d_ca1m_e961_outer_train_r2.sh",
+      "sha256": "79167d075142f5ce674a686e3015114508bf2b2453590c69be40d8997c4ef9f2"
+    },
+    "e961_outer_train_tests": {
+      "path": "/data/ZhaoX/OVM3D-Dett/boxfusion_tr3d_dev/tests/test_tr3d_ca1m_e961_outer_train_r2.py",
+      "sha256": "8d985af88b42c557f21fec2e3b0d0670b613798e1495dcf60a36f841fb82cbff"
+    },
+    "e961_outer_train_trainer": {
+      "path": "/data/ZhaoX/OVM3D-Dett/boxfusion_tr3d_dev/scripts/train_tr3d_ca1m_e961_outer_r2.sh",
+      "sha256": "b2da00db79f586d0e7dd4fc2d663ed53aaff08dd2aeca67c7c1dfd477ef93557"
+    },
+    "e961_runner": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/tools/run_ca1m_tr3d_e961_outer_eval_v1.py",
+      "sha256": "153e5f34092cb0651f0e1768cef5e45f8a8c2cadcfbf45e7db102337f2a9af2c"
+    },
+    "e961_runner_entrypoint": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/tools/run_ca1m_tr3d_e961_outer_eval_v2.py",
+      "sha256": "01a2268bdad6244f79b674dad53e965157e33dad88bf8592363052c9fb87e96f"
+    },
+    "official_adapter": {
+      "path": "/data/ZhaoX/OVM3D-Dett/boxfusion_tr3d_r2_verifier_dev/boxfusion/tr3d_inference.py",
+      "sha256": "18e66995b47ed35bd05bf931a73fdab9cf05d23d2cba615435874631bc3751c8"
+    },
+    "point_builder": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/tools/run_ca1m_tr3d_proposal_cache_v4.py",
+      "sha256": "db2c4c119c9dcc68d8bbedaf4e834b22046b17f747503bfbd97decc884f01523"
+    },
+    "point_inference_config": {
+      "path": "/data/ZhaoX/OVM3D-Dett/boxfusion_tr3d_dev/config/tr3d/tr3d_ca1m_foreground_point_inference_xfit_r2.py",
+      "sha256": "479f7e61eff9fd23fc086ebc2603e161caa876defe73c556a0e671a8fd35c052"
+    },
+    "point_inference_contract": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/boxfusion/ca1m_tr3d_inference_contract.py",
+      "sha256": "06068eee518a37bf091ecfed79f202e4f9a9dc9660ed06d59cb7a4231b167ced"
+    },
+    "proposal_contract": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/boxfusion/ca1m_tr3d_terminal_v4.py",
+      "sha256": "c51654df3a68370c1c795ca502949cf7b5d68dcd9b1e4ecbaf8f24e392c64ab2"
+    },
+    "protocol_preregistration_sealer": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/tools/seal_ca1m_tr3d_e961_outer_eval_protocol_v2.py",
+      "sha256": "595d732330ac1cce5ffb72c372aab3164597f1e3df47094276052731051df869"
+    },
+    "rgbd_backprojection": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/boxfusion/tr3d_incremental_online.py",
+      "sha256": "f2017f86187ab671df2bba9c3de0db82ad85092a7bf4cfba8690fa0dcef376f7"
+    },
+    "sealed_r2_eval_contract": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/boxfusion/ca1m_tr3d_xfit_r2_eval.py",
+      "sha256": "e0786e1d62a3131ae0aa06db23b41d994e39bcd4946e23eacba3c3d763b7a025"
+    },
+    "sealed_r2_eval_runner": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/tools/run_ca1m_tr3d_xfit_r2_outer_dev_eval.py",
+      "sha256": "68b6f6271d09c66a132bdb95ec15206de3db65109b52f2b0641a1bab865955d6"
+    },
+    "single_command_wrapper": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/scripts/run_ca1m_tr3d_e961_outer_eval_v2.sh",
+      "sha256": "8f538418c0f8818320b4bd5b15034f2f95904c9e23093a5e41e1407d79c06597"
+    },
+    "terminal_geometry": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/boxfusion/ca1m_tr3d_terminal.py",
+      "sha256": "b39e1c421e3dde63dedd39c8f108769ea02a48ecda0e89b4b86a3dbdb7263aa2"
+    },
+    "worker": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/tools/ca1m_tr3d_terminal_worker.py",
+      "sha256": "e01c8bcea1a00bcb30e2553787e50f8086fa2b73787e86b7d3cd94a039f770d0"
+    },
+    "worker_client": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/boxfusion/ca1m_tr3d_worker_client.py",
+      "sha256": "aad34038e2df45b8ac154196ed4bcd154b9eb225b2ff5a466068f84b835bdb6b"
+    }
+  },
+  "invalidated_predecessor": {
+    "formal_v1_authorized": false,
+    "invalid_receipt": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/manifests/ca1m_tr3d_e961_outer_dev_eval_v1/PREREGISTRATION_PROTOCOL_V1_INVALID.json",
+      "sha256": "31d39340015df4101725d475310ec09b5daa19751c677ae0d2e51f75ad5ad3d8"
+    },
+    "protocol_v1": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/manifests/ca1m_tr3d_e961_outer_dev_eval_v1/PREREGISTRATION_PROTOCOL.json",
+      "sha256": "9c8fdc2689636584fd55bcc536a51ccc8f208e3e077d1f9b8f1479858b8dc05f"
+    }
+  },
+  "metric": {
+    "box_geometry": "axis_aligned_AABB_from_8_corners",
+    "class_mode": "CA_class_agnostic",
+    "coordinate_frame": "world",
+    "duplicate_matching": "one_detection_per_scene_gt_per_threshold",
+    "iou_comparison": "strict_greater_than_threshold",
+    "iou_thresholds": [
+      0.15,
+      0.25,
+      0.5
+    ],
+    "ranking": "global_prediction_score"
+  },
+  "namespace": "ca1m_tr3d_e961_outer_dev_eval_v1",
+  "official_validation_access": false,
+  "outer_train_r2_frozen_review": {
+    "authorization_consumption_schema": "boxfusion.tr3d.ca1m_e961_outer_auth_consumption.r2",
+    "driver": {
+      "path": "/data/ZhaoX/OVM3D-Dett/boxfusion_tr3d_dev/scripts/run_tr3d_ca1m_e961_outer_train_r2.sh",
+      "sha256": "79167d075142f5ce674a686e3015114508bf2b2453590c69be40d8997c4ef9f2"
+    },
+    "independent_review_pass": true,
+    "run_receipt_schema": "boxfusion.tr3d.ca1m_e961_outer_train_run.r2",
+    "tests": {
+      "path": "/data/ZhaoX/OVM3D-Dett/boxfusion_tr3d_dev/tests/test_tr3d_ca1m_e961_outer_train_r2.py",
+      "sha256": "8d985af88b42c557f21fec2e3b0d0670b613798e1495dcf60a36f841fb82cbff"
+    },
+    "tool": {
+      "path": "/data/ZhaoX/OVM3D-Dett/boxfusion_tr3d_dev/tools/tr3d_ca1m_e961_outer_train_r2.py",
+      "sha256": "36f2f02cbc1201aa55adb1104cb198f1cb4fda478e466101dcafc7660790a70f"
+    },
+    "trainer": {
+      "path": "/data/ZhaoX/OVM3D-Dett/boxfusion_tr3d_dev/scripts/train_tr3d_ca1m_e961_outer_r2.sh",
+      "sha256": "b2da00db79f586d0e7dd4fc2d663ed53aaff08dd2aeca67c7c1dfd477ef93557"
+    },
+    "training_started_claim_schema": "boxfusion.tr3d.ca1m_e961_outer_training_started.r2"
+  },
+  "paired_comparison": {
+    "raw_detector_ap_role": "diagnostic_only_no_checkpoint_selection",
+    "same_exact20_scene_ids": true,
+    "same_point_array_sha256_per_scene": true,
+    "same_point_inference_config": true,
+    "same_rgbd_point_builder": true
+  },
+  "partition": "official_train_fold0_reused_dev_exact20",
+  "runtime_instance_rule": {
+    "authorization_consumption_schema": "boxfusion.tr3d.ca1m_e961_outer_auth_consumption.r2",
+    "checkpoint_name": "iter_11268.pth",
+    "checkpoint_selection": false,
+    "create_only_instance_preregistration_required_before_verify_run": true,
+    "deep_checkpoint_audit_schema": "boxfusion.tr3d.mmengine_terminal_checkpoint_audit.r2",
+    "explicit_outer_run_tag_required": true,
+    "optimizer_updates": 11268,
+    "receipt_pattern": "/extra/ZhaoX/tr3d_ca1m_e961_outer_train_r2/runs/<outer_run_tag>/RUN_RECEIPT.json",
+    "receipt_schema": "boxfusion.tr3d.ca1m_e961_outer_train_run.r2",
+    "training_started_claim_schema": "boxfusion.tr3d.ca1m_e961_outer_training_started.r2"
+  },
+  "schema": "boxfusion.ca1m_tr3d_e961_outer_dev_protocol_preregistration.v2",
+  "sealed_before_any_expanded_outer_checkpoint_access": true,
+  "sealed_before_any_formal_fold0_anchor_or_gt_access": true,
+  "terminal_oracle": {
+    "anchor": "final_base_plus_B6_fold0_OOF",
+    "candidate_source": "expanded_E961_outer_dev_TR3D",
+    "deployable": false,
+    "each_anchor_score_model_excludes_scene": true,
+    "matching": "candidate_and_anchor_must_share_best_GT",
+    "minimum_same_gt_iou_gain": 0.05,
+    "near_anchor_iou": 0.15,
+    "replacement": "geometry_only_preserve_anchor_score_and_row_order"
+  }
+}

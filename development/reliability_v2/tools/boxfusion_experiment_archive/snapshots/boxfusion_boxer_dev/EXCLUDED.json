@@ -1,0 +1,71 @@
+{
+  "excluded_top_level": [
+    ".git",
+    ".pytest_cache",
+    "__pycache__",
+    "backups",
+    "cache",
+    "data",
+    "diagnostics",
+    "logs",
+    "models",
+    "reports",
+    "results",
+    "third_party"
+  ],
+  "policy": {
+    "excluded_names": [
+      ".conda",
+      ".dist_test",
+      ".git",
+      ".pytest_cache",
+      ".runtime",
+      "__pycache__",
+      "artifacts",
+      "backups",
+      "cache",
+      "ckpts",
+      "data",
+      "datasets",
+      "diagnostics",
+      "dist",
+      "eval_outputs",
+      "logs",
+      "models",
+      "official_downloads",
+      "reports",
+      "results",
+      "scannet_sens_rgb",
+      "third_party",
+      "wheels",
+      "work_dirs"
+    ],
+    "large_binary_suffixes_excluded": [
+      ".ckpt",
+      ".npy",
+      ".npz (except scannet_means.npz)",
+      ".pkl",
+      ".pt",
+      ".pth",
+      ".safetensors"
+    ],
+    "max_source_bytes": 5242880,
+    "never_follow_symlinks": true
+  },
+  "recorded_symlinks_not_copied": [
+    {
+      "path": "data",
+      "target": "/data/ZhaoX/BoxFusion/data"
+    },
+    {
+      "path": "evaluation/data_util/scannet_train_detection_data",
+      "target": "/data/ZhaoX/BoxFusion/upstream_clean/BoxFusion_scorefix/evaluation/data_util/scannet_train_detection_data"
+    },
+    {
+      "path": "models",
+      "target": "/data/ZhaoX/BoxFusion/models"
+    }
+  ],
+  "route": "boxfusion_boxer_dev",
+  "schema": "boxfusion.experiment_source_exclusions.v1"
+}

@@ -1,0 +1,97 @@
+dataset: scannet
+
+data:
+  # demo.py rewrites this path to <two-levels-up>/<--seq>/frames/ for ScanNet.
+  datadir: ./data/scannet_val/scene0011_01/frames
+  start: 0
+  output_dir: ./results/scannet
+  gap: 25
+
+cam:
+  H: 480
+  W: 640
+  fx: 574.540771
+  fy: 577.583740
+  cx: 322.522827
+  cy: 238.558853
+  png_depth_scale: 1000.
+
+detection:
+  score_thresh: 0.5
+  uv_bound: True
+  uv_bound_value: 0.9
+  floor_mask: True
+  floor_ratio: 15
+  scale_box: 1.5
+
+association:
+  small_threshold: 0.1
+  rotation_gap: 30
+  translation_gap: 0.8
+
+box_fusion:
+  use: True
+  iters: 20
+  pst_path: ./data/pst_1024_0.tiff
+  pst_size: 1024
+  random_opt:
+    center_init_size: 0.1
+    center_scaling_coefficient: 0.1
+    shape_init_size: 0.5
+    shape_scaling_coefficient: 0.5
+  check_valid: False
+  nms_threshold: 0.1
+  small_size: 0.35
+
+vis:
+  rerun: False
+  show_class: False
+  show_label: False
+  trajectory: True
+
+eval: True
+
+# Training-free, causal, observer-only geometry counterfactual.  This block
+# must not change native BoxFusion predictions or CLIP semantics.
+openbox_smov_r2:
+  enabled: true
+  observer_only: true
+  pixel_stride: 4
+  min_depth_m: 0.10
+  max_depth_m: 8.0
+  depth_edge_m: 0.15
+  component_jump_m: 0.15
+  min_component_pixels: 16
+  voxel_size_m: 0.05
+  max_points_per_view: 512
+  max_points_per_track: 1024
+  max_validation_rays_per_view: 1024
+  max_views_per_track: 5
+  max_tracks: 1024
+  max_proposals_per_keyframe: 64
+  min_views: 3
+  min_points: 192
+  translation_gap_m: 0.80
+  rotation_gap_deg: 30.0
+  lower_quantile: 0.02
+  upper_quantile: 0.98
+  face_front_dot: 0.25
+  face_weak_dot: 0.05
+  face_band_fraction: 0.10
+  face_band_max_m: 0.20
+  min_face_points: 8
+  min_face_weak_points: 4
+  face_extension_fraction: 0.25
+  face_extension_min_m: 0.05
+  face_extension_max_m: 0.30
+  max_face_candidates_per_fit: 4
+  minimum_extent_m: 0.05
+  max_center_shift_diagonal: 0.60
+  min_extent_ratio: 0.35
+  max_extent_ratio: 2.50
+  depth_margin_m: 0.05
+  near_clip_m: 0.001
+  max_diagnostics: 1024
+  timing_window: 4096
+  diagnostics:
+    root: ./diagnostics/openbox_smov_r2/visibility_v2

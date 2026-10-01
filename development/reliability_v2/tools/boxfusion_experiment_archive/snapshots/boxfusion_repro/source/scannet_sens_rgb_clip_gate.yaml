@@ -1,0 +1,77 @@
+dataset: scannet
+
+data:
+  datadir: /data/ZhaoX/OVM3D-Dett/boxfusion_repro/scannet_sens_rgb/scene0169_00/frames
+  start: 0
+  output_dir: /data/ZhaoX/OVM3D-Dett/boxfusion_repro/results/scannet_sens_rgb_clip_gate
+  gap: 25
+
+cam:
+  H: 480
+  W: 640
+  fx: 574.540771
+  fy: 577.583740
+  cx: 322.522827
+  cy: 238.558853
+  png_depth_scale: 1000.
+
+detection:
+  score_thresh: 0.5
+  uv_bound: True
+  uv_bound_value: 0.9
+  floor_mask: True
+  floor_ratio: 15
+  scale_box: 1.5
+
+association:
+  small_threshold: 0.1
+  rotation_gap: 30
+  translation_gap: 0.8
+  appearance_gate:
+    enabled: True
+    # Geometry remains mandatory. With the conservative first-stage settings
+    # below, this value becomes active only if max_iou_bonus is increased.
+    geometry_min_iou: 0.08
+    # Strong geometric evidence can override a poor CLIP crop.
+    hard_geometry_iou: 0.45
+    # CLIP cosine <= low_similarity receives the full IoU penalty;
+    # cosine >= high_similarity receives no penalty.
+    low_similarity: 0.45
+    high_similarity: 0.75
+    max_iou_penalty: 0.10
+    # Keep the first ablation one-sided: appearance prevents likely false
+    # merges but cannot create a merge that baseline geometry rejected.
+    max_iou_bonus: 0.0
+    # Low-confidence Cubify proposals fall back toward original geometry.
+    confidence_floor: 0.35
+    confidence_full: 0.75
+    # CLIP similarity distributions differ between 3D overlap and projected
+    # small-object correspondence, so each stage may override shared values.
+    spatial:
+      low_similarity: 0.65
+      high_similarity: 0.85
+    correspondence:
+      low_similarity: 0.55
+      high_similarity: 0.75
+
+box_fusion:
+  use: True
+  iters: 20
+  pst_path: ./data/pst_1024_0.tiff
+  pst_size: 1024
+  random_opt:
+    center_init_size: 0.1
+    center_scaling_coefficient: 0.1
+    shape_init_size: 0.5
+    shape_scaling_coefficient: 0.5
+  check_valid: False
+  nms_threshold: 0.1
+  small_size: 0.35
+
+vis:
+  rerun: False
+  show_class: False
+  show_label: False
+  trajectory: True
+
+eval: True

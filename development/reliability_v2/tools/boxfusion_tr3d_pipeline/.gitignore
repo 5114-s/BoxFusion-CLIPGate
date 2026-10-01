@@ -1,0 +1,25 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.env
+
+# Runtime products. They are intentionally not part of the migrated source.
+artifacts/
+cache/
+data/
+diagnostics/
+eval_outputs/
+logs/
+reports/
+results/
+work_dirs/
+evaluation/b6_*/
+evaluation/tr3d_*/
+
+# Keep only the tiny, hash-frozen B6 quality calibrator. Large model weights
+# remain external.
+models/*
+!models/scannet_b6_iou_mlp.npz
+*.ckpt
+*.pth
+*.pt

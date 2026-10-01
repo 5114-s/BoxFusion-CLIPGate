@@ -1,0 +1,111 @@
+dataset: scannet
+
+experiment:
+  seed: 0
+
+data:
+  datadir: /data/ZhaoX/BoxFusion/upstream_clean/scannet_readme_frames/scene0169_00/frames
+  start: 0
+  output_dir: /data/ZhaoX/BoxFusion/results/scannet_t05_boxer_mvpr_topk3_real_score05
+  gap: 25
+
+cam:
+  H: 480
+  W: 640
+  fx: 574.540771
+  fy: 577.583740
+  cx: 322.522827
+  cy: 238.558853
+  png_depth_scale: 1000.
+
+detection:
+  score_thresh: 0.5
+  uv_bound: true
+  uv_bound_value: 0.9
+  floor_mask: true
+  floor_ratio: 15
+  scale_box: 1.5
+
+lifting:
+  backend: boxer
+  proposal_cache:
+    mode: replay
+    namespace: scannet-score05-gap25-postfilter-v2
+    root: /data/ZhaoX/OVM3D-Dett/boxfusion_boxer_dev/cache/cutr_proposals
+    expected_fingerprint: ba44e29386d2c2f76bb927e00f02b62cfc5ee4f188a94408c32ce91757f4462d
+    baseline_prediction_root: /data/ZhaoX/OVM3D-Dett/boxfusion_boxer_dev/results/boxer_lifting/x0_cutr
+  boxer:
+    mode: active
+    apply_stage: post_filter
+    official_root: /data/ZhaoX/OVM3D-Dett/boxfusion_boxer_dev/third_party/boxer
+    checkpoint: /data/ZhaoX/OVM3D-Dett/boxfusion_boxer_dev/third_party/boxer/ckpts/boxernet_hw960in2x6d768-c88128f8.ckpt
+    expected_commit: 1f86542dc342a4b1d474c87c97c5d1d6566d9148
+    checkpoint_sha256: d5a30b348a8f5b0e5990ff3aa0e8f473ce77d860da22586322e7f47abc83ca6f
+    dinov3_sha256: 4057cbaaad8c16657adb09d6815f28d4164eeba30532fde23f0d17313124caea
+    precision: bfloat16
+    use_sdp: true
+    sdp_samples: 10000
+    seed: 0
+    diagnostics_dir: /data/ZhaoX/BoxFusion/diagnostics/t05_boxer_mvpr/boxer_lifting
+  boxer_mvpr:
+    enabled: true
+    low_score_min: 0.4
+    native_score_min: 0.5
+    max_candidates_per_frame: 8
+    minimum_views: 3
+    ttl_keyframes: 10
+    match_aabb_iou: 0.10
+    match_center_m: 0.50
+    min_median_pairwise_aabb_iou: 0.25
+    max_center_rms_m: 0.25
+    min_medoid_aabb_extent_m: 0.20
+    native_duplicate_2d_iou: 0.995
+    diagnostics_dir: /data/ZhaoX/BoxFusion/diagnostics/t05_boxer_mvpr/mvpr
+    proposal_cache:
+      mode: replay
+      namespace: scannet-score04-gap25-postfilter-v1
+      root: /data/ZhaoX/OVM3D-Dett/boxfusion_boxer_dev/cache/cutr_proposals
+      expected_fingerprint: a87e306902820d9ea2a1d1381fae0d1b7119586bdeff81e437e1cffd782fd357
+      baseline_prediction_root: /data/ZhaoX/OVM3D-Dett/boxfusion_boxer_dev/results/boxer_lifting/score04/x0_cutr
+
+association:
+  small_threshold: 0.1
+  rotation_gap: 30
+  translation_gap: 0.8
+  appearance_gate:
+    enabled: false
+
+box_fusion:
+  use: true
+  iters: 20
+  pst_path: /data/ZhaoX/BoxFusion/data/pst_1024_0.tiff
+  pst_size: 1024
+  random_opt:
+    center_init_size: 0.1
+    center_scaling_coefficient: 0.1
+    shape_init_size: 0.5
+    shape_scaling_coefficient: 0.5
+  check_valid: false
+  nms_threshold: 0.1
+  small_size: 0.35
+  reliable_views:
+    enabled: true
+    top_k: 3
+    min_views: 3
+    confidence_power: 1.0
+    area_power: 0.25
+    area_reference_ratio: 0.02
+    projection_iou_power: 0.50
+    geometry_consistency_power: 0.50
+    center_sigma: 0.75
+    size_sigma: 0.50
+    minimum_box_diagonal: 0.10
+    minimum_weight: 0.05
+
+vis:
+  rerun: false
+  show_class: false
+  show_label: false
+  trajectory: true
+
+eval: true

@@ -1,0 +1,169 @@
+dataset: CA1M
+experiment:
+  seed: 0
+data:
+  datadir: /extra/ZhaoX/boxfusion_ca1m/_placeholder/42446540
+  start: 0
+  output_dir: /data/ZhaoX/BoxFusion/development/final_controls/results/ca1m_recar3d_final107_native
+  gap: 20
+cam:
+  H: 384
+  W: 512
+  png_depth_scale: 1000.0
+detection:
+  score_thresh: 0.15
+  uv_bound: true
+  uv_bound_value: 0.9
+  floor_mask: true
+  floor_ratio: 15
+  scale_box: 1.5
+lifting:
+  backend: boxer
+  proposal_cache:
+    mode: disabled
+    namespace: ca1m-thr15-gap20-postfilter-final
+    root: /data/ZhaoX/OVM3D-Dett/boxfusion_boxer_dev/cache/cutr_proposals
+    baseline_prediction_root: /data/ZhaoX/BoxFusion/results/ca1m_thr15
+  boxer:
+    mode: active
+    apply_stage: post_filter
+    official_root: /data/ZhaoX/OVM3D-Dett/boxfusion_boxer_dev/third_party/boxer
+    checkpoint: /data/ZhaoX/OVM3D-Dett/boxfusion_boxer_dev/third_party/boxer/ckpts/boxernet_hw960in2x6d768-c88128f8.ckpt
+    expected_commit: 1f86542dc342a4b1d474c87c97c5d1d6566d9148
+    checkpoint_sha256: d5a30b348a8f5b0e5990ff3aa0e8f473ce77d860da22586322e7f47abc83ca6f
+    dinov3_sha256: 4057cbaaad8c16657adb09d6815f28d4164eeba30532fde23f0d17313124caea
+    precision: bfloat16
+    use_sdp: true
+    sdp_samples: 10000
+    seed: 0
+    diagnostics_dir: /data/ZhaoX/BoxFusion/development/final_controls/diagnostics/ca1m_recar3d_final107_native
+association:
+  small_threshold: 0.2
+  rotation_gap: 30
+  translation_gap: 0.8
+  appearance_gate:
+    enabled: false
+  pvq_ar:
+    enabled: false
+    mode: shadow
+    max_prototypes: 4
+    memory_per_track: 12
+    ambiguity_margin: 0.1
+    view_angle_max_deg: 60.0
+    rearrange_margin: 0.05
+    min_similarity: 0.5
+    require_both_prototypes: true
+    diagnostics_dir: /data/ZhaoX/BoxFusion/development/final_controls/diagnostics/ca1m_recar3d_final107_pvq
+    scene_event_cap: 4096
+    nms_observer: true
+    keyframe_map_log: false
+box_fusion:
+  use: true
+  iters: 20
+  pst_path: /data/ZhaoX/BoxFusion/data/pst_1024_0.tiff
+  pst_size: 1024
+  random_opt:
+    center_init_size: 0.1
+    center_scaling_coefficient: 0.1
+    shape_init_size: 0.5
+    shape_scaling_coefficient: 0.5
+  check_valid: false
+  nms_threshold: 0.1
+  small_size: 0.5
+  reliable_views:
+    enabled: true
+    top_k: 3
+    min_views: 3
+    confidence_power: 1.0
+    area_power: 0.25
+    area_reference_ratio: 0.02
+    projection_iou_power: 0.5
+    geometry_consistency_power: 0.5
+    center_sigma: 0.75
+    size_sigma: 0.5
+    minimum_box_diagonal: 0.1
+    minimum_weight: 0.05
+vis:
+  rerun: false
+  show_class: false
+  show_label: false
+  trajectory: true
+online_candidate_map:
+  enabled: true
+  output_root: /data/ZhaoX/BoxFusion/development/final_controls/results/ca1m_recar3d_final107
+  diagnostics_root: /data/ZhaoX/BoxFusion/development/final_controls/diagnostics/ca1m_recar3d_final107
+  audit_output_root: /data/ZhaoX/BoxFusion/development/final_controls/results/ca1m_recar3d_final107_components
+  write_every_keyframe: false
+  asynchronous: true
+  queue_capacity: 2
+  keyframe_deadline_ms: 833.333333
+  preload_provider: true
+  provider:
+    device: cuda:1
+    warmup: true
+    score_threshold: 0.05
+    top_proposals: 150
+    top_anchors: 300
+    diagnostics_root: /data/ZhaoX/BoxFusion/development/final_controls/diagnostics/ca1m_recar3d_final107_provider
+  state:
+    variant: reliability_v2
+    audit_controls: true
+    audit_plr_controls: false
+    audit_direct_plr: false
+    audit_raw_iou_max: false
+    cross_branch_dedup: false
+    m1p:
+      use_children: false
+      proposal_min_views: 3
+      child_min_views: 2
+      ttl_keyframes: 10
+      match_iou: 0.10
+      match_center_m: 0.50
+      native_dedup_iou: 0.25
+      self_nms_iou: 0.50
+      max_tracks: 1024
+      max_births: 12
+      max_observations_per_track: 12
+      max_observations_per_frame: 192
+    m1a:
+      voxel_m: 0.3
+      min_views: 3
+      min_reliability: 0.35
+      association_distance_m: 0.45
+      association_iou: 0.05
+      association_scale_log: 0.70
+      native_dedup_iou: 0.25
+      recovery_dedup_iou: 0.25
+      max_anchors_per_frame: 300
+      max_track_observations: 12
+      max_active_tracks: 4096
+      max_births: 640
+      track_ttl_keyframes: 12
+      max_view_slots: 8
+      min_angular_separation_deg: 20.0
+      lower_bound_kappa: 1.0
+    plr_v2:
+      match_center_ratio: 0.75
+      match_scale_log: 0.70
+      center_cost_weight: 0.50
+      scale_cost_weight: 0.25
+      min_view_separation_deg: 20.0
+      reliability_saturation: 2.0
+      score_min: 0.05
+      score_max: 0.50
+    m2:
+      support_mode: max
+      support_threshold: 0.50
+      logit_weight: 2.0
+      match_iou: 0.10
+      geometry_reset_iou: 0.20
+      exclusive_matching: true
+      use_negative_evidence: true
+      max_view_slots: 8
+      min_angular_separation_deg: 30.0
+      state_ttl_keyframes: 10
+      max_states: 4096
+      ema_decay: 0.8
+      negative_weight: 0.25
+      lower_bound_kappa: 1.0
+eval: true

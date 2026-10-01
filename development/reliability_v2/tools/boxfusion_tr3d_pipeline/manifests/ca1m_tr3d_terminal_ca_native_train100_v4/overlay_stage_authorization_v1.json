@@ -1,0 +1,91 @@
+{
+  "authorization_decision": "ALLOW_STAGE_O_ONLY",
+  "bound_config": {
+    "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/config/ca1m_tr3d_terminal_train100_v4_o1.json",
+    "sha256": "09ddf29a80f535af8ee3db811c637f82ad83eb624d56a1361be47cc2b80944ae"
+  },
+  "code": {
+    "native_b6_observer": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/boxfusion/ca1m_native_b6_observer.py",
+      "sha256": "e22965b5527d28369faa3848cbc2d92c4c927905ac29c4e605d338de73464280"
+    },
+    "native_b6_score": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/boxfusion/ca1m_native_b6_score.py",
+      "sha256": "6daea10fe05ad531245a3007839fafe40b380bf1ab201f9ff9d612ee2abb8750"
+    },
+    "overlay_binding": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/boxfusion/ca1m_tr3d_overlay_binding_v4.py",
+      "sha256": "09a1d3613111c9d9f7d87fd591b0c26ed3052584ae6054c9c2a73e699bf5dc9d"
+    },
+    "overlay_runner": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/tools/overlay_ca1m_tr3d_terminal_v4.py",
+      "sha256": "6779d1c501e9d3b101ad1207f1d45f4c57518e3abc4d08b4fcb56bf55815d2c6"
+    },
+    "preflight": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/tools/preflight_ca1m_tr3d_terminal_train100_v4.py",
+      "sha256": "9c169e6b65fa053110844e585547d34ea86cb6fec1de4149aed1428e341d706a"
+    },
+    "stage_o_sealer": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/tools/seal_ca1m_tr3d_v4_overlay_authorization.py",
+      "sha256": "09ec62dea23397b1c8c0f2241691f9f66fb2273bff43184a5427093101185f44"
+    },
+    "terminal_association": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/boxfusion/ca1m_tr3d_terminal.py",
+      "sha256": "b39e1c421e3dde63dedd39c8f108769ea02a48ecda0e89b4b86a3dbdb7263aa2"
+    },
+    "terminal_overlay_contract": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/boxfusion/ca1m_tr3d_terminal_v4.py",
+      "sha256": "c51654df3a68370c1c795ca502949cf7b5d68dcd9b1e4ecbaf8f24e392c64ab2"
+    }
+  },
+  "complete": true,
+  "create_only": true,
+  "deployment_scores_allowed_for_stacked_gate_training": false,
+  "deployment_scores_used_for_overlay": true,
+  "full_two_stage_run_authorized": false,
+  "ground_truth_access": false,
+  "oof_scores_required_for_stacked_gate_training": true,
+  "oof_sidecar_loaded_by_overlay": false,
+  "overlay_cpu_execution_authorized": true,
+  "proposal_gpu_execution_authorized": false,
+  "revision": 1,
+  "schema": "boxfusion.ca1m_tr3d_terminal_overlay_authorization.v4",
+  "upstream": {
+    "final_base_manifest": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/reports/ca1m_native_final_base_train100_v1/collection_manifest.json",
+      "schema": "boxfusion.ca1m_final_base_identity_audit.v1",
+      "sha256": "110dac18eb436eb6735299141d77fa00d4fed6042f93de81e5288e6b5d0e2f52"
+    },
+    "native_b6_v2_collection_manifest": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/reports/ca1m_native_b6_final_base_train100_v2/collection_manifest.json",
+      "schema": "boxfusion.ca1m_native_b6_final_base_train_collection.v2",
+      "sha256": "1f9ad7ff70ff5cb532cf4faa1b9c9dbd331cff92436015e8cc5f13968e92df2e"
+    },
+    "native_b6_v2_deployment_checkpoint": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/models/ca1m_native_b6_final_base_iou_mlp_v2.npz",
+      "schema": "boxfusion.ca1m_native_b6_iou_mlp.v1",
+      "sha256": "72890c1d88259c5727fd6edd18f36ce3bb8a27e20cceba97f1f4267c042a7fa7"
+    },
+    "native_b6_v2_deployment_checkpoint_manifest": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/models/ca1m_native_b6_final_base_iou_mlp_v2.manifest.json",
+      "schema": "boxfusion.ca1m_native_b6_checkpoint_manifest.v1",
+      "sha256": "8c6ac8a128f6cfd3247c81bfd9cd10499cab0f5a565b12ba181fed2509a2e97b"
+    },
+    "native_b6_v2_oof_row_scores": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/models/ca1m_native_b6_final_base_oof_row_scores_v2.npz",
+      "schema": "boxfusion.ca1m_native_b6_oof_row_scores.v2",
+      "sha256": "82b5e70c635958398c04b0e3ba5dbf25203b61bcabd725330bd68812d156e5ed"
+    },
+    "native_b6_v2_oof_row_scores_manifest": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/models/ca1m_native_b6_final_base_oof_row_scores_v2.manifest.json",
+      "schema": "boxfusion.ca1m_native_b6_oof_row_scores_manifest.v2",
+      "sha256": "b1d00bcdc205ab806d705c61ee2abdaeac7e634e999fbf742cb9aaad0adbd23f"
+    },
+    "proposal_collection": {
+      "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/reports/ca1m_tr3d_terminal_ca_native_train100_v4/proposal_collection_manifest_v5.json",
+      "schema": "boxfusion.ca1m_tr3d_proposal_collection.v4",
+      "sha256": "a8a9bcbccb8212e6a346b60e3657859f06751b1d2309204919b0de725babc349"
+    }
+  },
+  "validation_ground_truth_access": false
+}

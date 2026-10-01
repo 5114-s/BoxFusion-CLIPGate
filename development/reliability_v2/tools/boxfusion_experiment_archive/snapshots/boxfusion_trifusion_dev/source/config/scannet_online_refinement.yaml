@@ -1,0 +1,313 @@
+dataset: scannet
+
+# Keep the score-preserving ScanNet reproduction as the parent protocol.
+# The paper supplement uses 0.4; keep a paired 0.5 config for ablations.
+data:
+  datadir: /data/ZhaoX/BoxFusion/upstream_clean/scannet_readme_frames/scene0169_00/frames
+  start: 0
+  output_dir: /data/ZhaoX/OVM3D-Dett/boxfusion_maskgraph_dev/results/scannet_online_refinement
+  post_process_min_extent: 0.30
+  gap: 25
+
+cam:
+  H: 480
+  W: 640
+  fx: 574.540771
+  fy: 577.583740
+  cx: 322.522827
+  cy: 238.558853
+  png_depth_scale: 1000.
+
+detection:
+  score_thresh: 0.4
+  uv_bound: true
+  uv_bound_value: 0.9
+  floor_mask: true
+  floor_ratio: 15
+  scale_box: 1.5
+
+association:
+  small_threshold: 0.1
+  rotation_gap: 30
+  translation_gap: 0.8
+  appearance_gate:
+    enabled: true
+    geometry_min_iou: 0.08
+    hard_geometry_iou: 0.45
+    low_similarity: 0.45
+    high_similarity: 0.75
+    max_iou_penalty: 0.10
+    max_iou_bonus: 0.0
+    confidence_floor: 0.35
+    confidence_full: 0.75
+    spatial:
+      low_similarity: 0.65
+      high_similarity: 0.85
+    correspondence:
+      low_similarity: 0.55
+      high_similarity: 0.75
+
+box_fusion:
+  use: true
+  iters: 20
+  pst_path: /data/ZhaoX/BoxFusion/data/pst_1024_0.tiff
+  pst_size: 1024
+  random_opt:
+    center_init_size: 0.1
+    center_scaling_coefficient: 0.1
+    shape_init_size: 0.5
+    shape_scaling_coefficient: 0.5
+  check_valid: false
+  nms_threshold: 0.1
+  small_size: 0.35
+  reliable_views:
+    enabled: true
+    top_k: 3
+    min_views: 3
+    confidence_power: 1.0
+    area_power: 0.25
+    area_reference_ratio: 0.02
+    projection_iou_power: 0.50
+    geometry_consistency_power: 0.50
+    center_sigma: 0.75
+    size_sigma: 0.50
+    minimum_box_diagonal: 0.10
+    minimum_weight: 0.05
+
+# Entire block is opt-in. Setting enabled=false must reproduce the parent
+# BoxFusion path exactly and must not import YOLOE.
+online_refinement:
+  enabled: true
+  scannet_axis_aligned_only: true
+  # The strict single-GPU setting runs the mask provider only once every five
+  # BoxFusion keyframes. Set this to 1 for the accuracy-first ablation.
+  inference_every_keyframes: 5
+  candidate_lifecycle:
+    # B1: tolerate five missed YOLOE updates, rather than only five BoxFusion
+    # keyframes (one YOLOE interval).
+    ttl_clock: provider_call
+    # B2: freeze confirmed tracks after TTL and include them at finalization.
+    archive_confirmed: true
+  appearance_memory:
+    enabled: true
+    masked_crop: true
+  supplemental_proposals:
+    enabled: true
+    provider: yoloe
+    mode: prompt_free
+    checkpoint: /data/ZhaoX/OVM3D-Dett/boxfusion_b5_ap50_dev/models/yoloe-11s-seg-pf.pt
+    prompts: []
+    confidence: 0.15
+    iou: 0.70
+    image_size: 640
+    max_detections: 64
+    mask_threshold: 0.5
+    agnostic_nms: true
+    cache:
+      enabled: true
+      write: true
+      directory: /data/ZhaoX/OVM3D-Dett/boxfusion_maskgraph_dev/cache/yoloe_scannet
+      # null keeps the historical YOLOE configuration-derived namespace.
+      # Set an explicit immutable value for provider: cache_only teacher replay.
+      namespace: null
+      # Strict cache-only replay supports error (fail closed) or empty.
+      # YOLOE read-through cache behavior is unchanged by this field.
+      missing_policy: error
+  object_memory:
+    enabled: true
+    # Keep a bounded candidate pool, then fuse only the three most reliable
+    # and view-diverse Mask-RGBD observations for each global instance.
+    top_k_views: 3
+    max_view_candidates: 12
+    view_diversity_weight: 0.25
+    minimum_view_quality: 0.0
+    min_depth: 0.15
+    max_depth: 8.0
+    # ScanNet loader already converts uint16 depth to metres.
+    depth_scale: 1.0
+    mask_threshold: 0.5
+    mask_edge_margin: 1
+    depth_edge_threshold: 0.12
+    voxel_size: 0.02
+    max_points_per_observation: 2048
+    max_points_per_object: 8192
+    aabb_lower_quantile: 0.02
+    aabb_upper_quantile: 0.98
+    min_points_for_aabb: 96
+    minimum_aabb_dimension: 0.05
+    min_confirmations: 2
+    track_ttl: 5
+    association_iou_threshold: 0.05
+    association_center_distance: 0.75
+    association_inside_fraction: 0.25
+  matching:
+    global_match_iou: 0.05
+    global_match_2d_iou: 0.20
+    max_center_distance: 0.75
+    crop_to_global_expansion: 1.50
+    rekey_iou: 0.50
+    absorb_supplemental_iou: 0.35
+  missing_track_identity:
+    enabled: false
+    shadow_weak_global_matches: true
+    strong_global_iou: 0.25
+    strong_projection_iou: 0.50
+    strong_point_support: 0.60
+  # Disabled by default. Missing-track profiles replace geometry-only
+  # candidate association with incremental multi-view mask graph edges.
+  mask_graph: {}
+  # C3 observer: deterministic cross-lifecycle fragment clustering.  The
+  # profile enables this section but it never writes detections.
+  fragment_stitch: {}
+  refit:
+    enabled: true
+    # Legacy profiles force quantile_blend; B3-v2 profiles override this with
+    # visibility_aware plus their conservative paired-view gates.
+    strategy: quantile_blend
+    preserve_box_orientation: false
+    min_views: 2
+    min_points: 192
+    # Conservative B3 gates: Top-K memory may improve a box, but one noisy
+    # mask/depth observation must not be able to move it aggressively.
+    blend: 0.35
+    extent_padding: 0.02
+    minimum_view_separation_degrees: 60.0
+    minimum_axis_cosine: 0.20
+    minimum_bilateral_axes: 1
+    minimum_side_views: 1
+    max_boundary_shift_ratio: 0.15
+    minimum_boundary_change_ratio: 0.005
+    visibility_boundary_quantile: 0.05
+    visibility_point_crop_expansion: 1.20
+    minimum_camera_outside_ratio: 0.02
+    maximum_boundary_measurement_spread_ratio: 0.10
+    # B3-v2 profiles enable this fallback. Two sufficiently separated camera
+    # directions nearly perpendicular to an axis may jointly constrain its
+    # lower and upper mask-depth silhouette boundaries.
+    enable_silhouette_axes: false
+    select_best_silhouette_pair: false
+    maximum_silhouette_axis_cosine: 0.30
+    minimum_silhouette_views: 2
+    minimum_silhouette_separation_degrees: 45.0
+    max_center_shift_ratio: 0.25
+    min_extent_ratio: 0.65
+    max_extent_ratio: 1.50
+    min_original_point_support: 0.40
+    # Zero keeps the published legacy B3 profile reproducible. B3-v2 profiles
+    # override this with a strict candidate-support requirement.
+    min_candidate_point_support: 0.0
+    max_candidate_support_drop: 1.0
+    min_reprojection_iou: 0.20
+    min_reprojection_improvement: 0.0
+  box_refiner:
+    # Legacy checkpoints use tools/train_box_refiner.py. B5-v2 profiles use
+    # tools/train_oriented_box_refiner.py and override the frame/bounds below.
+    enabled: false
+    checkpoint: null
+    # B5-v2 profiles override the legacy world-AABB path and run the learned
+    # residual head in the original BoxFusion OBB's local coordinate frame.
+    coordinate_frame: world_aabb
+    preserve_orientation: false
+    apply_scope: global
+    point_count: 512
+    min_quality: 0.20
+    # B5-v2 interprets this as P(refinement improves IoU). The old
+    # ``min_quality`` value remains for legacy checkpoint compatibility.
+    quality_threshold: 0.50
+    architecture:
+      point_feature_dim: 3
+      quality_feature_dim: 12
+      point_hidden_dim: 64
+      point_embedding_dim: 128
+      head_hidden_dim: 128
+      max_center_fraction: 0.25
+      max_log_dimension_residual: 0.4054651081081644
+      minimum_dimension: 0.001
+      normalized_point_limit: 4.0
+  # Shared B3 -> B5 + B6-v2 head. The strict active profile supplies the
+  # checkpoint via --online-joint-checkpoint and disables all legacy output
+  # mutations. The observer can still dump these exact V=5, P=128 inputs
+  # without loading a model.
+  joint_local_head:
+    enabled: false
+    checkpoint: null
+    device: null
+    max_views: 5
+    points_per_view: 128
+    improvement_threshold: 0.50
+    max_candidate_uncertainty: 1.0
+    detector_blend: 0.60
+    preserve_original_floor: false
+    mutate_geometry: false
+    mutate_scores: false
+    collect_diagnostics: false
+    architecture:
+      point_feature_dim: 3
+      view_feature_dim: 9
+      quality_feature_dim: 12
+      point_hidden_dim: 48
+      point_embedding_dim: 96
+      view_embedding_dim: 96
+      head_hidden_dim: 128
+      max_center_fraction: 0.15
+      max_log_dimension_residual: 0.22314355131420976
+      minimum_dimension: 0.001
+      normalized_point_limit: 4.0
+      default_improvement_probability: 0.01
+      default_iou_probability: 0.10
+      ranking_weights: [0.10, 0.20, 0.30, 0.40]
+      minimum_log_variance: -6.0
+      maximum_log_variance: 2.0
+  quality:
+    enabled: true
+    mode: heuristic
+    checkpoint: null
+    feature_geometry: refined
+    # Set to 0.50 by the b5v2_b6 profile so the frozen B6 MLP receives the
+    # same constant refiner_quality feature used during its training.
+    refiner_quality_override: null
+    blend_with_detector: 0.60
+    preserve_original_floor: false
+    apply_to_unobserved: false
+    apply_to_supplemental: true
+    # Log-normalized against the full bounded memory so it does not saturate.
+    support_reference_points: 8192
+    target_views: 3
+    max_view_records: 5
+    soft_nms:
+      enabled: true
+      method: gaussian
+      iou_threshold: 0.30
+      sigma: 0.50
+      score_threshold: 0.05
+      max_detections: null
+  supplemental_output:
+    enabled: true
+    min_confirmations: 2
+    min_score: 0.15
+    # Kept disabled in the base config for exact backward compatibility.
+    # The supplemental_conservative profile sets this to 0.30.
+    min_projection_iou: 0.0
+    drop_if_global_iou: 0.70
+    drop_if_supplemental_iou: 0.70
+    require_mask_graph_confirmation: false
+    # null preserves legacy fallback to output_filter.minimum_extent.
+    # Mask Graph profiles set 0.30 here while leaving global output identity.
+    minimum_extent: null
+  # Match demo.py/post_process before Soft-NMS so a box that will be removed
+  # cannot suppress a valid detection.
+  output_filter:
+    minimum_extent: 0.30
+  diagnostics:
+    enabled: true
+    dump_track_memory: true
+    root: /data/ZhaoX/OVM3D-Dett/boxfusion_maskgraph_dev/results/scannet_online_refinement_diagnostics
+    point_count: 512
+
+vis:
+  rerun: false
+  show_class: false
+  show_label: false
+  trajectory: true
+
+eval: true

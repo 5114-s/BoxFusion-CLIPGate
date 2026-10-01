@@ -537,8 +537,10 @@ class ScannetDataset(IterableDataset):
         self.cy = float(self.K[1, 2])
         self.depth_scale = cfg['cam']['png_depth_scale']
         self.has_depth = has_depth
-        pattern = r'scene\d{4}_\d{2}'  
+        pattern = r'(?:scene\d{4}_\d{2}|scene_\d{5}_\d{2})'
         matches = re.findall(pattern, cfg['data']['datadir'])
+        if not matches:
+            raise ValueError(f"Cannot infer a ScanNet/MultiScan scene id from {self.basedir!r}")
         self.video_id = matches
 
     def load_poses(self, path):
@@ -573,7 +575,7 @@ class ScannetDataset(IterableDataset):
         print("Waiting for frames...")
         video_id = self.video_id
         index = 0
-        while True:
+        while index < self.num_frames:
 
             #Step1: load data
             color_path = self.img_files[index]

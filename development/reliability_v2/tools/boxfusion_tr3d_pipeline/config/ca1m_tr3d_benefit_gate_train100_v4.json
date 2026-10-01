@@ -1,0 +1,94 @@
+{
+  "schema": "boxfusion.ca1m_tr3d_benefit_gate_config.v4",
+  "namespace": "ca1m_tr3d_benefit_gate_final_base_v4",
+  "state": "pending_final_base_b6_oof_overlay_and_candidate_evidence",
+  "run_authorized": false,
+  "train_only": true,
+  "ground_truth_used_only_after_candidate_seal": true,
+  "validation_ground_truth_access": false,
+  "validation_prediction_access": false,
+  "official_validation_comparable": false,
+  "scene_contract": {
+    "path": "/extra/ZhaoX/tr3d_ca1m_train100_v1/splits/train100.txt",
+    "sha256": "35321e9942dc5d512db2952b9ca6228b1291127e0c13fd92aa458f2d7eb7f9fd",
+    "count": 100,
+    "exact": true
+  },
+  "split": {
+    "namespace": "boxfusion.ca1m-native-b6.scene-folds.v1",
+    "fold_count": 5,
+    "scene_grouped": true,
+    "gate_train_folds": [2, 3, 4],
+    "threshold_dev_folds": [0],
+    "locked_internal_check_folds": [1],
+    "gate_train_scene_count": 60,
+    "threshold_dev_scene_count": 20,
+    "locked_internal_scene_count": 20,
+    "anchor_score_source": "ca1m_native_b6_final_base_all_fold_oof_row_scores_v2",
+    "deploy_b6_scores_allowed_for_stacked_training": false
+  },
+  "prerequisites": {
+    "final_base_manifest": null,
+    "native_b6_v2_collection_manifest": null,
+    "native_b6_v2_checkpoint": null,
+    "native_b6_v2_checkpoint_manifest": null,
+    "native_b6_v2_oof_row_scores": null,
+    "native_b6_v2_oof_row_scores_manifest": null,
+    "proposal_stage_p": {
+      "root": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_tr3d_terminal_ca_native_train100_v4/proposals",
+      "schema": "boxfusion.ca1m_tr3d_anchor_free_proposal_cache.v4",
+      "exact_output_count": 100,
+      "ca_scratch_binding_sha256": "19b8c3d12de8dd8d3ffff1413c6c6003a5ccb1a10cf213b972ebd43fa9db5043"
+    },
+    "overlay_stage_o": {
+      "root": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_tr3d_terminal_ca_native_train100_v4/overlays",
+      "schema": "boxfusion.ca1m_tr3d_terminal_cpu_overlay.v4",
+      "exact_output_count": 100
+    },
+    "candidate_evidence_manifest": null,
+    "derived_train_gt_root": "/extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1"
+  },
+  "algorithms": {
+    "feature_algorithm": "terminal_gate_40d_v1_pure_math",
+    "trainer_algorithm": "dual_class_balanced_logistic_v2_pure_math",
+    "quality_target": "candidate_max_gt_iou_strict_gt_0.25",
+    "benefit_target": "same_best_gt_and_same_gt_iou_gain_ge_0.05",
+    "legacy_artifact_reuse": false
+  },
+  "outputs": {
+    "binding_manifest": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/manifests/ca1m_tr3d_benefit_gate_final_base_v4/training_binding.json",
+    "candidate_evidence_root": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/diagnostics/ca1m_tr3d_benefit_gate_final_base_v4/candidate_evidence",
+    "dataset": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/datasets/ca1m_tr3d_benefit_final_base_v4.npz",
+    "dataset_manifest": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/datasets/ca1m_tr3d_benefit_final_base_v4.manifest.json",
+    "policy": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/models/ca1m_tr3d_benefit_gate_final_base_v4.json",
+    "training_materialization_root": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_tr3d_benefit_gate_final_base_v4/train100_oof_materialized"
+  },
+  "materialization": {
+    "schema": "boxfusion.ca1m_tr3d_terminal_materialization.v4",
+    "geometry_only": true,
+    "preserve_anchor_scores": true,
+    "preserve_row_order": true,
+    "preserve_row_count": true,
+    "clip_semantics_unchanged": true,
+    "training_materialization_uses_oof_anchor_scores": true,
+    "canonical103_authorized": false
+  },
+  "forbidden_reuse": {
+    "scannet_artifact_access": false,
+    "old_ca_terminal_v1_v2_v3_access": false,
+    "old_ca_b6_access": false,
+    "old_ca_benefit_dataset_or_policy_access": false,
+    "path_tokens": [
+      "scannet",
+      "ca1m_tr3d_terminal_train100_v1",
+      "ca1m_tr3d_terminal_train100_v2",
+      "ca1m_tr3d_terminal_ca_native_train100_v3",
+      "ca1m_native_b6_train100_v1",
+      "ca1m_native_b6_canonical103_v1",
+      "ca1m_native_b6_iou_mlp_v1",
+      "ca1m_tr3d_benefit_gate_v1",
+      "ca1m_tr3d_benefit_fit_dev_v1",
+      "ca1m_tr3d_benefit_fit_dev_v2"
+    ]
+  }
+}

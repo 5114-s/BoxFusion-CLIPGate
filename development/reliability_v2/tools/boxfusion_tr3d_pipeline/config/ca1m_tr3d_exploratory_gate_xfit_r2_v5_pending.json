@@ -1,0 +1,362 @@
+{
+  "schema": "boxfusion.ca1m_tr3d_exploratory_gate_pending_config.v5",
+  "schema_document": {
+    "path": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/config/ca1m_tr3d_exploratory_gate_xfit_r2_v5_pending.schema.json",
+    "sha256": "9381047c50e33f76e193c3afde34b20ebcb1a4720a85c1be70b75932176c68b5"
+  },
+  "namespace": "ca1m_tr3d_exploratory_gate_xfit_r2_v5",
+  "state": "pending_asymmetric_xfit_r2_oof_candidates",
+  "exploratory_only": true,
+  "authorizations": {
+    "candidate_collection": false,
+    "ground_truth_join": false,
+    "gate_fit": false,
+    "threshold_selection": false,
+    "fold0_reused_dev_diagnostic": false,
+    "fold1_internal_check": false,
+    "official_validation": false,
+    "policy_activation": false,
+    "geometry_materialization": false,
+    "canonical103": false
+  },
+  "access": {
+    "static_preflight_only": true,
+    "ground_truth_access": false,
+    "fold0_ground_truth_access": false,
+    "fold1_metadata_or_ground_truth_access": false,
+    "validation_ground_truth_access": false,
+    "validation_prediction_access": false,
+    "scannet_artifact_access": false
+  },
+  "design_basis": {
+    "source": "sealed_terminal_gate_v4_fold0_and_oracle_summary_only",
+    "source_is_formal_input": false,
+    "rejected_policy_is_input": false,
+    "old_candidate_pool_is_input": false,
+    "fold0_baseline_ap": {
+      "iou_0.15": 0.3760791624675025,
+      "iou_0.25": 0.34014544404414054,
+      "iou_0.50": 0.18617860029638017
+    },
+    "rejected_gate_ap_delta": {
+      "iou_0.15": 0.0,
+      "iou_0.25": 0.0,
+      "iou_0.50": 0.0005023975640064959
+    },
+    "candidate_pool_oracle_ap_delta": {
+      "max_any_gt_164_replacements": [0.003209, 0.007226, 0.016358],
+      "same_gt_positive_135_replacements": [0.005286, 0.006132, 0.014769],
+      "same_gt_gain_ge_0.05_96_replacements": [0.004975, 0.006132, 0.014569]
+    },
+    "candidate_diagnostic": {
+      "anchors": 1505,
+      "represented_anchors": 714,
+      "same_gt_gain_ge_0.05": 96,
+      "same_gt_gain_ge_0.05_scene_count": 19,
+      "candidate_rows": 1863,
+      "rejected_gate_replacements": 13,
+      "rejected_gate_beneficial_replacements": 3,
+      "rejected_gate_severe_harm_replacements": 6,
+      "searched_operating_points": 400,
+      "passing_operating_points": 0,
+      "quality_gt_0.25_fraction": 0.5835,
+      "benefit_fraction": 0.0633,
+      "target_switch_fraction": 0.1621,
+      "mean_same_gt_gain": -0.298,
+      "raw_score_auc_quality": 0.569,
+      "raw_score_auc_benefit": 0.465
+    },
+    "conclusion": "new_candidate_iou_and_groupwise_benefit_evidence_required_not_loss_only"
+  },
+  "protocol": {
+    "split_namespace": "boxfusion.ca1m-native-b6.scene-folds.v1",
+    "scene_grouped": true,
+    "fit_folds": [2, 3, 4],
+    "gate_oof_threshold_folds": [2, 3, 4],
+    "fold0_reused_dev_diagnostic_folds": [0],
+    "locked_internal_folds": [1],
+    "fit_scene_count": 60,
+    "fold0_scene_count": 20,
+    "locked_scene_count": 20,
+    "threshold_selection_source": "fold234_scene_grouped_gate_oof_only",
+    "anchor_score_source": "ca1m_native_b6_final_base_all_fold_oof_row_scores_v2",
+    "deploy_anchor_scores_allowed_for_gate_fit_or_threshold_selection": false,
+    "row_random_split_allowed": false,
+    "fold0_used_for_fit": false,
+    "fold0_used_for_threshold_or_hyperparameter_selection": false,
+    "fold1_or_validation_used_for_any_selection": false,
+    "detector_candidate_roles": [
+      {
+        "role": "inner_holdout2",
+        "detector_train_folds": [3, 4],
+        "candidate_output_folds": [2],
+        "candidate_use": "gate_fit_oof"
+      },
+      {
+        "role": "inner_holdout3",
+        "detector_train_folds": [2, 4],
+        "candidate_output_folds": [3],
+        "candidate_use": "gate_fit_oof"
+      },
+      {
+        "role": "inner_holdout4",
+        "detector_train_folds": [2, 3],
+        "candidate_output_folds": [4],
+        "candidate_use": "gate_fit_oof"
+      },
+      {
+        "role": "outer_dev",
+        "detector_train_folds": [2, 3, 4],
+        "candidate_output_folds": [0],
+        "candidate_use": "reused_dev_diagnostic_only"
+      }
+    ],
+    "gate_crossfit_roles": [
+      {
+        "role": "gate_holdout2",
+        "gate_train_folds": [3, 4],
+        "gate_oof_output_folds": [2]
+      },
+      {
+        "role": "gate_holdout3",
+        "gate_train_folds": [2, 4],
+        "gate_oof_output_folds": [3]
+      },
+      {
+        "role": "gate_holdout4",
+        "gate_train_folds": [2, 3],
+        "gate_oof_output_folds": [4]
+      }
+    ],
+    "outer_to_inner_continuation_gate": {
+      "checkpoint_policy": "fixed_final_iter_only_no_checkpoint_selection",
+      "fold0_role": "reused_dev_continuation_diagnostic_only",
+      "raw_detector_ap_role": "diagnostic_only_not_a_continuation_criterion",
+      "oracle": "same_gt_iou_gain_ge_0.05",
+      "min_replacements": 10,
+      "min_scenes": 5,
+      "min_delta_ap15": 0.0,
+      "min_delta_ap25": 0.0,
+      "min_delta_ap50": 0.005,
+      "all_checks_required": true,
+      "inner_models_require_sealed_continuation_receipt": true,
+      "failure_action": "stop_without_training_inner_xfit_models"
+    },
+    "final_exploratory_gate_fit_folds": [2, 3, 4],
+    "final_exploratory_gate_application_folds": [0]
+  },
+  "candidate_source": {
+    "family": "ca_only_asymmetric_xfit_r2",
+    "initialization": "random_scratch_ca_only",
+    "checkpoint_policy": "fixed_final_iter_only_no_checkpoint_selection",
+    "fold0_checkpoint_selection_allowed": false,
+    "candidate_geometry_is_detector_oof_for_every_fit_scene": true,
+    "fold0_geometry_uses_outer234_detector": true,
+    "collection_schema": "boxfusion.ca1m_tr3d_xfit_r2_candidate_collection.v1",
+    "scene_schema": "boxfusion.ca1m_tr3d_xfit_r2_candidate_scene.v1",
+    "evidence_schema": "boxfusion.ca1m_tr3d_xfit_r2_candidate_evidence.v1",
+    "expected_scene_count": 80,
+    "expected_fit_scene_count": 60,
+    "expected_fold0_scene_count": 20,
+    "raw_tr3d_score_role": "weak_auxiliary_feature_and_final_tie_break_only",
+    "raw_tr3d_score_direct_gate_allowed": false,
+    "raw_score_only_model_allowed": false,
+    "old_candidate_pool_allowed": false,
+    "old_overlay_or_proposal_cache_allowed": false,
+    "required_scene_provenance": [
+      "scene_id",
+      "fold_id",
+      "producer_role",
+      "producer_checkpoint_sha256",
+      "producer_train_folds",
+      "candidate_corners_sha256",
+      "candidate_feature_sha256",
+      "anchor_identity_sha256"
+    ],
+    "manifest": {
+      "state": "pending",
+      "path": null,
+      "sha256": null,
+      "schema": "boxfusion.ca1m_tr3d_xfit_r2_candidate_collection.v1"
+    },
+    "role_artifacts": {
+      "inner_holdout2": {
+        "state": "pending",
+        "checkpoint_path": null,
+        "checkpoint_sha256": null,
+        "candidate_manifest_path": null,
+        "candidate_manifest_sha256": null
+      },
+      "inner_holdout3": {
+        "state": "pending",
+        "checkpoint_path": null,
+        "checkpoint_sha256": null,
+        "candidate_manifest_path": null,
+        "candidate_manifest_sha256": null
+      },
+      "inner_holdout4": {
+        "state": "pending",
+        "checkpoint_path": null,
+        "checkpoint_sha256": null,
+        "candidate_manifest_path": null,
+        "candidate_manifest_sha256": null
+      },
+      "outer_dev": {
+        "state": "pending",
+        "checkpoint_path": null,
+        "checkpoint_sha256": null,
+        "candidate_manifest_path": null,
+        "candidate_manifest_sha256": null
+      }
+    }
+  },
+  "learning": {
+    "family": "ca_native_candidate_iou_and_groupwise_benefit_v1",
+    "feature_construction_without_ground_truth": true,
+    "targets_joined_only_after_candidate_collection_seal": true,
+    "standardization_fit_scenes_only": true,
+    "scene_weights_equalized": true,
+    "raw_score_feature_penalty_multiplier": 4.0,
+    "required_non_score_feature_groups": [
+      "ca_native_visibility_and_depth_support",
+      "candidate_anchor_geometry",
+      "candidate_point_support_and_density",
+      "anchor_group_sibling_context"
+    ],
+    "heads": {
+      "candidate_iou_regression": {
+        "target": "candidate_max_gt_iou_continuous_0_1",
+        "loss": "huber_delta_0.10",
+        "primary_operating_region": "iou_0.50",
+        "required": true
+      },
+      "candidate_iou50_calibration": {
+        "target": "candidate_max_gt_iou_strict_gt_0.50",
+        "loss": "scene_balanced_binary_cross_entropy",
+        "required": true
+      },
+      "pairwise_groupwise_benefit": {
+        "target": "candidate_iou_on_anchor_gt_minus_anchor_iou",
+        "group_keys": ["scene_id", "anchor_index"],
+        "preference_margin": 0.05,
+        "target_switch_is_harm": true,
+        "loss": "scene_and_anchor_group_balanced_pairwise_logistic",
+        "required": true
+      }
+    },
+    "gate_oof_requirement": {
+      "each_row_scored_by_gate_excluding_its_scene": true,
+      "each_heldout_fold_absent_from_gate_fit": true,
+      "expected_oof_folds": [2, 3, 4],
+      "thresholds_selected_from_oof_predictions_only": true
+    }
+  },
+  "selection": {
+    "group_keys": ["scene_id", "anchor_index"],
+    "eligibility": "predicted_candidate_iou_and_predicted_same_gt_gain",
+    "candidate_iou_threshold_grid": [0.45, 0.5, 0.55, 0.6, 0.65, 0.7],
+    "same_gt_gain_threshold_grid": [0.0, 0.02, 0.05, 0.08, 0.1, 0.15],
+    "iou50_probability_threshold_grid": [0.5, 0.6, 0.7, 0.8, 0.9, 0.95],
+    "within_group_order": [
+      "predicted_same_gt_gain_desc",
+      "predicted_candidate_iou_desc",
+      "predicted_iou50_probability_desc",
+      "raw_tr3d_score_desc_final_tie_break",
+      "candidate_row_asc"
+    ],
+    "max_replacements_per_scene": 16,
+    "oof_safety_gate": {
+      "min_delta_ap15": 0.0,
+      "min_delta_ap25": 0.0,
+      "min_delta_ap50": 0.0025,
+      "min_replacements": 30,
+      "min_scenes": 12,
+      "min_positive_gain_fraction": 0.6,
+      "max_severe_harm_fraction": 0.1,
+      "max_target_switch_fraction": 0.1
+    },
+    "objective_order": [
+      "fold234_oof_delta_ap50_desc",
+      "fold234_oof_delta_ap25_desc",
+      "fold234_oof_delta_ap15_desc",
+      "positive_gain_fraction_desc",
+      "replacement_count_asc",
+      "threshold_tuple_lexicographic_desc"
+    ],
+    "ap_protocol": "world_enclosing_aabb_global_score_duplicate_aware_strict_gt_numpy_default_argsort"
+  },
+  "diagnostics": {
+    "fold0_role": "reused_dev_diagnostic_only",
+    "frozen_gate_fit_folds": [2, 3, 4],
+    "frozen_candidate_role": "outer_dev",
+    "frozen_threshold_source": "fold234_scene_grouped_gate_oof",
+    "fold0_retuning_allowed": false,
+    "fold0_model_selection_allowed": false,
+    "fold0_result_can_authorize_policy": false,
+    "fold0_result_can_authorize_fold1_or_validation": false,
+    "report_label": "noncanonical_reused_dev_exploratory_diagnostic"
+  },
+  "prerequisites": {
+    "xfit_r2_training_contract": {
+      "state": "pending",
+      "path": null,
+      "sha256": null,
+      "schema": "boxfusion.tr3d.ca1m_asymmetric_xfit_training_authorization.r2"
+    },
+    "xfit_r2_candidate_collection": {
+      "state": "pending",
+      "path": null,
+      "sha256": null,
+      "schema": "boxfusion.ca1m_tr3d_xfit_r2_candidate_collection.v1"
+    },
+    "xfit_r2_outer_continuation_receipt": {
+      "state": "pending",
+      "path": null,
+      "sha256": null,
+      "schema": "boxfusion.tr3d.ca1m_xfit_r2_outer_continuation_authorization.v1"
+    },
+    "gate_v5_preregistration": {
+      "state": "pending",
+      "path": null,
+      "sha256": null,
+      "schema": "boxfusion.ca1m_tr3d_exploratory_gate_preregistration.v5"
+    },
+    "fold234_scene_grouped_gate_oof": {
+      "state": "pending",
+      "path": null,
+      "sha256": null,
+      "schema": "boxfusion.ca1m_tr3d_exploratory_gate_oof_predictions.v5"
+    },
+    "fold234_threshold_receipt": {
+      "state": "pending",
+      "path": null,
+      "sha256": null,
+      "schema": "boxfusion.ca1m_tr3d_exploratory_gate_threshold_receipt.v5"
+    }
+  },
+  "outputs": {
+    "root": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_tr3d_exploratory_gate_xfit_r2_v5",
+    "dataset": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/datasets/ca1m_tr3d_exploratory_gate_xfit_r2_v5.npz",
+    "dataset_manifest": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/datasets/ca1m_tr3d_exploratory_gate_xfit_r2_v5.manifest.json",
+    "oof_predictions": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_tr3d_exploratory_gate_xfit_r2_v5/fold234_scene_grouped_oof.npz",
+    "threshold_receipt": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_tr3d_exploratory_gate_xfit_r2_v5/fold234_threshold_receipt.json",
+    "exploratory_policy": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/models/ca1m_tr3d_exploratory_gate_xfit_r2_v5.non_deployable.json",
+    "fold0_diagnostic_report": "/data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/reports/ca1m_tr3d_exploratory_gate_xfit_r2_v5/fold0_reused_dev_diagnostic.json"
+  },
+  "forbidden_reuse": {
+    "scannet_weights_or_artifacts": false,
+    "terminal_gate_v4_rejected_policy": false,
+    "terminal_gate_v4_dataset": false,
+    "terminal_gate_v4_candidate_evidence": false,
+    "terminal_gate_v4_proposal_or_overlay_pool": false,
+    "old_ca_tr3d_checkpoint": false,
+    "deploy_b6_scores_for_gate_stacking": false,
+    "forbidden_path_tokens": [
+      "scannet",
+      "ca1m_tr3d_benefit_gate_final_base_v4",
+      "ca1m_tr3d_terminal_ca_native_train100_v4",
+      "ca1m_tr3d_benefit_final_base_v4",
+      "ca1m_fg_scratch_seed0_fp32_gb16_v1"
+    ]
+  }
+}

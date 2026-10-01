@@ -1,0 +1,30 @@
+{
+  "schema": "boxfusion.ca1m_e961_incremental_l6_revision_invalid.v2",
+  "complete": true,
+  "create_only": true,
+  "invalid": true,
+  "operational_authority": false,
+  "namespace": "ca1m_e961_incremental_l6_v2",
+  "static_protocol_was_sealed": false,
+  "dynamic_ready_was_sealed": false,
+  "run_was_authorized": false,
+  "ground_truth_access": false,
+  "fold1_access": false,
+  "official_validation_access": false,
+  "gpu_started": false,
+  "candidate_bytes": {
+    "pending_config_sha256": "d37df74601748b6dd42f8b9d884fde0d4e10f889a01357c4d4eebb64f11411e4",
+    "core_sha256": "86c6c75e9ed9ca469bb7981396b79f0b7f712f728a0b8a2c78a2818552113403",
+    "provider_adapter_sha256": "9b84111ab20ffa66f35632674b7949f549465034735c04a66a8839b4545e94d6",
+    "preflight_sha256": "982edd6dfca5abd4a3b8f7d97178262368c69a753776afd72f44e01125b03668",
+    "tests_sha256": "e86b634f030f0a294e9102c5be6ebe3f7f4141a064528fa93628cc181faab667"
+  },
+  "reasons": [
+    "preflight_did_not_close_unknown_top_level_or_training_authority_fields",
+    "preflight_accepted_dataset_and_scientific_stop_state_drift",
+    "fold_and_identity_helpers_silently_truncated_fractional_values",
+    "18D_to_23D_CA_training_adaptation_disclosure_was_incomplete",
+    "provider_transform_claimed_byte_equality_but_used_numeric_array_equality"
+  ],
+  "action": "tombstoned_never_seal_v2_protocol_or_dynamic_authority"
+}

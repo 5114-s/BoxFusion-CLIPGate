@@ -1,0 +1,65 @@
+# Python cache
+__pycache__/
+*.py[cod]
+.pytest_cache/
+# 实验输出报告
+reports/
+diagnostics/
+# 数据集文件夹
+data_*/
+# word草稿
+*.docx
+# 临时生成大图
+*.pdf
+# 日志、缓存
+*.log
+__pycache__/
+*.pyc
+
+# IDE / agent state
+.vscode/
+.agents/
+.codex/
+
+# ScanNet data and model weights
+data/
+models/
+official_downloads/
+
+# The migrated pipeline carries one tiny hash-frozen quality calibrator so its
+# regression tests remain self-contained. All other model directories/weights
+# stay ignored.
+!tools/boxfusion_tr3d_pipeline/models/
+!tools/boxfusion_tr3d_pipeline/models/scannet_b6_iou_mlp.npz
+
+# Outputs
+logs/
+results/
+backups/
+
+# Embedded repository copies
+upstream_clean/
+
+# Generated evaluation data
+evaluation/data_util/scannet_train_detection_data/
+evaluation/eval_scannet/
+
+# Large model files
+*.pth
+*.pth.tar
+*.pt
+*.ckpt
+*.safetensors
+
+# Temporary files
+*.log
+*.tmp
+.DS_Store
+
+# Ignore large datasets
+data_ca1m_dyn/
+data_dyn/
+data_dyn_move/
+
+# Ignore large diagnostic dumps
+diagnostics/t05_boxer/prod_e2e/

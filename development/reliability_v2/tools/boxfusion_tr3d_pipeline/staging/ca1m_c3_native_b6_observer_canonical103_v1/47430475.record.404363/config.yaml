@@ -1,0 +1,52 @@
+dataset: CA1M
+experiment:
+  seed: 0
+data:
+  datadir: /extra/ZhaoX/boxfusion_ca1m/_placeholder/00000000
+  start: 0
+  output_dir: /data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/staging/ca1m_c3_native_b6_observer_canonical103_v1/47430475.record.404363/pred
+  gap: 20
+cam:
+  H: 384
+  W: 512
+  png_depth_scale: 1000.0
+detection:
+  score_thresh: 0.4
+  uv_bound: true
+  uv_bound_value: 0.9
+  floor_mask: true
+  floor_ratio: 15
+  scale_box: 1.5
+lifting:
+  backend: cutr
+  proposal_cache:
+    mode: record
+    namespace: ca1m-native-b6-canonical103-score04-gap20-cutr-v1
+    root: /data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/staging/ca1m_c3_native_b6_observer_canonical103_v1/47430475.record.404363/cache
+association:
+  small_threshold: 0.2
+  rotation_gap: 30
+  translation_gap: 0.8
+box_fusion:
+  use: true
+  iters: 20
+  pst_path: /data/ZhaoX/BoxFusion/data/pst_1024_0.tiff
+  pst_size: 1024
+  random_opt:
+    center_init_size: 0.1
+    center_scaling_coefficient: 0.1
+    shape_init_size: 0.5
+    shape_scaling_coefficient: 0.5
+  check_valid: false
+  nms_threshold: 0.1
+  small_size: 0.5
+online_refinement:
+  enabled: false
+ca1m_native_b6_observer:
+  enabled: false
+vis:
+  rerun: false
+  show_class: false
+  show_label: false
+  trajectory: true
+eval: true

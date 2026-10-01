@@ -1,0 +1,82 @@
+dataset: CA1M
+experiment:
+  seed: 0
+data:
+  datadir: /extra/ZhaoX/boxfusion_ca1m_native_b6_train100_v1/_placeholder/00000000
+  start: 0
+  output_dir: /data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/staging/ca1m_native_b6_train100_v1/48018887.observer.369430/pred
+  gap: 20
+cam:
+  H: 384
+  W: 512
+  png_depth_scale: 1000.0
+detection:
+  score_thresh: 0.4
+  uv_bound: true
+  uv_bound_value: 0.9
+  floor_mask: true
+  floor_ratio: 15
+  scale_box: 1.5
+lifting:
+  backend: boxer
+  proposal_cache:
+    mode: replay
+    namespace: ca1m-native-b6-train100-score04-gap20-cutr-v1
+    root: /data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/cache/ca1m_native_b6_train100_v1
+    baseline_prediction_root: /data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/results/ca1m_native_b6_train100_v1/cutr_record
+  boxer:
+    mode: active
+    apply_stage: post_filter
+    official_root: /data/ZhaoX/OVM3D-Dett/boxfusion_boxer_dev/third_party/boxer
+    checkpoint: /data/ZhaoX/OVM3D-Dett/boxfusion_boxer_dev/third_party/boxer/ckpts/boxernet_hw960in2x6d768-c88128f8.ckpt
+    expected_commit: 1f86542dc342a4b1d474c87c97c5d1d6566d9148
+    checkpoint_sha256: d5a30b348a8f5b0e5990ff3aa0e8f473ce77d860da22586322e7f47abc83ca6f
+    dinov3_sha256: 4057cbaaad8c16657adb09d6815f28d4164eeba30532fde23f0d17313124caea
+    precision: bfloat16
+    use_sdp: true
+    sdp_samples: 10000
+    seed: 0
+    diagnostics_dir: /data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/staging/ca1m_native_b6_train100_v1/48018887.observer.369430/boxer
+    selective_gate:
+      enabled: true
+      max_center_shift_m: 0.1
+      min_volume_ratio: 0.5
+      max_volume_ratio: 2.0
+association:
+  small_threshold: 0.2
+  rotation_gap: 30
+  translation_gap: 0.8
+box_fusion:
+  use: true
+  iters: 20
+  pst_path: /data/ZhaoX/BoxFusion/data/pst_1024_0.tiff
+  pst_size: 1024
+  random_opt:
+    center_init_size: 0.1
+    center_scaling_coefficient: 0.1
+    shape_init_size: 0.5
+    shape_scaling_coefficient: 0.5
+  check_valid: false
+  nms_threshold: 0.1
+  small_size: 0.5
+online_refinement:
+  enabled: false
+ca1m_native_b6_observer:
+  enabled: true
+  observer_only: true
+  top_k_views: 5
+  pixel_stride: 4
+  depth_margin_m: 0.05
+  min_depth_m: 0.1
+  max_depth_m: 8.0
+  near_clip_m: 0.001
+  max_cached_keyframes: 256
+  diagnostics:
+    enabled: true
+    root: /data/ZhaoX/BoxFusion/tools/boxfusion_tr3d_pipeline/staging/ca1m_native_b6_train100_v1/48018887.observer.369430/native
+vis:
+  rerun: false
+  show_class: false
+  show_label: false
+  trajectory: true
+eval: true

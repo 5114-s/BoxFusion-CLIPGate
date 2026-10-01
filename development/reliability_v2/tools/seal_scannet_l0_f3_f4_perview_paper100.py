@@ -1,0 +1,247 @@
+#!/usr/bin/env python3
+"""Seal L0: F3-confirmed identities with every retained-view F4 geometry.
+
+This stage is annotation/evaluator/prediction blind.  It only authenticates
+the already-frozen F3 and F4 sidecars and seals which H0/HL/HLG/HB geometries
+belong to each confirmed track.  It neither chooses geometry nor writes boxes.
+"""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import os
+from pathlib import Path
+import re
+import tempfile
+from typing import Any, Mapping
+
+import numpy as np
+
+
+ROOT = Path(__file__).resolve().parents[1]
+SCHEMA = "boxfusion.scannet_l0_f3_f4_perview_paper100.seal.v1"
+PROTOCOL_ID = "L0-F3-CONFIRMED-F4-PERVIEW-HYPOTHESIS-BANK-PAPER100-V1"
+F3_SCHEMA = "boxfusion.scannet_fastsam_f3_openbox.scene.v1"
+F4_SCHEMA = "boxfusion.scannet_fastsam_f4_boxer_paper100.scene.v1"
+HYPOTHESES = ("H0", "HL", "HLG", "HB")
+SOURCE_RE = re.compile(
+    r"^(?P<scene>scene[0-9]{4}_[0-9]{2})/frame_(?P<frame>[0-9]{6})/raw_(?P<raw>[0-9]{3})$"
+)
+DEFAULT_F3_ROOT = ROOT / "logs/scannet_fastsam_f3_openbox_paper100_score05/scenes"
+DEFAULT_F4_ROOT = ROOT / "logs/scannet_fastsam_f4_boxer_paper100_score05/scenes"
+DEFAULT_OUT = ROOT / "logs/scannet_l0_f3_f4_perview_paper100_score05/final/L0_F3_F4_PERVIEW_PAPER100.json"
+
+
+class L0SealError(RuntimeError):
+    pass
+
+
+def _sha(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for block in iter(lambda: handle.read(8 * 1024 * 1024), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def _json(path: Path, label: str) -> dict[str, Any]:
+    if path.is_symlink() or not path.is_file():
+        raise L0SealError(f"{label} must be a regular file: {path}")
+    try:
+        value = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as error:
+        raise L0SealError(f"invalid {label}: {path}") from error
+    if not isinstance(value, dict):
+        raise L0SealError(f"{label} must contain one JSON object")
+    return value
+
+
+def _vector(value: object, shape: tuple[int, ...], label: str) -> np.ndarray:
+    try:
+        result = np.asarray(value, dtype=np.float64)
+    except (TypeError, ValueError) as error:
+        raise L0SealError(f"{label} is not numeric") from error
+    if result.shape != shape or not np.isfinite(result).all():
+        raise L0SealError(f"{label} must be finite shape {shape}")
+    return result
+
+
+def _validate_hypothesis(row: object, name: str, source_id: str) -> bool:
+    if not isinstance(row, Mapping) or type(row.get("valid")) is not bool:
+        raise L0SealError(f"{source_id}.{name} lacks boolean validity")
+    if row["valid"] is not True:
+        return False
+    if name == "HB":
+        corners = _vector(row.get("world_corners"), (8, 3), f"{source_id}.HB.world_corners")
+        if np.any(corners.max(axis=0) <= corners.min(axis=0)):
+            raise L0SealError(f"{source_id}.HB is degenerate")
+    else:
+        lower = _vector(row.get("q02"), (3,), f"{source_id}.{name}.q02")
+        upper = _vector(row.get("q98"), (3,), f"{source_id}.{name}.q98")
+        if np.any(upper <= lower):
+            raise L0SealError(f"{source_id}.{name} is degenerate")
+    return True
+
+
+def _write(path: Path, value: Mapping[str, Any]) -> None:
+    if path.exists() or path.is_symlink():
+        raise L0SealError(f"refusing to overwrite L0 seal: {path}")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    descriptor, name = tempfile.mkstemp(prefix=f".{path.name}.", suffix=".tmp", dir=path.parent)
+    temporary = Path(name)
+    try:
+        with os.fdopen(descriptor, "w", encoding="ascii") as handle:
+            json.dump(value, handle, indent=2, sort_keys=True, ensure_ascii=True, allow_nan=False)
+            handle.write("\n")
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(temporary, path)
+    finally:
+        temporary.unlink(missing_ok=True)
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--scene-list", type=Path, default=ROOT / "evaluation/data_util/meta_data/scannetv2_val.txt")
+    parser.add_argument("--f3-root", type=Path, default=DEFAULT_F3_ROOT)
+    parser.add_argument("--f4-root", type=Path, default=DEFAULT_F4_ROOT)
+    parser.add_argument("--out", type=Path, default=DEFAULT_OUT)
+    args = parser.parse_args()
+    scenes = [line.strip() for line in args.scene_list.read_text(encoding="utf-8").splitlines() if line.strip()]
+    if len(scenes) != 100 or len(set(scenes)) != 100:
+        raise L0SealError("L0 requires exact unique paper100 scene list")
+
+    scene_rows = []
+    total_tracks = total_sources = total_geometries = 0
+    hypothesis_counts = {name: 0 for name in HYPOTHESES}
+    for scene_index, scene in enumerate(scenes):
+        f3_path = args.f3_root / f"{scene}.json"
+        f4_path = args.f4_root / f"{scene}.json"
+        f3 = _json(f3_path, f"F3 scene {scene}")
+        f4 = _json(f4_path, f"F4 scene {scene}")
+        if (
+            f3.get("schema") != F3_SCHEMA
+            or f3.get("complete") is not True
+            or f3.get("contracts", {}).get("ground_truth_access") is not False
+            or f3.get("causality", {}).get("query_before_commit", {}).get("passed") is not True
+            or f4.get("schema") != F4_SCHEMA
+            or f4.get("complete") is not True
+            or f4.get("contracts", {}).get("gt_access") is not False
+            or f4.get("contracts", {}).get("native_output_mutation") is not False
+        ):
+            raise L0SealError(f"upstream shadow contract differs: {scene}")
+        f4_sources: dict[str, Mapping[str, Any]] = {}
+        for frame in f4.get("frames", []):
+            if not isinstance(frame, Mapping):
+                raise L0SealError(f"invalid F4 frame: {scene}")
+            for source in frame.get("sources", []):
+                if not isinstance(source, Mapping) or not isinstance(source.get("source_id"), str):
+                    raise L0SealError(f"invalid F4 source: {scene}")
+                source_id = str(source["source_id"])
+                if source_id in f4_sources:
+                    raise L0SealError(f"duplicate F4 source: {source_id}")
+                f4_sources[source_id] = source
+        tracks = []
+        used_sources: set[str] = set()
+        for track in f3.get("tracks", []):
+            if not isinstance(track, Mapping) or track.get("confirmed") is not True:
+                continue
+            track_id = track.get("track_id")
+            source_ids = track.get("retained_source_ids")
+            frame_ids = track.get("retained_frame_ids")
+            if (
+                type(track_id) is not int
+                or not isinstance(source_ids, list)
+                or not isinstance(frame_ids, list)
+                or not 3 <= len(source_ids) == len(frame_ids) <= 5
+                or frame_ids != sorted(set(frame_ids))
+            ):
+                raise L0SealError(f"confirmed F3 track differs: {scene}:{track_id}")
+            sources = []
+            for source_id_raw, frame_id in zip(source_ids, frame_ids):
+                source_id = str(source_id_raw)
+                match = SOURCE_RE.fullmatch(source_id)
+                if (
+                    match is None
+                    or match["scene"] != scene
+                    or int(match["frame"]) != frame_id
+                    or source_id in used_sources
+                    or source_id not in f4_sources
+                ):
+                    raise L0SealError(f"F3/F4 retained identity differs: {source_id}")
+                used_sources.add(source_id)
+                source = f4_sources[source_id]
+                hypotheses = source.get("hypotheses")
+                if not isinstance(hypotheses, Mapping) or set(hypotheses) != set(HYPOTHESES):
+                    raise L0SealError(f"F4 hypothesis bank differs: {source_id}")
+                available = [
+                    name
+                    for name in HYPOTHESES
+                    if _validate_hypothesis(hypotheses[name], name, source_id)
+                ]
+                if not available:
+                    raise L0SealError(f"retained source has no valid F4 geometry: {source_id}")
+                for name in available:
+                    hypothesis_counts[name] += 1
+                total_geometries += len(available)
+                sources.append(
+                    {
+                        "source_id": source_id,
+                        "frame_id": frame_id,
+                        "available_hypotheses": available,
+                    }
+                )
+            tracks.append({"track_id": track_id, "sources": sources})
+        total_tracks += len(tracks)
+        total_sources += len(used_sources)
+        scene_rows.append(
+            {
+                "scene_id": scene,
+                "scene_index": scene_index,
+                "f3": {"path": os.fspath(f3_path.resolve()), "sha256": _sha(f3_path)},
+                "f4": {"path": os.fspath(f4_path.resolve()), "sha256": _sha(f4_path)},
+                "confirmed_track_count": len(tracks),
+                "retained_source_count": len(used_sources),
+                "tracks": tracks,
+            }
+        )
+    receipt = {
+        "schema": SCHEMA,
+        "protocol_id": PROTOCOL_ID,
+        "complete": True,
+        "overall_pass": True,
+        "scene_count": 100,
+        "scene_order": scenes,
+        "counts": {
+            "confirmed_track_count": total_tracks,
+            "retained_source_count": total_sources,
+            "valid_geometry_count": total_geometries,
+            "per_hypothesis": hypothesis_counts,
+        },
+        "contracts": {
+            "shadow_only": True,
+            "birth_enabled": False,
+            "native_output_mutation": False,
+            "ground_truth_access": False,
+            "annotation_access": False,
+            "evaluator_access": False,
+            "training": False,
+            "online_learning": False,
+            "f3_confirmed_tracks_only": True,
+            "one_track_one_identity": True,
+            "per_view_geometry_preserved": True,
+            "sam2_access": False,
+            "tsdf_access": False,
+            "mv3dis_access": False,
+        },
+        "scenes": scene_rows,
+        "conclusion_guardrail": "L0 is a no-GT seal with no AP and cannot authorize birth.",
+    }
+    _write(args.out, receipt)
+    print(json.dumps({"out": os.fspath(args.out), "counts": receipt["counts"]}, sort_keys=True))
+
+
+if __name__ == "__main__":
+    main()
