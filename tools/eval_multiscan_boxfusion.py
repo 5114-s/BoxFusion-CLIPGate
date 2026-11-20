@@ -72,7 +72,7 @@ def main() -> None:
 
     args.output.mkdir(parents=True, exist_ok=True)
     (args.output / "metrics.json").write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    lines = ["# MultiScan five-scene preflight AP", ""]
+    lines = [f"# MultiScan-{len(scenes)} AP", ""]
     for protocol, values in report["protocols"].items():
         lines += [
             f"## {protocol}",

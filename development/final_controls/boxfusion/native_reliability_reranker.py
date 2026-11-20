@@ -54,8 +54,10 @@ def _project_with_visibility(
     return rectangle, float(np.clip(clipped_area / raw_area, 0.0, 1.0))
 
 
-def _geometry_consistency(left: np.ndarray, right: np.ndarray) -> float:
-    """Bounded center/scale/overlap agreement between two 3D AABBs."""
+def _geometry_components(
+    left: np.ndarray, right: np.ndarray
+) -> tuple[float, float, float]:
+    """Return bounded center, scale, and overlap agreement."""
     left_extent = np.ptp(left, axis=0)
     right_extent = np.ptp(right, axis=0)
     reference = max(float(np.linalg.norm(left_extent)), 1e-6)
@@ -65,8 +67,18 @@ def _geometry_consistency(left: np.ndarray, right: np.ndarray) -> float:
         np.mean(np.abs(np.log((right_extent + 1e-6) / (left_extent + 1e-6))))
     )
     scale_score = math.exp(-scale_error)
-    overlap = _aabb_iou(left, right)
-    return float(np.clip((center_score + scale_score + overlap) / 3.0, 0.0, 1.0))
+    overlap = float(_aabb_iou(left, right))
+    return (
+        float(np.clip(center_score, 0.0, 1.0)),
+        float(np.clip(scale_score, 0.0, 1.0)),
+        float(np.clip(overlap, 0.0, 1.0)),
+    )
+
+
+def _geometry_consistency(left: np.ndarray, right: np.ndarray) -> float:
+    """Bounded center/scale/overlap agreement between two 3D AABBs."""
+    values = _geometry_components(left, right)
+    return float(np.clip(sum(values) / len(values), 0.0, 1.0))
 
 
 @dataclass
@@ -84,7 +96,14 @@ class OnlineNativeReliabilityReranker:
     ablations under the same matching and evidence-strength definition.
     """
 
-    MODES = {"native", "first", "mean", "max", "ema", "diverse_max", "reliability"}
+    MODES = {
+        "native", "first", "latest", "mean", "top3_mean", "max", "ema",
+        "diverse_max", "reliability",
+    }
+    STRENGTH_VARIANTS = {
+        "full", "no_proposal_score", "no_visibility",
+        "no_center_consistency", "no_scale_consistency", "no_overlap_consistency",
+    }
 
     def __init__(
         self,
@@ -103,6 +122,7 @@ class OnlineNativeReliabilityReranker:
         ema_decay: float = 0.8,
         negative_weight: float = 0.25,
         lower_bound_kappa: float = 1.0,
+        strength_variant: str = "full",
     ) -> None:
         if support_mode not in self.MODES:
             raise ValueError(f"unknown support_mode {support_mode!r}")
@@ -115,10 +135,13 @@ class OnlineNativeReliabilityReranker:
                 raise ValueError(f"{name} must lie in [0,1]")
         if not math.isfinite(logit_weight) or logit_weight < 0.0:
             raise ValueError("logit_weight must be finite and nonnegative")
+        if strength_variant not in self.STRENGTH_VARIANTS:
+            raise ValueError(f"unknown strength_variant {strength_variant!r}")
         self.support_mode = support_mode
         self.match_iou = float(match_iou)
         self.support_threshold = float(support_threshold)
         self.logit_weight = float(logit_weight)
+        self.strength_variant = str(strength_variant)
         self.geometry_reset_iou = float(geometry_reset_iou)
         self.exclusive_matching = bool(exclusive_matching)
         self.use_negative_evidence = bool(use_negative_evidence)
@@ -161,7 +184,9 @@ class OnlineNativeReliabilityReranker:
         summary = self.reliability.summary(identity)
         key = {
             "first": "first",
+            "latest": "latest",
             "mean": "mean_support",
+            "top3_mean": "top3_mean",
             "max": "max",
             "ema": "ema",
             "diverse_max": "diverse_max",
@@ -178,6 +203,34 @@ class OnlineNativeReliabilityReranker:
         ]
         for identity in expired:
             del self.geometry[identity]
+
+    def _evidence_strength(
+        self,
+        *,
+        quality: float,
+        visibility: float,
+        iou2d: float,
+        native_corners: np.ndarray,
+        proposal_corners: np.ndarray,
+    ) -> float:
+        center, scale, overlap = _geometry_components(
+            native_corners, proposal_corners
+        )
+        if self.strength_variant == "no_center_consistency":
+            geometry = (scale + overlap) / 2.0
+        elif self.strength_variant == "no_scale_consistency":
+            geometry = (center + overlap) / 2.0
+        elif self.strength_variant == "no_overlap_consistency":
+            geometry = (center + scale) / 2.0
+        else:
+            geometry = (center + scale + overlap) / 3.0
+        factors = [float(iou2d), float(geometry)]
+        if self.strength_variant != "no_proposal_score":
+            factors.append(float(quality))
+        if self.strength_variant != "no_visibility":
+            factors.append(float(visibility))
+        product = float(np.prod(np.clip(factors, 0.0, 1.0)))
+        return float(np.clip(product ** (1.0 / len(factors)), 0.0, 1.0))
 
     def update(
         self,
@@ -265,15 +318,12 @@ class OnlineNativeReliabilityReranker:
             strength = 0.0
             if matched:
                 quality = float(evidence.proposal_scores[proposal_row])
-                geometry = _geometry_consistency(
-                    native.corners[row], evidence.proposal_corners[proposal_row]
-                )
-                strength = float(
-                    np.clip(
-                        (quality * visibility[row] * frame_iou2d[row] * geometry) ** 0.25,
-                        0.0,
-                        1.0,
-                    )
+                strength = self._evidence_strength(
+                    quality=quality,
+                    visibility=float(visibility[row]),
+                    iou2d=float(frame_iou2d[row]),
+                    native_corners=native.corners[row],
+                    proposal_corners=evidence.proposal_corners[proposal_row],
                 )
                 self.matched_updates += 1
             if matched or self.use_negative_evidence:
@@ -356,6 +406,7 @@ class OnlineNativeReliabilityReranker:
         return {
             "frames_seen": self.frames_seen,
             "support_mode": self.support_mode,
+            "strength_variant": self.strength_variant,
             "exclusive_matching": self.exclusive_matching,
             "use_negative_evidence": self.use_negative_evidence,
             "visible_updates": self.visible_updates,

@@ -1130,16 +1130,23 @@ def run(cfg, model, dataset, clip_model, preprocess, tokenized_text, text_featur
                     ):
                         empty_token = observer_adapter.begin_keyframe(count, ())
                         observer_adapter.finalize(box_manager, empty_token)
-                process_dynamic_keyframe(pred_instances)
-                all_pred_box = all_pred_box
-                all_poses = all_poses
-                process_online_candidate_keyframe(
-                    scene_id, count, sample, image
+                terminal_empty_keyframe = (
+                    count + 1 == len(dataset) - 1
+                    or (count + 1 + gap) > len(dataset) - 1
                 )
-                box_count += len(pred_instances)
-                box_manager.num_record[count] = box_count
-                count+=1
-                continue
+                if not terminal_empty_keyframe:
+                    process_dynamic_keyframe(pred_instances)
+                    process_online_candidate_keyframe(
+                        scene_id, count, sample, image
+                    )
+                    box_count += len(pred_instances)
+                    box_manager.num_record[count] = box_count
+                    count+=1
+                    continue
+                print(
+                    "Terminal keyframe has no proposals; "
+                    "running the normal terminal-save path."
+                )
             
             # add new properties for Instance3D predictions
             pred_instances.categories = np.array(['None'] * len(pred_instances)) # Initialize category labels as 'None' for all predicted instances
@@ -1193,7 +1200,7 @@ def run(cfg, model, dataset, clip_model, preprocess, tokenized_text, text_featur
                 or box_manager.causal_hungarian.needs_appearance
                 or box_manager.pvq_ar.enabled
             )
-            if association_features_enabled:
+            if association_features_enabled and len(pred_instances) > 0:
                 # Extract once per new proposal. The normalized image feature is
                 # retained as instance appearance and reused only after geometry
                 # has produced a plausible association candidate.
@@ -1215,6 +1222,16 @@ def run(cfg, model, dataset, clip_model, preprocess, tokenized_text, text_featur
                 pred_instances.categories = class_results
                 pred_instances.appearance_features = (
                     box_features.detach().float().cpu()
+                )
+            elif association_features_enabled:
+                feature_dim = (
+                    int(all_pred_box.appearance_features.shape[1])
+                    if all_pred_box is not None
+                    and all_pred_box.has("appearance_features")
+                    else int(text_features.shape[-1])
+                )
+                pred_instances.appearance_features = torch.empty(
+                    (0, feature_dim), dtype=torch.float32
                 )
 
             if observer_adapter.enabled and count % gap == 0:

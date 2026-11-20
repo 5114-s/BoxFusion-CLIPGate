@@ -1122,7 +1122,15 @@ def run(cfg, model, dataset, clip_model, preprocess, tokenized_text, text_featur
                     float(count) / float(gap if gap else 1) ,
                 )
             
-            if len(pred_instances)==0:
+            terminal_empty_keyframe = (
+                len(pred_instances) == 0
+                and (
+                    (count + 1) == len(dataset) - 1
+                    or (count + 1 + gap) > len(dataset) - 1
+                )
+            )
+
+            if len(pred_instances)==0 and not terminal_empty_keyframe:
                 if observer_adapter.enabled and count % gap == 0:
                     with observer_adapter.observer_boundary(
                         observer_native_fields(pred_instances),
@@ -1193,7 +1201,7 @@ def run(cfg, model, dataset, clip_model, preprocess, tokenized_text, text_featur
                 or box_manager.causal_hungarian.needs_appearance
                 or box_manager.pvq_ar.enabled
             )
-            if association_features_enabled:
+            if association_features_enabled and len(pred_instances) > 0:
                 # Extract once per new proposal. The normalized image feature is
                 # retained as instance appearance and reused only after geometry
                 # has produced a plausible association candidate.
@@ -1217,7 +1225,11 @@ def run(cfg, model, dataset, clip_model, preprocess, tokenized_text, text_featur
                     box_features.detach().float().cpu()
                 )
 
-            if observer_adapter.enabled and count % gap == 0:
+            if (
+                observer_adapter.enabled
+                and count % gap == 0
+                and len(pred_instances) > 0
+            ):
                 with observer_adapter.observer_boundary(
                     observer_native_fields(pred_instances),
                     label=f"begin_keyframe:{count}",
@@ -1386,7 +1398,18 @@ def run(cfg, model, dataset, clip_model, preprocess, tokenized_text, text_featur
                 '''
                 STEP1: spatial association using 3D OBB NMS
                 '''
-                mask, success_mask = Instances3D.spatial_association(all_pred_box,cfg["box_fusion"]["nms_threshold"],box_manager,per_frame_ins.cam_pose)
+                if terminal_empty_keyframe:
+                    # The released loop historically `continue`d on an empty
+                    # keyframe.  When the final keyframes are empty this skips
+                    # terminal materialization and the iterable is read past
+                    # its last RGB frame.  Preserve the existing native map
+                    # unchanged while still allowing the common terminal path
+                    # below to close the asynchronous evidence state and save
+                    # the scene outputs.
+                    mask = np.arange(num_before_cat, dtype=np.int64)
+                    success_mask = np.empty(0, dtype=np.int64)
+                else:
+                    mask, success_mask = Instances3D.spatial_association(all_pred_box,cfg["box_fusion"]["nms_threshold"],box_manager,per_frame_ins.cam_pose)
                 
                 cur_keep_idx = [i-num_before_cat for i in mask if i>=num_before_cat]
                 cur_success_nms = [i-num_before_cat for i in success_mask if i>=num_before_cat]

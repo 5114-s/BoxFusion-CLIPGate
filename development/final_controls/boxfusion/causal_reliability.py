@@ -70,6 +70,8 @@ class _HypothesisState:
     slots: list[ReliabilityObservation] = field(default_factory=list)
     first_support: float | None = None
     maximum_support: float = 0.0
+    latest_support: float = 0.0
+    top_supports: list[float] = field(default_factory=list)
     support_sum: float = 0.0
     support_count: int = 0
     ema_support: float = 0.0
@@ -80,6 +82,8 @@ class _HypothesisState:
         self.slots.clear()
         self.first_support = None
         self.maximum_support = 0.0
+        self.latest_support = 0.0
+        self.top_supports.clear()
         self.support_sum = 0.0
         self.support_count = 0
         self.ema_support = 0.0
@@ -209,6 +213,10 @@ class CausalReliabilityState:
                     + (1.0 - self.ema_decay) * value
                 )
             state.maximum_support = max(state.maximum_support, value)
+            state.latest_support = value
+            state.top_supports.append(value)
+            state.top_supports.sort(reverse=True)
+            del state.top_supports[3:]
             state.support_sum += value
             state.support_count += 1
 
@@ -260,6 +268,8 @@ class CausalReliabilityState:
                 "first": 0.0,
                 "mean_support": 0.0,
                 "max": 0.0,
+                "latest": 0.0,
+                "top3_mean": 0.0,
                 "ema": 0.0,
                 "diverse_max": 0.0,
             }
@@ -292,6 +302,12 @@ class CausalReliabilityState:
                 else 0.0
             ),
             "max": state.maximum_support,
+            "latest": state.latest_support,
+            "top3_mean": (
+                sum(state.top_supports) / len(state.top_supports)
+                if state.top_supports
+                else 0.0
+            ),
             "ema": state.ema_support,
             "diverse_max": max((slot.strength for slot in positive), default=0.0),
         }

@@ -519,8 +519,13 @@ class ScannetDataset(IterableDataset):
         self.depth_paths=self.depth_paths[self.start:]
         self.poses=self.poses[self.start:]
 
-        self.frame_ids = range(0, len(self.img_files))
-        self.num_frames = len(self.frame_ids)
+        # Cross-dataset exports can contain a trailing file in only one
+        # modality.  Iterate over the aligned RGB/depth/pose prefix so the
+        # stream cannot step past one of the three lists at scene end.
+        self.num_frames = min(
+            len(self.img_files), len(self.depth_paths), len(self.poses)
+        )
+        self.frame_ids = range(0, self.num_frames)
         self.cfg = cfg
         self.img_height = cfg['cam']['H']
         self.img_width = cfg['cam']['W']
@@ -573,7 +578,7 @@ class ScannetDataset(IterableDataset):
         print("Waiting for frames...")
         video_id = self.video_id
         index = 0
-        while True:
+        while index < self.num_frames:
 
             #Step1: load data
             color_path = self.img_files[index]

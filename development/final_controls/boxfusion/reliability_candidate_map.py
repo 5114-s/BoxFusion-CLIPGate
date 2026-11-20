@@ -79,7 +79,9 @@ class ReliabilityCandidateMap:
         plr_controls: Mapping[str, OnlineProposalRecoveryV2] | None = None,
         direct_plr_control: _DirectMatchedBudgetProposalRecovery | None = None,
         raw_m2_control: OnlineNativeReranker | None = None,
+        m2_factor_controls: Mapping[str, OnlineNativeReliabilityReranker] | None = None,
         cross_branch_dedup: bool = False,
+        selected_calr_v1: bool = False,
     ) -> None:
         self.scene_id = str(scene_id)
         self.m1p = m1p
@@ -89,10 +91,16 @@ class ReliabilityCandidateMap:
         self.plr_controls = dict(plr_controls or {})
         self.direct_plr_control = direct_plr_control
         self.raw_m2_control = raw_m2_control
+        self.m2_factor_controls = dict(m2_factor_controls or {})
         self.cross_branch_dedup = bool(cross_branch_dedup)
+        self.selected_calr_v1 = bool(selected_calr_v1)
+        if self.selected_calr_v1 and self.m1a_control is None:
+            raise ValueError("selected_calr_v1 requires an OnlineAnchorRecovery state")
         self.frames_seen = 0
         self.last_snapshot: OnlineMapSnapshot | None = None
         self.update_seconds: list[float] = []
+        self.calr_update_seconds: list[float] = []
+        self.mvsr_update_seconds: list[float] = []
         self.plr_update_seconds: dict[str, list[float]] = {
             name: [] for name in ("current", *sorted(self.plr_controls))
         }
@@ -133,7 +141,7 @@ class ReliabilityCandidateMap:
             boxes.append(np.array(row["box"], copy=True))
             scores.append(float(row["score"]))
             sources.append("m1a")
-            source_ids.append(int(row["track_id"]))
+            source_ids.append(int(row.get("track_id", len(source_ids))))
         return OnlineMapSnapshot(
             frame_id=int(frame_id),
             native_ids=np.array(native.ids, copy=True),
@@ -205,21 +213,8 @@ class ReliabilityCandidateMap:
                 1.0 if not union else len(current & previous) / len(union)
             )
             self.plr_previous_outputs[name] = current
-        anchor_rows = self.m1a.update(
-            ordinal,
-            int(frame_id),
-            evidence.anchor_ids,
-            evidence.anchor_corners,
-            evidence.anchor_scores,
-            native.camera_to_world,
-            native_corners=native.corners,
-            proposal_recovery_corners=(
-                self._boxes(proposal_rows)
-                if self.cross_branch_dedup
-                else np.empty((0, 8, 3), dtype=np.float64)
-            ),
-        )
-        if self.m1a_control is not None:
+        calr_started = time.perf_counter()
+        if self.selected_calr_v1:
             self.m1a_control.update(
                 ordinal,
                 int(frame_id),
@@ -227,9 +222,38 @@ class ReliabilityCandidateMap:
                 evidence.anchor_corners,
                 evidence.anchor_scores,
             )
+            anchor_rows = self.m1a_control.rows()
+        else:
+            anchor_rows = self.m1a.update(
+                ordinal,
+                int(frame_id),
+                evidence.anchor_ids,
+                evidence.anchor_corners,
+                evidence.anchor_scores,
+                native.camera_to_world,
+                native_corners=native.corners,
+                proposal_recovery_corners=(
+                    self._boxes(proposal_rows)
+                    if self.cross_branch_dedup
+                    else np.empty((0, 8, 3), dtype=np.float64)
+                ),
+            )
+            if self.m1a_control is not None:
+                self.m1a_control.update(
+                    ordinal,
+                    int(frame_id),
+                    evidence.anchor_ids,
+                    evidence.anchor_corners,
+                    evidence.anchor_scores,
+                )
+        self.calr_update_seconds.append(time.perf_counter() - calr_started)
+        mvsr_started = time.perf_counter()
         native_scores = self.m2.update(
             ordinal, int(frame_id), native, evidence
         )
+        for state in self.m2_factor_controls.values():
+            state.update(ordinal, int(frame_id), native, evidence)
+        self.mvsr_update_seconds.append(time.perf_counter() - mvsr_started)
         if self.raw_m2_control is not None:
             self.raw_m2_control.update(
                 ordinal,
@@ -294,6 +318,23 @@ class ReliabilityCandidateMap:
             components["native_raw_iou_max"] = (
                 np.array(corners, copy=True), np.array(raw_scores, copy=True)
             )
+        for name, state in sorted(self.m2_factor_controls.items()):
+            factor_scores, _ = state.materialize(ids, scores)
+            components[f"native_factor_{name}"] = (
+                np.array(corners, copy=True), np.array(factor_scores, copy=True)
+            )
+            # A factor control owns its own causal evidence history.  Export
+            # every temporal readout from that same history so factor and
+            # aggregation choices can be crossed without another detector
+            # pass or any geometry/count change.  Keep the legacy component
+            # above as the configured-mode alias for backward compatibility.
+            for mode, (mode_scores, _) in state.materialize_all(
+                ids, scores
+            ).items():
+                components[f"native_factor_{name}_{mode}"] = (
+                    np.array(corners, copy=True),
+                    np.array(mode_scores, copy=True),
+                )
         for name, state in sorted(self.plr_controls.items()):
             components[f"births_plr_{name}"] = self._component(
                 state.terminal_rows(corners)
@@ -330,9 +371,13 @@ class ReliabilityCandidateMap:
             height=1,
         )
         proposal_rows = self.m1p.terminal_rows(corners)
-        anchor_rows = self.m1a.rows(
-            native_corners=corners,
-            proposal_recovery_corners=self._boxes(proposal_rows),
+        anchor_rows = (
+            self.m1a_control.rows()
+            if self.selected_calr_v1
+            else self.m1a.rows(
+                native_corners=corners,
+                proposal_recovery_corners=self._boxes(proposal_rows),
+            )
         )
         snapshot = self._assemble(
             frame_id,
@@ -352,6 +397,15 @@ class ReliabilityCandidateMap:
         return snapshot
 
     def diagnostics(self) -> dict[str, object]:
+        def time_summary(values: list[float]) -> dict[str, float | int]:
+            samples = np.asarray(values, dtype=np.float64) * 1000.0
+            return {
+                "count": len(samples),
+                "mean_ms": float(samples.mean()) if len(samples) else 0.0,
+                "p50_ms": float(np.percentile(samples, 50)) if len(samples) else 0.0,
+                "p95_ms": float(np.percentile(samples, 95)) if len(samples) else 0.0,
+                "max_ms": float(samples.max()) if len(samples) else 0.0,
+            }
         milliseconds = np.asarray(self.update_seconds) * 1000.0
         timing = {
             "count": len(milliseconds),
@@ -391,6 +445,8 @@ class ReliabilityCandidateMap:
             "terminal_counts": self.terminal_counts,
             "timing": timing,
             "plr_timing_and_stability": plr_timing,
+            "calr_timing": time_summary(self.calr_update_seconds),
+            "mvsr_timing": time_summary(self.mvsr_update_seconds),
             "m1p": self.m1p.diagnostics(),
             "plr_controls": {
                 name: state.diagnostics()
@@ -405,11 +461,16 @@ class ReliabilityCandidateMap:
                 None if self.raw_m2_control is None
                 else self.raw_m2_control.diagnostics()
             ),
+            "m2_factor_controls": {
+                name: state.diagnostics()
+                for name, state in sorted(self.m2_factor_controls.items())
+            },
             "direct_plr_control": (
                 None if self.direct_plr_control is None
                 else self.direct_plr_control.diagnostics()
             ),
             "cross_branch_dedup": self.cross_branch_dedup,
+            "selected_calr_v1": self.selected_calr_v1,
         }
 
 
@@ -424,7 +485,10 @@ def build_reliability_candidate_map(
     audit_controls = bool(section.pop("audit_controls", False))
     audit_direct_plr = bool(section.pop("audit_direct_plr", False))
     audit_raw_iou_max = bool(section.pop("audit_raw_iou_max", False))
+    audit_mvsr_factors = bool(section.pop("audit_mvsr_factors", False))
+    requested_mvsr_factors = tuple(section.pop("mvsr_factor_variants", ()) or ())
     audit_plr_controls = bool(section.pop("audit_plr_controls", False))
+    selected_calr_v1 = bool(section.pop("selected_calr_v1", False))
     plr_v2 = dict(section.pop("plr_v2", {}) or {})
     cross_branch_dedup = bool(section.pop("cross_branch_dedup", False))
     return ReliabilityCandidateMap(
@@ -461,6 +525,25 @@ def build_reliability_candidate_map(
             if audit_raw_iou_max
             else None
         ),
+        m2_factor_controls=(
+            {
+                variant: OnlineNativeReliabilityReranker(
+                    **{**m2, "strength_variant": variant}
+                )
+                for variant in (
+                    requested_mvsr_factors
+                    or (
+                        "no_proposal_score",
+                        "no_visibility",
+                        "no_center_consistency",
+                        "no_scale_consistency",
+                        "no_overlap_consistency",
+                    )
+                )
+            }
+            if audit_mvsr_factors
+            else None
+        ),
         m1a_control=(
             OnlineAnchorRecovery(
                 scene_id,
@@ -469,8 +552,9 @@ def build_reliability_candidate_map(
                 max_active=int(m1a.get("max_active_tracks", 4096)),
                 max_births=int(m1a.get("max_births", 640)),
             )
-            if audit_controls
+            if audit_controls or selected_calr_v1
             else None
         ),
         cross_branch_dedup=cross_branch_dedup,
+        selected_calr_v1=selected_calr_v1,
     )

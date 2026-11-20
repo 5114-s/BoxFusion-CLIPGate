@@ -8,6 +8,7 @@ PYTHON=/home/admin1/miniconda3/envs/boxfusion-online/bin/python
 ENV_ROOT=/home/admin1/miniconda3/envs/boxfusion-online
 SCENES="$MAIN/evaluation/data_util/meta_data/scannetv2_val.txt"
 COMPONENTS="$MAIN/development/final_controls/results/scannet_recar3d_key_control_components"
+MVSR_NOVIS="$MAIN/development/final_controls/experiments/mvsr_design_20261005/components/native_factor_no_visibility"
 FACTORIAL="$PIPE/results/scannet_recar3d_final_factorial100"
 REPORT="$PIPE/reports/qualitative_recar3d_final"
 RERUN="$REPORT/rerun"
@@ -75,11 +76,14 @@ done < "$REPORT/selected_scenes.txt"
   --output "$REPORT"
 MPLCONFIGDIR="$RERUN/mplconfig" "$PYTHON" "$PIPE/render_final_qualitative.py" \
   --selection "$REPORT/selected_cases.json" --evidence-dir "$REPORT" \
-  --components "$COMPONENTS" --gt-root "$GT" --raw-root "$RAW" --output "$REPORT"
+  --components "$COMPONENTS" --gt-root "$GT" --raw-root "$RAW" \
+  --mvsr-no-visibility "$MVSR_NOVIS" --output "$REPORT"
 
 sha256sum "$CONFIG" "$REPORT/selected_cases.json" "$REPORT/terminal_parity.json" \
-  "$REPORT/qualitative_comparison.pdf" "$REPORT/qualitative_comparison.svg" \
-  "$REPORT/qualitative_comparison.png" "$REPORT/qualitative_comparison.tiff" \
+  "$REPORT/mvsr_metrics_no_visibility.json" \
+  "$REPORT/qualitative_comparison_2x2.pdf" \
+  "$REPORT/qualitative_comparison_2x2.svg" \
+  "$REPORT/qualitative_comparison_2x2.png" \
   > "$REPORT/artifact_sha256.txt"
 {
   echo '# Final ReCaR-3D qualitative evidence'

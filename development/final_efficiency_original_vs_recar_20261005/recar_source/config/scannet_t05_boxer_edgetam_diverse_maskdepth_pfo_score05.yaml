@@ -1,0 +1,135 @@
+dataset: scannet
+
+experiment:
+  seed: 0
+
+data:
+  datadir: /data/ZhaoX/BoxFusion/upstream_clean/scannet_readme_frames/scene0169_00/frames
+  start: 0
+  output_dir: /data/ZhaoX/BoxFusion/results/scannet_t05_boxer_edgetam_diverse_maskdepth_pfo_score05
+  gap: 25
+
+cam:
+  H: 480
+  W: 640
+  fx: 574.540771
+  fy: 577.583740
+  cx: 322.522827
+  cy: 238.558853
+  png_depth_scale: 1000.
+
+detection:
+  score_thresh: 0.5
+  uv_bound: true
+  uv_bound_value: 0.9
+  floor_mask: true
+  floor_ratio: 15
+  scale_box: 1.5
+
+lifting:
+  backend: boxer
+  proposal_cache:
+    mode: replay
+    namespace: scannet-score05-gap25-postfilter-v2
+    root: /data/ZhaoX/OVM3D-Dett/boxfusion_boxer_dev/cache/cutr_proposals
+    baseline_prediction_root: /data/ZhaoX/OVM3D-Dett/boxfusion_boxer_dev/results/boxer_lifting/x0_cutr
+  boxer:
+    mode: active
+    apply_stage: post_filter
+    official_root: /data/ZhaoX/OVM3D-Dett/boxfusion_boxer_dev/third_party/boxer
+    checkpoint: /data/ZhaoX/OVM3D-Dett/boxfusion_boxer_dev/third_party/boxer/ckpts/boxernet_hw960in2x6d768-c88128f8.ckpt
+    expected_commit: 1f86542dc342a4b1d474c87c97c5d1d6566d9148
+    checkpoint_sha256: d5a30b348a8f5b0e5990ff3aa0e8f473ce77d860da22586322e7f47abc83ca6f
+    dinov3_sha256: 4057cbaaad8c16657adb09d6815f28d4164eeba30532fde23f0d17313124caea
+    precision: bfloat16
+    use_sdp: true
+    sdp_samples: 10000
+    seed: 0
+    diagnostics_dir: /data/ZhaoX/BoxFusion/diagnostics/t05_boxer/edgetam_diverse_maskdepth_pfo_score05
+
+association:
+  small_threshold: 0.1
+  rotation_gap: 30
+  translation_gap: 0.8
+  appearance_gate:
+    enabled: false
+
+box_fusion:
+  use: true
+  iters: 20
+  pst_path: /data/ZhaoX/BoxFusion/data/pst_1024_0.tiff
+  pst_size: 1024
+  random_opt:
+    center_init_size: 0.1
+    center_scaling_coefficient: 0.1
+    shape_init_size: 0.5
+    shape_scaling_coefficient: 0.5
+  check_valid: false
+  nms_threshold: 0.1
+  small_size: 0.35
+  reliable_views:
+    enabled: true
+    top_k: 4
+    min_views: 3
+    confidence_power: 1.0
+    area_power: 0.25
+    area_reference_ratio: 0.02
+    projection_iou_power: 0.50
+    geometry_consistency_power: 0.50
+    center_sigma: 0.75
+    size_sigma: 0.50
+    minimum_box_diagonal: 0.10
+    minimum_weight: 0.05
+    diversity_enabled: true
+    diversity_weight: 0.15
+    diversity_translation_reference_m: 0.50
+    diversity_rotation_reference_deg: 20.0
+  edgetam_maskdepth:
+    enabled: true
+    source_root: /data/ZhaoX/BoxFusion/third_party/EdgeTAM
+    checkpoint: /data/ZhaoX/BoxFusion/third_party/EdgeTAM/checkpoints/edgetam.pt
+    config_name: edgetam.yaml
+    checkpoint_sha256: ed2d4850b8792c239689b043c47046ec239b6e808a3d9b6ae676c803fd8780df
+    device: cuda
+    autocast_dtype: bfloat16
+    min_predicted_iou: 0.60
+    min_mask_pixels: 80
+    min_mask_prompt_ratio: 0.08
+    max_mask_prompt_ratio: 2.00
+    prompt_padding_ratio: 0.08
+    min_depth_m: 0.10
+    max_depth_m: 6.00
+    depth_quantile_low: 0.02
+    depth_quantile_high: 0.98
+    max_points: 96
+    erode_pixels: 1
+  maskdepth_pfo:
+    enabled: true
+    iterations: 8
+    particles: 128
+    seed: 0
+    min_valid_views: 3
+    mask_weight: 0.65
+    depth_weight: 0.25
+    regularization_weight: 0.10
+    center_sigma_start_m: 0.10
+    center_sigma_end_m: 0.01
+    log_size_sigma_start: 0.16
+    log_size_sigma_end: 0.015
+    yaw_sigma_start_deg: 10.0
+    yaw_sigma_end_deg: 1.0
+    depth_margin_m: 0.03
+    min_depth_support: 0.40
+    min_objective_improvement: 0.008
+    max_center_shift_m: 0.15
+    min_size_ratio: 0.75
+    max_size_ratio: 1.30
+    max_yaw_delta_deg: 15.0
+
+vis:
+  rerun: false
+  show_class: false
+  show_label: false
+  trajectory: true
+
+eval: true

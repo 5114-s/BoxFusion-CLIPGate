@@ -59,6 +59,7 @@ def main() -> None:
     parser.add_argument("--scene-list", type=Path, required=True)
     parser.add_argument("--components", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--mvsr-component", default="native_max")
     args = parser.parse_args()
     scenes = [
         row.strip() for row in args.scene_list.read_text().splitlines()
@@ -76,7 +77,7 @@ def main() -> None:
     for scene in scenes:
         paths = {
             "native": args.components / "native_native" / f"{scene}_boxes.pkl",
-            "mvsr": args.components / "native_max" / f"{scene}_boxes.pkl",
+            "mvsr": args.components / args.mvsr_component / f"{scene}_boxes.pkl",
             "plr": args.components / "births_plr_v1" / f"{scene}_boxes.pkl",
             "calr": args.components / "births_calr_v1" / f"{scene}_boxes.pkl",
         }
@@ -114,7 +115,7 @@ def main() -> None:
         "components": {
             "plr": "current PLR-v1",
             "calr": "CALR-v1",
-            "mvsr": "MVSR-v2 composite-support max",
+            "mvsr": args.mvsr_component,
         },
         "arm_definitions": {name: list(value) for name, value in ARMS.items()},
         "arm_counts": counts,

@@ -1,0 +1,52 @@
+dataset: CA1M
+
+data:
+  datadir: ./data/example/42898570  # change this to your data_root for CA-1M dataset like:  YOUR_DATA_ROOT/CA-1M/42446540/
+  start: 0 
+  output_dir: ./results
+  gap: 20
+
+
+cam:
+  H: 384
+  W: 512
+  png_depth_scale: 1000.
+
+
+detection:
+  score_thresh: 0.4 
+  uv_bound: True
+  uv_bound_value: 0.9
+  floor_mask: True 
+  floor_ratio: 15
+  scale_box: 1.5
+
+association:
+  small_threshold: 0.2
+  rotation_gap: 30 
+  translation_gap: 0.8 
+
+
+
+box_fusion:
+  use: True 
+  iters: 20 
+  pst_path: ./data/pst_1024_0.tiff
+  pst_size: 1024
+  random_opt:
+    center_init_size: 0.1 
+    center_scaling_coefficient: 0.1 
+    shape_init_size: 0.5 
+    shape_scaling_coefficient: 0.5 
+  check_valid: False
+  nms_threshold: 0.1 
+  small_size: 0.5 
+
+
+vis:
+  rerun: True # visualization, set to False for acceleration
+  show_class: False # show object class
+  show_label: False # show box id
+  trajectory: True
+
+eval: False #True

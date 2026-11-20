@@ -62,3 +62,79 @@ def test_paired_raw_mvsr_and_direct_plr_controls_share_one_causal_pass():
     diagnostics = state.diagnostics()
     assert diagnostics["raw_m2_control"]["frames_seen"] == 3
     assert diagnostics["direct_plr_control"]["temporal_confirmation_disabled"]
+
+
+def test_factor_control_exports_matched_temporal_readouts():
+    state = build_reliability_candidate_map(
+        "scene",
+        {
+            "audit_mvsr_factors": True,
+            "mvsr_factor_variants": ["no_visibility"],
+            "m1p": {"use_children": False},
+            "m2": {"support_mode": "max"},
+        },
+    )
+    target = box(0.0)
+    snapshot = None
+    for frame, camera_x in enumerate((-2.0, 0.0, 2.0)):
+        camera = pose(camera_x)
+        projection = _project_with_visibility(target, camera, K, 256, 256)
+        assert projection is not None
+        native = NativeFrame(
+            ids=np.asarray([7]), corners=np.asarray([target]),
+            scores=np.asarray([0.2]), camera_to_world=camera,
+            intrinsic=K, width=256, height=256,
+        )
+        evidence = EvidenceFrame(
+            proposal_ids=np.asarray([frame]),
+            proposal_boxes_2d=np.asarray([projection[0]]),
+            proposal_corners=np.asarray([target]),
+            proposal_scores=np.asarray([0.9 - 0.1 * frame]),
+        )
+        snapshot = state.update(frame, native, evidence)
+    components = state.experiment_components(
+        snapshot.native_ids, snapshot.native_corners, np.asarray([0.2])
+    )
+    for mode in ("latest", "mean", "ema", "top3_mean", "max"):
+        name = f"native_factor_no_visibility_{mode}"
+        assert name in components
+        assert components[name][0].shape == (1, 8, 3)
+        assert components[name][1].shape == (1,)
+    assert np.array_equal(
+        components["native_factor_no_visibility"][1],
+        components["native_factor_no_visibility_max"][1],
+    )
+
+
+def test_selected_runtime_uses_calr_v1_without_updating_calr_v2():
+    state = build_reliability_candidate_map(
+        "scene",
+        {
+            "selected_calr_v1": True,
+            "m1p": {"use_children": False},
+            "m1a": {"min_views": 3},
+            "m2": {"support_mode": "max", "strength_variant": "no_visibility"},
+        },
+    )
+    snapshot = None
+    for frame in range(3):
+        native = NativeFrame(
+            ids=np.asarray([7]), corners=np.asarray([box(-2.0)]),
+            scores=np.asarray([0.2]), camera_to_world=pose(float(frame)),
+            intrinsic=K, width=256, height=256,
+        )
+        evidence = EvidenceFrame(
+            proposal_ids=np.empty(0, dtype=np.int64),
+            proposal_boxes_2d=np.empty((0, 4), dtype=np.float64),
+            proposal_corners=np.empty((0, 8, 3), dtype=np.float64),
+            proposal_scores=np.empty(0, dtype=np.float64),
+            anchor_ids=np.asarray([frame]),
+            anchor_corners=np.asarray([box(0.0)]),
+            anchor_scores=np.asarray([0.7]),
+        )
+        snapshot = state.update(frame, native, evidence)
+    assert snapshot.sources.count("m1a") == 1
+    diagnostic = state.diagnostics()
+    assert diagnostic["selected_calr_v1"] is True
+    assert diagnostic["m1a_control"]["frames_seen"] == 3
+    assert diagnostic["m1a"]["frames_seen"] == 0

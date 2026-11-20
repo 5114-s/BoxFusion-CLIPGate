@@ -1223,6 +1223,16 @@ def run(cfg, model, dataset, clip_model, preprocess, tokenized_text, text_featur
                 pred_instances.appearance_features = (
                     box_features.detach().float().cpu()
                 )
+            elif association_features_enabled:
+                feature_dim = (
+                    int(all_pred_box.appearance_features.shape[1])
+                    if all_pred_box is not None
+                    and all_pred_box.has("appearance_features")
+                    else int(text_features.shape[-1])
+                )
+                pred_instances.appearance_features = torch.empty(
+                    (0, feature_dim), dtype=torch.float32
+                )
 
             if observer_adapter.enabled and count % gap == 0:
                 with observer_adapter.observer_boundary(
